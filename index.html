@@ -306,7 +306,7 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="card-status"></p>
-  <p class="foot">银联：卡组织当日结算汇率，官网。JCB：官网美元基准中间价折算成人民币。万事达、Visa：官网拦截服务器访问，取自快易理财网整理的美元基准汇率，再按各自的美元/人民币换算，仅供比较。运通不公布汇率。四家里最低的标绿、最高的标红。</p>
+  <p class="foot">银联：卡组织当日结算汇率，官网。带 ≈ 的是近似值：万事达、Visa 官网拦截服务器访问，取快易理财网整理的「人民币→美元」价倒算；JCB 用官网美元中间价折算；三家都不含它们在这个方向上的价差。运通不公布汇率。四家里最低的标绿、最高的标红。</p>
 </section>
 
 <section id="cn">
@@ -929,6 +929,7 @@ function generatedText() {
   const t = new Date(g); return `抓取于 ${t.getMonth() + 1}月${t.getDate()}日 ${pad(t.getHours())}:${pad(t.getMinutes())}`;
 }
 const CARD_ORGS = [['unionpay', '银联'], ['mastercard', '万事达'], ['visa', 'Visa'], ['jcb', 'JCB']];
+const APPROX = {mastercard: true, visa: true, jcb: true};  // 这几家的「外币→人民币」价由反方向价或中间价倒算，近似值
 function renderCards() {
   if (!state.data) return;
   const body = $('card-body'); body.replaceChildren();
@@ -943,7 +944,7 @@ function renderCards() {
     const have = vals.filter(v => v != null);
     const lo = have.length > 1 ? Math.min(...have) : null, hi = have.length > 1 ? Math.max(...have) : null;
     const tr = el('tr', null, el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, unitLabel(c))));
-    vals.forEach(v => tr.append(v == null ? dimCell() : el('td', {class: 'num' + (v === lo ? ' best' : v === hi ? ' worst' : '')}, fmt(v, dec(v)))));
+    vals.forEach((v, i) => tr.append(v == null ? dimCell() : el('td', {class: 'num' + (v === lo ? ' best' : v === hi ? ' worst' : '')}, (APPROX[CARD_ORGS[i][0]] ? '≈' : '') + fmt(v, dec(v)))));
     tr.append(cf ? el('td', {class: 'num'}, fmt(cf.v, dec(cf.v))) : dimCell());
     tr.append(have.length && cf ? el('td', {class: 'num'}, deltaSpan(Math.min(...have), cf.v)) : dimCell());
     body.append(tr);
@@ -1064,7 +1065,7 @@ function renderQuick() {
   const rows = [];
   if (ref != null) rows.push({way: '中间价（参考）', rate: ref, who: null, isRef: true});
   const card = (state.data && state.data.card && state.data.card[c.code]) || {};
-  for (const [k, name] of CARD_ORGS) if (card[k] != null) rows.push({way: name + ' 刷卡', rate: card[k], isCard: true});
+  for (const [k, name] of CARD_ORGS) if (card[k] != null) rows.push({way: name + ' 刷卡', rate: card[k], isCard: true, approx: !!APPROX[k]});
   const banks = (state.data && state.data.banks_cn) || {};
   for (const [col, label] of [['hui_sell', '银行现汇最低'], ['chao_sell', '银行现钞最低']]) {
     let best = null;
@@ -1081,7 +1082,7 @@ function renderQuick() {
   for (const r of rows) {
     body.append(el('tr', {class: !r.isRef && r.rate === minRate ? 'best' : null},
       el('td', {class: 'way'}, r.way, r.who ? el('span', {class: 'who'}, r.who) : null),
-      el('td', {class: 'num'}, fmt(r.rate * c.unit, dec(r.rate * c.unit))),
+      el('td', {class: 'num'}, (r.approx ? '≈' : '') + fmt(r.rate * c.unit, dec(r.rate * c.unit))),
       el('td', {class: 'num'}, amount(r)),
       el('td', {class: 'num'}, r.isRef || ref == null ? el('span', {class: 'dim'}, '—') : deltaSpan(r.rate, ref))));
   }
