@@ -74,8 +74,9 @@ button,input,select{font:inherit; color:inherit}
 @media (min-width:900px){
   .grid{grid-template-columns:1fr 1fr}
   .span2{grid-column:1 / -1}
-  #rates{grid-column:2; grid-row:1 / span 2}
-  #quick-sec,#trend{grid-column:1}
+  #quick-sec{grid-column:1; grid-row:1}
+  #rates{grid-column:2; grid-row:1}
+  #trend{grid-column:1 / -1}
   .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
 }
 section{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:0 0 6px; min-width:0}
@@ -164,8 +165,6 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 /* 走势下方：行情摘要 + 怎么付最省 */
 .quick{margin-top:4px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 8px 6px}
 .cardgroups{display:grid; grid-template-columns:1fr; gap:8px}
-@media (min-width:900px){ .cardgroups{grid-template-columns:repeat(3,1fr)} }
-@media (min-width:560px) and (max-width:899px){ .cardgroups{grid-template-columns:repeat(3,1fr)} }
 .cardgroup{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:4px 6px 2px; min-width:0}
 .cardgroup .gh{display:flex; justify-content:space-between; align-items:baseline; gap:6px; font-weight:700; padding:2px 2px 4px; border-bottom:1px solid var(--line-2)}
 .cardgroup .gh small{color:var(--muted); font-weight:500; font-size:11px}
@@ -893,6 +892,7 @@ async function renderTrend() {
     xFmtLong: x => { const s = fromUTC(x); return `${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
     yFmt: (v, precise) => fmt(v, precise ? dec(v) : Math.max(0, dec(v) - 1)),
     endLabels: true,
+    height: 260,
     ariaLabel: c.code === 'CNY' ? `人民币兑港元近${label}走势` : `${c.name}兑人民币近${label}走势`,
   }));
   if (!$('trend-table').hidden) renderTrendTable();
@@ -970,6 +970,7 @@ const CARD_GROUPS = [
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   {key: 'USD', name: '美元卡', bill: '美元', orgs: ['visa', 'mastercard', 'amex']},
   {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
+  // 账单币种 = 卡的记账货币；卡组织按自己的汇率把当地货币一次换成它，表里的就是入账金额
 ];
 const ORG_NAME = {unionpay: '银联', visa: 'Visa', mastercard: '万事达', jcb: 'JCB', amex: '运通'};
 function cnyPerUnit(code) { if (code === 'CNY') return 1; const l = cfetsLatest(code); return l ? l.v / CUR_BY[code].unit : null; }
@@ -1014,16 +1015,16 @@ function renderQuick() {
   const candidates = [];                 // {group, org, bill, cny}
   for (const g of CARD_GROUPS) {
     const box = el('div', {class: 'cardgroup'});
-    box.append(el('div', {class: 'gh'}, g.name, el('small', null, `账单扣${g.bill}`)));
+    box.append(el('div', {class: 'gh'}, g.name, el('small', null, X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`)));
     if (X === g.key) {
-      box.append(el('div', {class: 'same'}, `本币消费，不换汇：扣 ${fmt(amt, 2)} ${g.key}`));
+      box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}`));
       const cny = cnyPerUnit(g.key);
       if (cny != null) candidates.push({group: g, org: null, bill: amt, cny: amt * cny, same: true});
       groupsEl.append(box);
       continue;
     }
     const table = el('table'), tbody = el('tbody');
-    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `1 ${X} = ${g.key}`), el('th', {class: 'num'}, `扣${g.bill}`), el('th', {class: 'num'}, '≈ 元'))), tbody);
+    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num'}, '≈ 元'))), tbody);
     const row = (cards[g.key] && cards[g.key][X]) || {};
     const cnyB = cnyPerUnit(g.key);
     const rows = g.orgs.map(org => ({org, rate: row[org] != null ? row[org] : null}));
@@ -1063,7 +1064,7 @@ function renderQuick() {
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '扣款不含发卡行的外币交易手续费（通常 0–3%，按你的卡自行加上）；「≈ 元」按中间价折算，只用于三类卡之间比较。'));
+  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「≈ 元」按中间价折算，只用于三类卡之间比较。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
