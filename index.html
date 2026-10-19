@@ -289,7 +289,7 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="cn-status"></p>
-  <p class="foot">1 外币 = 人民币（日元、韩元按 100，印尼盾、基普按 10000）。点表头按高低排序，再点一次反向，点「银行」恢复默认顺序。买入价越高、卖出价越低对你越划算，最优标绿、最差标红。带「聚」标记的来自聚合站快易理财网，其余来自银行官网。</p>
+  <p class="foot">1 外币 = 人民币（日元、韩元按 100，印尼盾、基普按 10000）。点表头按高低排序，再点一次反向，点「银行」恢复默认顺序。买入价越高、卖出价越低对你越划算，最优标绿、最差标红。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
 </section>
 
 <section id="hk" class="tint-2">
@@ -954,7 +954,8 @@ function renderBankTable(kind) {
       worst[col] = isBuy ? Math.min(...vs) : Math.max(...vs);
     }
     for (const r of sorted) {
-      const tr = el('tr', null, el('td', {class: 'name'}, r.name, r.origin === 'kylc' ? el('span', {class: 'srcmark', title: '来自快易理财网'}, '聚') : null));
+      const ORIGIN_NAME = {kylc: '快易理财网', ipcn: 'ip.cn'};
+      const tr = el('tr', null, el('td', {class: 'name'}, r.name, ORIGIN_NAME[r.origin] ? el('span', {class: 'srcmark', title: '来自' + ORIGIN_NAME[r.origin]}, '聚') : null));
       for (const col of cfg.cols) {
         const v = r.vals[col];
         if (v == null) { tr.append(dimCell()); continue; }

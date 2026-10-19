@@ -98,12 +98,27 @@ def scale(rates, usd_key="hui_sell", hint=None):
     return out
 
 
-def get(url, session=None, **kw):
+def get(url, session=None, insecure_fallback=False, **kw):
+    """GET 并检查状态码。insecure_fallback=True 时，证书校验失败就跳过校验再试一次（只用于读公开牌价）。"""
     kw.setdefault("timeout", TIMEOUT)
     kw.setdefault("headers", HEADERS)
-    resp = (session or requests).get(url, **kw)
+    client = session or requests
+    try:
+        resp = client.get(url, **kw)
+    except requests.exceptions.SSLError as exc:
+        if not insecure_fallback:
+            raise
+        import urllib3
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        log(f"  证书校验失败，跳过校验重试：{url}（{str(exc)[-120:]}）")
+        resp = client.get(url, verify=False, **kw)
     resp.raise_for_status()
     return resp
+
+
+def err_text(exc):
+    s = str(exc)
+    return f"{type(exc).__name__}: " + (s if len(s) <= 320 else s[:120] + " … " + s[-200:])
 
 
 def parse_generic_table(html, name_col_hint="币种"):
@@ -199,30 +214,28 @@ def fetch_unionpay():
 
 
 def fetch_jcb():
-    """JCB 美元基准日表 usdMMDDYYYY.html：1 美元 = Buy/Mid/Sell 外币；用 Mid 折算成 1 外币兑人民币。"""
-    today = dt.datetime.now(BJT).date()
-    last_err = "未知错误"
-    for back in range(0, 10):
-        day = today - dt.timedelta(days=back)
-        url = f"https://www.jcb.jp/rate/usd{day:%m%d%Y}.html"
+    """JCB 美元基准日表：索引页 usd.html 列出各日链接 usdMMDDYYYY.html，表内 1 美元 = Buy/Mid/Sell 外币；用 Mid 折算成 1 外币兑人民币。"""
+    base = "https://www.jcb.jp/rate/"
+    headers = {**HEADERS, "Accept-Language": "ja,en;q=0.8,zh-CN;q=0.6", "Referer": base + "usd.html"}
+    index = get(base + "usd.html", headers=headers)
+    links = re.findall(r'href="([^"]*usd(\d{8})\.html)"', index.text)
+    if not links:
+        raise RuntimeError("索引页里没有找到日表链接")
+    # 文件名是 MMDDYYYY，按 YYYYMMDD 排序取最新
+    links.sort(key=lambda x: x[1][4:] + x[1][:4], reverse=True)
+    errors = []
+    for href, stamp in links[:3]:
+        url = href if href.startswith("http") else base + href.lstrip("/").split("rate/")[-1]
         try:
-            resp = requests.get(url, headers=HEADERS, timeout=TIMEOUT)
-            if resp.status_code != 200:
-                last_err = f"HTTP {resp.status_code}（{url}）"
-                continue
+            resp = get(url, headers=headers)
         except Exception as exc:  # noqa: BLE001
-            last_err = f"{exc}（{url}）"
+            errors.append(f"{url}: {exc}")
             continue
         soup = BeautifulSoup(resp.text, "html.parser")
         mids = {}
         for tr in soup.find_all("tr"):
             cells = [c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])]
-            code = None
-            for c in cells:
-                m = re.fullmatch(r"[A-Z]{3}", c.strip())
-                if m:
-                    code = c.strip()
-                    break
+            code = next((c.strip() for c in cells if re.fullmatch(r"[A-Z]{3}", c.strip())), None)
             if not code:
                 continue
             nums = [num(c) for c in cells if num(c) is not None]
@@ -232,14 +245,14 @@ def fetch_jcb():
                 mids[code] = nums[0]
         usd_cny = mids.get("CNY")
         if not usd_cny:
-            last_err = f"表里没有 CNY（{url}）"
+            errors.append(f"{url}: 表里没有 CNY")
             continue
         rates = {"USD": round(usd_cny, 6)}
         for code in CODES:
             if code != "USD" and mids.get(code):
                 rates[code] = round(usd_cny / mids[code], 8)
-        return {"date": day.isoformat(), "rates": rates}
-    raise RuntimeError(last_err)
+        return {"date": f"{stamp[4:]}-{stamp[:2]}-{stamp[2:4]}", "rates": rates}
+    raise RuntimeError("; ".join(errors)[:300])
 
 
 # ================================================================ 内地银行（1 外币兑人民币）
@@ -265,7 +278,7 @@ def fetch_boc():
 
 
 def fetch_icbc():
-    resp = get("https://papi.icbc.com.cn/exchanges/ns/getLatest", headers={**HEADERS, "Accept": "application/json"})
+    resp = get("https://papi.icbc.com.cn/exchanges/ns/getLatest", insecure_fallback=True, headers={**HEADERS, "Accept": "application/json"})
     data = resp.json()
     rows = data.get("data") if isinstance(data, dict) else None
     if not isinstance(rows, list):
@@ -285,7 +298,7 @@ def fetch_icbc():
 
 
 def fetch_abc():
-    resp = get("https://ewealth.abchina.com/app/data/api/DataService/ExchangeRateV2", headers={**HEADERS, "Accept": "application/json"})
+    resp = get("https://ewealth.abchina.com/app/data/api/DataService/ExchangeRateV2", insecure_fallback=True, headers={**HEADERS, "Accept": "application/json"})
     data = resp.json()
     table = (((data or {}).get("Data") or {}).get("Table")) if isinstance(data, dict) else None
     if not isinstance(table, list):
@@ -305,7 +318,7 @@ def fetch_abc():
 
 
 def fetch_ccb():
-    resp = get("https://www2.ccb.com/cn/home/news/jshckpj_new.xml", headers={**HEADERS, "Accept": "application/xml,text/xml,*/*"})
+    resp = get("https://www2.ccb.com/cn/home/news/jshckpj_new.xml", insecure_fallback=True, headers={**HEADERS, "Accept": "application/xml,text/xml,*/*"})
     root = ET.fromstring(resp.content)
     rates = {}
     for node in root.iter():
@@ -326,7 +339,7 @@ def fetch_ccb():
 
 
 def fetch_bocom():
-    resp = get("https://www.bankcomm.com/BankCommSite/zh-cn/personal/forex/forexQuotation.html")
+    resp = get("https://www.bankcomm.com/BankCommSite/zh-cn/personal/forex/forexQuotation.html", insecure_fallback=True)
     resp.encoding = resp.apparent_encoding or "utf-8"
     soup = BeautifulSoup(resp.text, "html.parser")
     m = re.search(r"更新时间[：:]\s*([\d\-/]+\s*[\d:]*)", soup.get_text(" "))
@@ -400,6 +413,27 @@ def make_kylc(slug):
     return fetch
 
 
+def fetch_cbhb_ipcn():
+    """ip.cn 的渤海银行牌价页：列序 货币｜现汇买入｜现汇卖出｜现钞买入｜现钞卖出｜发布时间，按 1 外币报价。"""
+    resp = get("https://ip.cn/paijia/cbhb.html")
+    resp.encoding = resp.apparent_encoding or "utf-8"
+    soup = BeautifulSoup(resp.text, "html.parser")
+    rates = {}
+    for tr in soup.find_all("tr"):
+        cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+        if len(cells) < 6:
+            continue
+        code = to_code(cells[0])
+        if not code or code == "CNY":
+            continue
+        vals = [num(c) for c in cells[1:5]]
+        rates[code] = {"hui_buy": vals[0], "hui_sell": vals[1], "chao_buy": vals[2], "chao_sell": vals[3], "time": cells[5].replace("/", "-")}
+    if not rates:
+        raise RuntimeError("页面里没有找到牌价表")
+    rates = scale(rates)
+    return {"date": max(r.get("time") or "" for r in rates.values()), "rates": rates}
+
+
 # ================================================================ 香港银行（1 外币兑港元）
 # 每个抓取函数返回 {"date", "rates": {CODE: {tt_buy, tt_sell, note_buy, note_sell, time}}}
 HK_FETCHERS = {}
@@ -420,7 +454,7 @@ SOURCES = [
     ("pab", "平安银行", "cn", "kylc", make_kylc("pab")),
     ("nbcb", "宁波银行", "cn", "kylc", make_kylc("nbcb")),
     ("shengjing", "盛京银行", "cn", "kylc", make_kylc("shengjingb")),
-    ("cbhb", "渤海银行", "cn", "kylc", make_kylc("cbhb")),
+    ("cbhb", "渤海银行", "cn", "ipcn", fetch_cbhb_ipcn),
 ]
 SOURCES += [(key, name, "hk", origin, fn) for key, (name, origin, fn) in HK_FETCHERS.items()]
 
@@ -450,7 +484,7 @@ def main():
                 raise RuntimeError("没有数据")
         except Exception as exc:  # noqa: BLE001
             result = None
-            err = f"{type(exc).__name__}: {str(exc)[:200]}"
+            err = err_text(exc)
         if result:
             ok_count += 1
             if group != "card":
