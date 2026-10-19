@@ -95,12 +95,13 @@ section.tint-2{background:var(--tint-2)}
 .band h2{font-size:14px; margin:0; font-weight:700; letter-spacing:.03em}
 .band .note{color:var(--band-ink); opacity:.85; font-size:12px; margin:0}
 .band select,.band button,.band input{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35); color:var(--band-ink); border-radius:4px; padding:2px 6px; font-size:12px}
-.band .amt{font-size:12px}
-.band .amt input,.band select{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
-.band .amt input{width:86px}
-.band .amt #quick-unit{font-family:var(--font-num); font-weight:600}
-.band .amt .cny{margin-left:12px; font-family:var(--font-num); font-variant-numeric:tabular-nums; font-weight:700; font-size:13.5px; color:#ffe08a; white-space:nowrap}
-.band .amt .cny small{font-weight:500; font-size:11px; color:var(--band-ink); opacity:.8; margin-left:4px}
+.band select{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
+.amtrow{display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; margin:2px 0 6px; padding:6px 8px; background:var(--accent-soft, var(--surface-2)); border-radius:var(--radius)}
+.amtrow .amt{font-size:12.5px; color:var(--fg-2)}
+.amtrow input{width:96px; padding:3px 6px; font-size:13px}
+.amtrow #quick-unit{font-family:var(--font-num); font-weight:700; color:var(--fg); margin-left:2px}
+.amtrow .cny{font-family:var(--font-num); font-variant-numeric:tabular-nums; font-weight:700; font-size:14px; color:var(--up); white-space:nowrap}
+.amtrow .cny small{font-weight:500; font-size:11px; color:var(--muted); margin-left:4px}
 .band select option{color:#182230; background:#fff}
 .band .legend{color:var(--band-ink)}
 .body{padding:6px 8px 0}
@@ -260,10 +261,11 @@ footer p{margin:3px 0; max-width:90ch}
 <section id="quick-sec">
   <div class="band">
     <h2>刷哪张卡最省</h2>
-    <label class="amt">当地消费 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span><span class="cny" id="quick-cny"></span></label>
+    <p class="note">先选当地货币，再填金额</p>
   </div>
   <div class="body">
     <div class="tabs" id="trend-tabs" role="tablist"></div>
+    <div class="amtrow"><label class="amt">当地消费 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span></label><span class="cny" id="quick-cny"></span></div>
     <div class="quick" id="quick">
       <div class="verdict" id="quick-verdict"></div>
       <div class="cardgroups" id="cardgroups"></div>
