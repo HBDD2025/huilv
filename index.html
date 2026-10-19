@@ -982,9 +982,9 @@ function renderCards() {
 /* ---- 走势下方：行情摘要 + 怎么付最省 ---- */
 // 三类卡：账单币种与各自的卡组织
 const CARD_GROUPS = [
-  {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   {key: 'USD', name: '美元卡', bill: '美元', orgs: ['visa', 'mastercard', 'amex']},
   {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
+  {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   // 账单币种 = 卡的记账货币；卡组织按自己的汇率把当地货币一次换成它，表里的就是入账金额
 ];
 const ORG_NAME = {unionpay: '银联', visa: 'Visa', mastercard: '万事达', jcb: 'JCB', amex: '运通'};
