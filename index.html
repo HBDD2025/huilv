@@ -197,6 +197,11 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .verdict{margin:0 0 6px; line-height:1.5}
 .verdict b{color:var(--down)}
 .verdict .vs{color:var(--muted)}
+.verdict .hl{background:#fff1a8; color:#182230; border-left:4px solid var(--up); padding:5px 8px; margin:4px 0; border-radius:3px; font-weight:600}
+.verdict .hl .vs{color:#4a4a3a}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .verdict .hl{background:#5a4a12; color:#fff6d6} :root:not([data-theme="light"]) .verdict .hl .vs{color:#e4d9b0} }
+:root[data-theme="dark"] .verdict .hl{background:#5a4a12; color:#fff6d6}
+:root[data-theme="dark"] .verdict .hl .vs{color:#e4d9b0}
 .quick-table td.way{font-weight:600}
 .quick-table td .who{color:var(--muted); font-weight:400; margin-left:4px; font-size:11px}
 tr.best td{color:var(--down)}
@@ -1069,7 +1074,7 @@ function renderQuick() {
   if (all.length > 1) {
     const name = x => x.same ? `${x.group.name}本币` : `${x.group.name} ${ORG_NAME[x.org]}`;
     const top = all[0], second = all[1], last = all[all.length - 1];
-    const line = el('div', null, '三类卡折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
+    const line = el('div', {class: 'hl'}, '三类卡折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
