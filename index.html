@@ -98,6 +98,7 @@ td .code{color:var(--muted); font-family:var(--font-num); font-size:12px; margin
 .spark path{fill:none; stroke:var(--fg-2); stroke-width:1.5; stroke-linejoin:round; stroke-linecap:round}
 .spark circle{fill:var(--accent); stroke:var(--surface); stroke-width:1.5}
 .empty{color:var(--muted); padding:14px 0; margin:0}
+table.no-mc .col-mc{display:none}
 
 /* 卡片：只给图表与可编辑清单使用 */
 .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px}
@@ -236,7 +237,7 @@ footer p{margin:4px 0; max-width:80ch}
       <thead><tr>
         <th>货币</th>
         <th class="num">银联</th>
-        <th class="num">万事达</th>
+        <th class="num col-mc">万事达</th>
         <th class="num">中行现汇买入</th>
         <th class="num">现钞买入</th>
         <th class="num">现汇卖出</th>
@@ -247,7 +248,7 @@ footer p{margin:4px 0; max-width:80ch}
     </table>
   </div>
   <p class="note" id="card-status" style="margin-top:10px"></p>
-  <p class="note">银联、万事达为卡组织当日结算汇率（账单币种人民币，不含发卡行附加费）；中行为外汇牌价，买入价是你把外币换成人民币时银行给的价，卖出价是你买外币时付的价。Visa 的网站不允许自动抓取，请用下方「牌价入口」查询。</p>
+  <p class="note">银联为卡组织当日结算汇率（账单币种人民币，不含发卡行附加费）；中行为外汇牌价，买入价是你把外币换成人民币时银行给的价，卖出价是你买外币时付的价。Visa 的网站不允许自动抓取，万事达拦截了 GitHub 服务器的访问，这两家请用下方「牌价入口」查询。</p>
 </section>
 
 <section id="trend">
@@ -699,7 +700,9 @@ function renderCardRates() {
     $('card-status').textContent = '';
     return;
   }
-  const cell = (v, unit, dec) => el('td', {class: 'num'}, v == null ? el('span', {class: 'dim'}, '—') : fmt(v * unit, dec));
+  const cell = (v, unit, dec, cls) => el('td', {class: 'num' + (cls ? ' ' + cls : '')}, v == null ? el('span', {class: 'dim'}, '—') : fmt(v * unit, dec));
+  // 万事达一列只在真有数据时显示
+  $('card-table').classList.toggle('no-mc', !CURRENCIES.some(c => rates[c.code] && rates[c.code].mastercard != null));
   for (const c of CURRENCIES) {
     const r = rates[c.code] || {};
     const boc = r.boc || {};
@@ -707,7 +710,7 @@ function renderCardRates() {
     const tr = el('tr', null,
       el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, c.unit > 1 ? `${c.unit} ${c.code}` : c.code)),
       cell(r.unionpay, c.unit, 4),
-      cell(r.mastercard, c.unit, 4),
+      cell(r.mastercard, c.unit, 4, 'col-mc'),
       cell(boc.hui_buy, c.unit, 4),
       cell(boc.chao_buy, c.unit, 4),
       cell(boc.hui_sell, c.unit, 4),

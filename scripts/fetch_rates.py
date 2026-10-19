@@ -185,7 +185,12 @@ def fetch_boc():
 
 
 # ---------------------------------------------------------------- 汇总
-SOURCES = [("unionpay", "银联", fetch_unionpay), ("mastercard", "万事达", fetch_mastercard), ("boc", "中国银行", fetch_boc)]
+# 万事达的查询接口会拦截 GitHub 服务器的 IP（403），暂时关掉；换到能访问的环境可改为 True
+ENABLE_MASTERCARD = False
+
+SOURCES = [("unionpay", "银联", fetch_unionpay), ("boc", "中国银行", fetch_boc)]
+if ENABLE_MASTERCARD:
+    SOURCES.insert(1, ("mastercard", "万事达", fetch_mastercard))
 
 
 def main():
