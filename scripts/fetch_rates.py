@@ -225,7 +225,7 @@ def fetch_unionpay():
         except Exception as exc:  # noqa: BLE001
             last_err = f"{exc}（{url}）"
             continue
-        rates, cny_usd = {}, None
+        rates, cny_usd, cny_hkd = {}, None, None
         for entry in _find_rate_list(data):
             trans, base, value = entry.get("transCur"), entry.get("baseCur"), entry.get("rateData")
             try:
@@ -236,8 +236,10 @@ def fetch_unionpay():
                 rates[trans] = value
             elif trans == "CNY" and base == "USD":
                 cny_usd = value  # 1 人民币 = ? 美元（美元账单卡在人民币消费时）
+            elif trans == "CNY" and base == "HKD":
+                cny_hkd = value  # 1 人民币 = ? 港元（港元账单卡在人民币消费时）
         if rates:
-            return {"date": day.isoformat(), "rates": rates, "cny_usd": cny_usd}
+            return {"date": day.isoformat(), "rates": rates, "cny_usd": cny_usd, "cny_hkd": cny_hkd}
         last_err = f"文件里没有以人民币计价的汇率（{url}）"
     raise RuntimeError(last_err)
 
@@ -282,7 +284,8 @@ def fetch_jcb():
         for code in CODES:
             if code != "USD" and mids.get(code):
                 rates[code] = round(usd_cny / mids[code], 8)
-        return {"date": f"{stamp[4:]}-{stamp[:2]}-{stamp[2:4]}", "rates": rates, "cny_usd": round(1 / usd_cny, 8)}
+        cny_hkd = round(mids["HKD"] / usd_cny, 8) if mids.get("HKD") else None
+        return {"date": f"{stamp[4:]}-{stamp[:2]}-{stamp[2:4]}", "rates": rates, "cny_usd": round(1 / usd_cny, 8), "cny_hkd": cny_hkd}
     raise RuntimeError("; ".join(errors)[:300])
 
 
@@ -325,6 +328,13 @@ def _kylc_cards():
     for org in result:
         if org in base and base[org][0]:
             result[org]["cny_usd"] = base[org][0]
+    try:
+        hkd = _kylc_card_page("HKD")  # usd per 1 HKD
+        for org in result:
+            if org in base and org in hkd and base[org][0] and hkd[org][0]:
+                result[org]["cny_hkd"] = round(base[org][0] / hkd[org][0], 8)
+    except Exception as exc:  # noqa: BLE001
+        warn(f"快易理财网港币页失败：{str(exc)[:100]}")
     errors = []
     for code in CODES:
         if code == "USD":
@@ -735,6 +745,7 @@ def main():
         "sources": {},
         "card": {code: {} for code in CODES},
         "card_cny_usd": {},
+        "card_cny_hkd": {},
         "banks_cn": {},
         "banks_hk": {},
     }
@@ -762,6 +773,8 @@ def main():
                         out["card"][code][key] = value
                 if result.get("cny_usd"):
                     out["card_cny_usd"][key] = round(float(result["cny_usd"]), 8)
+                if result.get("cny_hkd"):
+                    out["card_cny_hkd"][key] = round(float(result["cny_hkd"]), 8)
             elif group == "cn":
                 out["banks_cn"][key] = result["rates"]
             else:
@@ -777,8 +790,9 @@ def main():
                     if v is not None:
                         out["card"][code][key] = v
                         kept += 1
-                if (previous.get("card_cny_usd") or {}).get(key):
-                    out["card_cny_usd"][key] = previous["card_cny_usd"][key]
+                for bucket in ("card_cny_usd", "card_cny_hkd"):
+                    if (previous.get(bucket) or {}).get(key):
+                        out[bucket][key] = previous[bucket][key]
             else:
                 bucket = "banks_cn" if group == "cn" else "banks_hk"
                 old_rates = previous.get(bucket, {}).get(key)
