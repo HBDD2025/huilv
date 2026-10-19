@@ -22,7 +22,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "rates.json"
 
 CODES = ["USD", "EUR", "GBP", "JPY", "HKD", "MOP", "SGD", "AUD", "NZD", "CAD", "CHF", "KRW", "THB",
-         "MYR", "IDR", "LAK", "PHP", "DKK", "NOK", "SEK", "RUB", "ZAR"]
+         "MYR", "IDR", "LAK", "VND", "PHP", "DKK", "NOK", "SEK", "RUB", "ZAR"]
 HK_CODES = ["CNY"] + [c for c in CODES if c != "HKD"]
 
 HEADERS = {
@@ -40,13 +40,13 @@ CN_NAMES = {
     "澳大利亚元": "AUD", "澳元": "AUD", "澳洲元": "AUD", "新西兰元": "NZD", "纽元": "NZD", "加拿大元": "CAD", "加元": "CAD",
     "瑞士法郎": "CHF", "韩元": "KRW", "韩国元": "KRW", "韩币": "KRW", "泰国铢": "THB", "泰铢": "THB",
     "马来西亚林吉特": "MYR", "林吉特": "MYR", "马来西亚元": "MYR", "印尼卢比": "IDR", "印度尼西亚卢比": "IDR", "印尼盾": "IDR",
-    "老挝基普": "LAK", "基普": "LAK", "菲律宾比索": "PHP", "丹麦克朗": "DKK", "挪威克朗": "NOK", "瑞典克朗": "SEK",
+    "老挝基普": "LAK", "基普": "LAK", "越南盾": "VND", "越南元": "VND", "菲律宾比索": "PHP", "丹麦克朗": "DKK", "挪威克朗": "NOK", "瑞典克朗": "SEK",
     "俄罗斯卢布": "RUB", "卢布": "RUB", "南非兰特": "ZAR", "兰特": "ZAR", "人民币": "CNY", "新台币": "TWD",
 }
 # ISO 数字代码（建行 XML 用）
 ISO_NUM = {"840": "USD", "978": "EUR", "826": "GBP", "392": "JPY", "344": "HKD", "446": "MOP", "702": "SGD",
            "036": "AUD", "554": "NZD", "124": "CAD", "756": "CHF", "410": "KRW", "764": "THB", "458": "MYR",
-           "360": "IDR", "418": "LAK", "608": "PHP", "208": "DKK", "578": "NOK", "752": "SEK", "643": "RUB",
+           "360": "IDR", "418": "LAK", "704": "VND", "608": "PHP", "208": "DKK", "578": "NOK", "752": "SEK", "643": "RUB",
            "710": "ZAR", "156": "CNY"}
 
 
@@ -570,7 +570,7 @@ HK_NAMES = {
     "日圓": "JPY", "日元": "JPY", "澳門元": "MOP", "澳门元": "MOP", "澳門幣": "MOP", "新加坡元": "SGD", "新加坡幣": "SGD", "星元": "SGD",
     "澳元": "AUD", "澳洲元": "AUD", "紐元": "NZD", "新西蘭元": "NZD", "紐西蘭元": "NZD", "加元": "CAD", "加拿大元": "CAD",
     "瑞士法郎": "CHF", "瑞郎": "CHF", "韓圜": "KRW", "韓元": "KRW", "泰銖": "THB", "泰铢": "THB", "馬來西亞令吉": "MYR", "令吉": "MYR",
-    "印尼盾": "IDR", "印尼盧比": "IDR", "菲律賓披索": "PHP", "菲律賓比索": "PHP", "丹麥克朗": "DKK", "挪威克朗": "NOK", "瑞典克朗": "SEK",
+    "印尼盾": "IDR", "印尼盧比": "IDR", "越南盾": "VND", "菲律賓披索": "PHP", "菲律賓比索": "PHP", "丹麥克朗": "DKK", "挪威克朗": "NOK", "瑞典克朗": "SEK",
     "南非蘭特": "ZAR", "南非幣": "ZAR", "台幣": "TWD", "新台幣": "TWD",
 }
 
