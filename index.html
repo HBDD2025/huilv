@@ -88,6 +88,7 @@ section.tint-2{background:var(--tint-2)}
 .band .amt{font-size:12px}
 .band .amt input,.band select{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
 .band .amt input{width:86px}
+.band .amt #quick-unit{font-family:var(--font-num); font-weight:600}
 .band select option{color:#182230; background:#fff}
 .band .legend{color:var(--band-ink)}
 .body{padding:6px 8px 0}
@@ -161,8 +162,20 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .chart-table table{font-size:12px}
 
 /* 走势下方：行情摘要 + 怎么付最省 */
-.quick{margin-top:4px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 10px 6px}
-.quick .tablewrap{background:var(--surface); border-radius:4px; padding:2px 4px}
+.quick{margin-top:4px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 8px 6px}
+.cardgroups{display:grid; grid-template-columns:1fr; gap:8px}
+@media (min-width:900px){ .cardgroups{grid-template-columns:repeat(3,1fr)} }
+@media (min-width:560px) and (max-width:899px){ .cardgroups{grid-template-columns:repeat(3,1fr)} }
+.cardgroup{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:4px 6px 2px; min-width:0}
+.cardgroup .gh{display:flex; justify-content:space-between; align-items:baseline; gap:6px; font-weight:700; padding:2px 2px 4px; border-bottom:1px solid var(--line-2)}
+.cardgroup .gh small{color:var(--muted); font-weight:500; font-size:11px}
+.cardgroup table{font-size:12px}
+.cardgroup td,.cardgroup th{padding:3px 4px}
+.cardgroup td.net{font-weight:600}
+.cardgroup td.na{color:var(--muted); font-weight:400}
+.cardgroup tr.best td{color:var(--down)}
+.cardgroup .same{color:var(--fg-2); padding:6px 2px; font-size:12px}
+.cardgroup .cny{color:var(--muted); font-size:11px}
 .quick-stats{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:11.5px; color:var(--fg-2); font-variant-numeric:tabular-nums; align-items:center; margin-top:6px; padding-top:6px; border-top:1px dashed var(--line-2)}
 .quick-stats b{color:var(--fg); font-weight:600; font-family:var(--font-num)}
 .range{display:inline-flex; align-items:center; gap:6px}
@@ -230,19 +243,14 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="quick-sec">
   <div class="band">
-    <h2>怎么付最省</h2>
-    <label class="amt">金额 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <select id="quick-unit" aria-label="金额币种"></select></label>
+    <h2>刷哪张卡最省</h2>
+    <label class="amt">当地消费 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span></label>
   </div>
   <div class="body">
     <div class="tabs" id="trend-tabs" role="tablist"></div>
     <div class="quick" id="quick">
       <div class="verdict" id="quick-verdict"></div>
-      <div class="tablewrap">
-        <table class="quick-table">
-          <thead><tr><th>方式</th><th class="num">汇率</th><th class="num">折合人民币</th><th class="num">比中间价</th></tr></thead>
-          <tbody id="quick-body"></tbody>
-        </table>
-      </div>
+      <div class="cardgroups" id="cardgroups"></div>
       <div class="quick-stats" id="quick-stats"></div>
     </div>
   </div>
@@ -288,7 +296,7 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="cards" class="tint-1 span2">
   <div class="band">
-    <h2>刷卡汇率</h2>
+    <h2>刷卡汇率（内地卡，人民币账单）</h2>
     <p class="note" id="card-note">1 外币 = 人民币，不含发卡行附加费</p>
   </div>
   <div class="body tablewrap">
@@ -455,9 +463,8 @@ const CURRENCIES = [
   {code:'ZAR', name:'南非兰特', unit:1},
 ];
 const CUR_BY = Object.fromEntries(CURRENCIES.map(c => [c.code, c]));
-const CNY_TAB = {code: 'CNY', name: '人民币', unit: 1};       // 反向行情：1 人民币 = ? 港元
-const CNYUSD_TAB = {code: 'CNYUSD', name: '人民币', unit: 1}; // 反向行情：1 人民币 = ? 美元（美元账单卡）
-const trendCur = () => CUR_BY[state.trendCode] || (state.trendCode === 'CNYUSD' ? CNYUSD_TAB : CNY_TAB);
+const CNY_TAB = {code: 'CNY', name: '人民币', unit: 1};   // 在内地消费；走势图画 1 人民币 = ? 港元
+const trendCur = () => CUR_BY[state.trendCode] || CNY_TAB;
 const unitLabel = c => c.unit > 1 ? `${c.unit} ${c.code}` : c.code;
 
 // 银行顺序即默认显示顺序；key 与抓取脚本里的一致
@@ -816,8 +823,8 @@ const RANGES = [[30, '月'], [90, '季度'], [180, '半年'], [365, '年']];
 function renderTrendTabs() {
   const tabs = $('trend-tabs');
   tabs.replaceChildren();
-  for (const c of [...CURRENCIES, CNY_TAB, CNYUSD_TAB]) {
-    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.code === 'CNY' ? '港币卡付CNY' : c.code === 'CNYUSD' ? '美元卡付CNY' : c.name);
+  for (const c of [...CURRENCIES, CNY_TAB]) {
+    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.name);
     b.addEventListener('click', () => {
       state.trendCode = c.code; store.set('trend_code', c.code);
       tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
@@ -839,8 +846,8 @@ function renderTrendTabs() {
 }
 // 当前币种 + 周期的两条序列；30 日直接用总览数据，长周期按币种单独取并缓存
 async function rangeSeries(code, days) {
-  if (code === 'CNY' || code === 'CNYUSD') {  // 人民币兑港元 / 美元：把对应序列倒过来
-    const base = await rangeSeries(code === 'CNY' ? 'HKD' : 'USD', days);
+  if (code === 'CNY') {  // 人民币兑港元：把港币序列倒过来
+    const base = await rangeSeries('HKD', days);
     const inv = s => (s || []).map(p => ({d: p.d, v: 1 / p.v}));
     return {blend: inv(base.blend), cfets: inv(base.cfets)};
   }
@@ -871,7 +878,7 @@ async function renderTrend() {
   const days = state.range;
   const label = RANGES.find(r => r[0] === days)[1];
   const span = days === 30 ? '一个月' : days === 90 ? '一季度' : days === 180 ? '半年' : '一年';
-  $('trend-h2').textContent = c.code === 'CNY' ? `汇率走势 · 港币卡付CNY（1 CNY = ? HKD）· 近${span}` : c.code === 'CNYUSD' ? `汇率走势 · 美元卡付CNY（1 CNY = ? USD）· 近${span}` : `汇率走势 · ${c.name}（${unitLabel(c)}）· 近${span}`;
+  $('trend-h2').textContent = c.code === 'CNY' ? `汇率走势 · 人民币兑港元（1 CNY = ? HKD）· 近${span}` : `汇率走势 · ${c.name}（${unitLabel(c)}）· 近${span}`;
   const host = $('trend-chart');
   const token = ++trendToken;
   let data;
@@ -886,7 +893,7 @@ async function renderTrend() {
     xFmtLong: x => { const s = fromUTC(x); return `${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
     yFmt: (v, precise) => fmt(v, precise ? dec(v) : Math.max(0, dec(v) - 1)),
     endLabels: true,
-    ariaLabel: c.code === 'CNY' ? `人民币兑港元近${label}走势` : c.code === 'CNYUSD' ? `人民币兑美元近${label}走势` : `${c.name}兑人民币近${label}走势`,
+    ariaLabel: c.code === 'CNY' ? `人民币兑港元近${label}走势` : `${c.name}兑人民币近${label}走势`,
   }));
   if (!$('trend-table').hidden) renderTrendTable();
   renderQuick();
@@ -933,7 +940,7 @@ const APPROX = {mastercard: true, visa: true, jcb: true};  // 这几家的「外
 function renderCards() {
   if (!state.data) return;
   const body = $('card-body'); body.replaceChildren();
-  const card = state.data.card || {};
+  const card = (state.data.cards && state.data.cards.CNY) || {};
   if (!CURRENCIES.some(c => card[c.code] && Object.keys(card[c.code]).length)) {
     body.append(el('tr', null, el('td', {colspan: '7', class: 'empty'}, '定时任务还没抓到刷卡汇率。')));
     $('card-status').textContent = ''; return;
@@ -958,23 +965,22 @@ function renderCards() {
 }
 
 /* ---- 走势下方：行情摘要 + 怎么付最省 ---- */
-function renderQuick() {
-  const c = trendCur();
-  const mode = c.code === 'CNY' ? 'hkd' : c.code === 'CNYUSD' ? 'usd' : 'fx';
-  const isCny = mode !== 'fx';
-  const statsEl = $('quick-stats'), body = $('quick-body'), verdict = $('quick-verdict');
-  // 金额单位：外币 / 人民币；人民币→港元 时只有人民币
-  const unitSel = $('quick-unit');
-  const wantOpts = isCny ? ['CNY'] : [c.code, 'CNY'];
-  if ([...unitSel.options].map(o => o.value).join() !== wantOpts.join()) {
-    const prev = store.get('quick_unit', 'fx');
-    unitSel.replaceChildren(...wantOpts.map(v => el('option', {value: v}, v === 'CNY' ? '人民币' : v)));
-    unitSel.value = isCny ? 'CNY' : (prev === 'cny' ? 'CNY' : c.code);
-  }
-  const inCny = unitSel.value === 'CNY';
-  if (!isCny) store.set('quick_unit', inCny ? 'cny' : 'fx');
+// 三类卡：账单币种与各自的卡组织
+const CARD_GROUPS = [
+  {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
+  {key: 'USD', name: '美元卡', bill: '美元', orgs: ['visa', 'mastercard', 'amex']},
+  {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
+];
+const ORG_NAME = {unionpay: '银联', visa: 'Visa', mastercard: '万事达', jcb: 'JCB', amex: '运通'};
+function cnyPerUnit(code) { if (code === 'CNY') return 1; const l = cfetsLatest(code); return l ? l.v / CUR_BY[code].unit : null; }
 
-  // 周期摘要：优先用中间价，没有就用国际参考
+function renderQuick() {
+  const c = trendCur();          // 当地货币
+  const X = c.code;
+  const statsEl = $('quick-stats'), groupsEl = $('cardgroups'), verdict = $('quick-verdict');
+  $('quick-unit').textContent = X;
+
+  // 周期摘要
   const usingCfets = trendData.cfets && trendData.cfets.length > 0;
   const series = usingCfets ? trendData.cfets : (trendData.blend || []);
   const days = state.range;
@@ -985,13 +991,12 @@ function renderQuick() {
     const avg = vs.reduce((a, b) => a + b, 0) / vs.length;
     const last = series[series.length - 1];
     const pos = hi.v === lo.v ? 0.5 : (last.v - lo.v) / (hi.v - lo.v);
-    const label = mode === 'hkd' ? (pos <= 0.25 ? '偏低，用港币卡付人民币相对划算' : pos >= 0.75 ? '偏高，用港币卡付人民币偏贵' : '居中')
-                : mode === 'usd' ? (pos <= 0.25 ? '偏低，用美元卡付人民币相对划算' : pos >= 0.75 ? '偏高，用美元卡付人民币偏贵' : '居中')
-                : (pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中');
+    const label = X === 'CNY' ? (pos >= 0.75 ? '人民币偏强，用外币卡付人民币偏贵' : pos <= 0.25 ? '人民币偏弱，用外币卡付人民币相对划算' : '居中')
+                              : (pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中');
     const bar = el('span', {class: 'range'}, el('span', null, `${days} 日区间`), el('span', {class: 'bar'}, (() => { const i = el('i'); i.style.left = (pos * 100).toFixed(1) + '%'; return i; })()), el('span', null, `${Math.round(pos * 100)}%，${label}`));
     const fd = d => days >= 180 ? d : shortDate(d);
     statsEl.append(
-      el('span', null, `今日${usingCfets ? '中间价' : '参考'} `, el('b', null, fmt(last.v, dec(last.v)))),
+      el('span', null, `${X === 'CNY' ? '1 CNY 兑港元' : '今日'}${usingCfets ? '中间价' : '参考'} `, el('b', null, fmt(last.v, dec(last.v)))),
       el('span', null, '最高 ', el('b', null, fmt(hi.v, dec(hi.v))), ` ${fd(hi.d)}`),
       el('span', null, '最低 ', el('b', null, fmt(lo.v, dec(lo.v))), ` ${fd(lo.d)}`),
       el('span', null, '均值 ', el('b', null, fmt(avg, dec(avg)))),
@@ -1000,95 +1005,66 @@ function renderQuick() {
     statsEl.append(el('span', {class: 'dim'}, '暂无走势数据'));
   }
 
-  body.replaceChildren(); verdict.replaceChildren();
+  // 三类卡的扣款
+  groupsEl.replaceChildren(); verdict.replaceChildren();
   const amt = parseFloat($('quick-amount').value);
-  if (!isFinite(amt) || amt <= 0) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '填一个金额'))); return; }
-  const head = $('quick-body').parentElement.querySelector('thead tr');
-
-  if (mode === 'usd' || mode === 'hkd') {
-    // 外币账单卡付人民币：各卡组织 1 人民币 = ? 外币，越低扣得越少；港币另附香港银行换汇参考
-    const fcode = mode === 'usd' ? 'USD' : 'HKD', fname = mode === 'usd' ? '美元' : '港元', cardName = mode === 'usd' ? '美元卡' : '港币卡';
-    head.replaceChildren(el('th', null, '方式'), el('th', {class: 'num'}, `1 CNY = ${fcode}`), el('th', {class: 'num'}, `扣款${fname}`), el('th', {class: 'num'}, '比中间价'));
-    const cfF = cfetsLatest(fcode);
-    const ref = cfF ? 1 / cfF.v : null;
-    const rows = [];
-    if (ref != null) rows.push({way: '中间价（参考）', rate: ref, isRef: true});
-    const cu = (state.data && state.data[mode === 'usd' ? 'card_cny_usd' : 'card_cny_hkd']) || {};
-    for (const [k, name] of CARD_ORGS) if (cu[k] != null) rows.push({way: name, rate: cu[k], isCard: true});
-    let bankBest = null;
-    if (mode === 'hkd') {
-      const hk = (state.data && state.data.banks_hk) || {};
-      for (const [key, name] of BANKS_HK) {
-        const r = hk[key] && hk[key].CNY;
-        if (r && r.tt_buy != null && (bankBest == null || r.tt_buy > bankBest.rate)) bankBest = {rate: r.tt_buy, who: name};
-      }
-      if (bankBest) rows.push({way: '香港银行换汇最优', who: bankBest.who, rate: bankBest.rate});
+  if (!isFinite(amt) || amt <= 0) { groupsEl.append(el('p', {class: 'empty'}, '填一个金额')); return; }
+  const cards = (state.data && state.data.cards) || {};
+  const cnyX = cnyPerUnit(X);            // 1 当地币 = ? 人民币（中间价），用于跨卡比较
+  const candidates = [];                 // {group, org, bill, cny}
+  for (const g of CARD_GROUPS) {
+    const box = el('div', {class: 'cardgroup'});
+    box.append(el('div', {class: 'gh'}, g.name, el('small', null, `账单扣${g.bill}`)));
+    if (X === g.key) {
+      box.append(el('div', {class: 'same'}, `本币消费，不换汇：扣 ${fmt(amt, 2)} ${g.key}`));
+      const cny = cnyPerUnit(g.key);
+      if (cny != null) candidates.push({group: g, org: null, bill: amt, cny: amt * cny, same: true});
+      groupsEl.append(box);
+      continue;
     }
-    const cards = rows.filter(r => r.isCard);
-    if (!cards.length && !bankBest) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, `暂无卡组织的人民币→${fname}汇率`))); return; }
-    const best = cards.length ? cards.reduce((a, b) => (b.rate < a.rate ? b : a)) : null, worst = cards.length ? cards.reduce((a, b) => (b.rate > a.rate ? b : a)) : null;
+    const table = el('table'), tbody = el('tbody');
+    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `1 ${X} = ${g.key}`), el('th', {class: 'num'}, `扣${g.bill}`), el('th', {class: 'num'}, '≈ 元'))), tbody);
+    const row = (cards[g.key] && cards[g.key][X]) || {};
+    const cnyB = cnyPerUnit(g.key);
+    const rows = g.orgs.map(org => ({org, rate: row[org] != null ? row[org] : null}));
+    const have = rows.filter(r => r.rate != null);
+    const best = have.length ? have.reduce((a, b) => (b.rate < a.rate ? b : a)) : null;
     for (const r of rows) {
-      body.append(el('tr', {class: r === best ? 'best' : null},
-        el('td', {class: 'way'}, r.way, r.who ? el('span', {class: 'who'}, r.who) : null),
-        el('td', {class: 'num'}, fmt(r.rate, mode === 'usd' ? 6 : 4)),
-        el('td', {class: 'num'}, fmt(amt * r.rate, 2)),
-        el('td', {class: 'num'}, r.isRef || ref == null ? el('span', {class: 'dim'}, '—') : deltaSpan(r.rate, ref))));
+      if (r.rate == null) {
+        tbody.append(el('tr', null, el('td', {class: 'net na'}, ORG_NAME[r.org]), el('td', {class: 'num na', colspan: '3'}, r.org === 'amex' ? '不公布汇率' : '暂无')));
+        continue;
+      }
+      const bill = amt * r.rate;
+      const cny = cnyB != null ? bill * cnyB : null;
+      if (cny != null) candidates.push({group: g, org: r.org, bill, cny});
+      tbody.append(el('tr', {class: r === best ? 'best' : null},
+        el('td', {class: 'net'}, ORG_NAME[r.org]),
+        el('td', {class: 'num'}, (APPROX[r.org] && g.key === 'CNY' ? '≈' : '') + fmt(r.rate * c.unit, dec(r.rate * c.unit))),
+        el('td', {class: 'num'}, fmt(bill, 2)),
+        el('td', {class: 'num cny'}, cny != null ? fmt(cny, 0) : '—')));
     }
-    if (best) {
-      const line = el('div', null, `用${cardName}付 ${fmt(amt, 0)} 元人民币：`, el('b', null, best.way), ` 扣得最少 ${fmt(amt * best.rate, 2)} ${fname}`);
-      if (cards.length > 1 && worst !== best) line.append(el('span', {class: 'vs'}, `；${worst.way} 最多，多扣 ${fmt(amt * (worst.rate - best.rate), 2)} ${fname}`));
-      verdict.append(line);
-    }
-    if (bankBest) verdict.append(el('div', null, '换汇：', el('b', null, bankBest.who), ` 人民币电汇买入价最高 ${fmt(bankBest.rate, 4)}，${fmt(amt, 0)} 元换到 ${fmt(amt * bankBest.rate, 2)} 港元（这一行越高越好）`));
-    verdict.append(el('div', {class: 'vs'}, '不含发卡行的外币交易手续费（通常 0–3%）。'));
-    return;
+    box.append(el('div', {class: 'tablewrap'}, table));
+    groupsEl.append(box);
   }
-
-  // 外币：刷卡（四家卡组织）与换汇（内地银行现汇/现钞最低）
-  head.replaceChildren(el('th', null, '方式'), el('th', {class: 'num'}, '汇率'), el('th', {class: 'num'}, inCny ? `能买到 ${c.code}` : '折合人民币'), el('th', {class: 'num'}, '比中间价'));
-  const cf = cfetsLatest(c.code);
-  const ref = cf ? cf.v / c.unit : null;  // 1 外币兑人民币
-  const rows = [];
-  if (ref != null) rows.push({way: '中间价（参考）', rate: ref, who: null, isRef: true});
-  const card = (state.data && state.data.card && state.data.card[c.code]) || {};
-  for (const [k, name] of CARD_ORGS) if (card[k] != null) rows.push({way: name + ' 刷卡', rate: card[k], isCard: true, approx: !!APPROX[k]});
-  const banks = (state.data && state.data.banks_cn) || {};
-  for (const [col, label] of [['hui_sell', '银行现汇最低'], ['chao_sell', '银行现钞最低']]) {
-    let best = null;
-    for (const [key, name] of BANKS_CN) {
-      const r = banks[key] && banks[key][c.code];
-      if (r && r[col] != null && (best == null || r[col] < best.rate)) best = {rate: r[col], who: name};
-    }
-    if (best) rows.push({way: label, rate: best.rate, who: best.who});
+  // 结论：各类卡里最省的一张，以及三类之间按中间价折成人民币比较
+  const bestOf = g => candidates.filter(x => x.group === g && !x.same).reduce((a, b) => (!a || b.bill < a.bill ? b : a), null);
+  const parts = [];
+  for (const g of CARD_GROUPS) {
+    const b = bestOf(g);
+    if (b) parts.push(el('span', null, `${g.name}用 `, el('b', null, ORG_NAME[b.org]), `（${fmt(b.bill, 2)} ${g.key}）`));
+    else if (X === g.key) parts.push(el('span', null, `${g.name}本币不换汇`));
   }
-  if (!rows.length) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '这个币种暂无可比价格'))); return; }
-  const cmp = rows.filter(r => !r.isRef);
-  const minRate = cmp.length ? Math.min(...cmp.map(r => r.rate)) : null;
-  const amount = r => inCny ? fmt(amt / r.rate, 2) : fmt(amt * r.rate, 2);  // 人民币金额 → 能买到的外币；外币金额 → 折合人民币
-  for (const r of rows) {
-    body.append(el('tr', {class: !r.isRef && r.rate === minRate ? 'best' : null},
-      el('td', {class: 'way'}, r.way, r.who ? el('span', {class: 'who'}, r.who) : null),
-      el('td', {class: 'num'}, (r.approx ? '≈' : '') + fmt(r.rate * c.unit, dec(r.rate * c.unit))),
-      el('td', {class: 'num'}, amount(r)),
-      el('td', {class: 'num'}, r.isRef || ref == null ? el('span', {class: 'dim'}, '—') : deltaSpan(r.rate, ref))));
-  }
-  const cards = rows.filter(r => r.isCard);
-  if (cards.length) {
-    const lo = cards.reduce((a, b) => (b.rate < a.rate ? b : a)), hi = cards.reduce((a, b) => (b.rate > a.rate ? b : a));
-    const name = r => r.way.replace(' 刷卡', '');
-    const line = inCny
-      ? el('div', null, `付 ${fmt(amt, 0)} 元人民币刷卡：`, el('b', null, name(lo)), ` 汇率最低，能买到最多 ${fmt(amt / lo.rate, 2)} ${c.code}`)
-      : el('div', null, '刷卡付人民币：', el('b', null, name(lo)), ` 汇率最低 ${fmt(lo.rate * c.unit, dec(lo.rate * c.unit))}，${fmt(amt, 0)} ${c.code} = ${fmt(amt * lo.rate, 2)} 元`);
-    if (cards.length > 1 && hi !== lo) line.append(el('span', {class: 'vs'}, inCny ? `；${name(hi)} 最少，少 ${fmt(amt / lo.rate - amt / hi.rate, 2)} ${c.code}` : `；${name(hi)} 最高，多付 ${fmt(amt * (hi.rate - lo.rate), 2)} 元`));
+  if (parts.length) { const line = el('div', null, `付 ${fmt(amt, 0)} ${X}：`); parts.forEach((p, i) => { if (i) line.append('，'); line.append(p); }); verdict.append(line); }
+  const all = candidates.filter(x => x.cny != null).sort((a, b) => a.cny - b.cny);
+  if (all.length > 1) {
+    const name = x => x.same ? `${x.group.name}本币` : `${x.group.name} ${ORG_NAME[x.org]}`;
+    const top = all[0], second = all[1], last = all[all.length - 1];
+    const line = el('div', null, '三类卡折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
+    line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  const bank = rows.filter(r => r.who);
-  if (bank.length) {
-    const lo = bank.reduce((a, b) => (b.rate < a.rate ? b : a));
-    verdict.append(el('div', null, '换汇：', el('b', null, lo.who), ` ${lo.way.replace('银行', '').replace('最低', '')}最低 ${fmt(lo.rate * c.unit, dec(lo.rate * c.unit))}，` + (inCny ? `${fmt(amt, 0)} 元能换 ${fmt(amt / lo.rate, 2)} ${c.code}` : `${fmt(amt, 0)} ${c.code} = ${fmt(amt * lo.rate, 2)} 元`)));
-  }
+  verdict.append(el('div', {class: 'vs'}, '扣款不含发卡行的外币交易手续费（通常 0–3%，按你的卡自行加上）；「≈ 元」按中间价折算，只用于三类卡之间比较。'));
 }
-$('quick-unit').addEventListener('change', renderQuick);
 $('quick-amount').addEventListener('input', renderQuick);
 
 /* ---- 银行牌价表：按币种看各行，可排序 ---- */

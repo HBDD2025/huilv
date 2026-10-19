@@ -210,7 +210,12 @@ def _find_rate_list(obj):
     return []
 
 
+BILLING = ["CNY", "HKD", "USD"]          # 三类卡的账单币种：内地卡 / 港卡 / 美元卡
+TRANS = CODES + ["CNY"]                    # 可能用来消费的当地货币（含人民币；港币、美元已在 CODES 里）
+
+
 def fetch_unionpay():
+    """银联国际每天发布一个 JSON：transCur 是消费币种，baseCur 是账单币种，rateData 是 1 消费币 = ? 账单币。"""
     today = dt.datetime.now(BJT).date()
     last_err = "未知错误"
     for back in range(0, 8):
@@ -225,21 +230,17 @@ def fetch_unionpay():
         except Exception as exc:  # noqa: BLE001
             last_err = f"{exc}（{url}）"
             continue
-        rates, cny_usd, cny_hkd = {}, None, None
+        matrix = {b: {} for b in BILLING}
         for entry in _find_rate_list(data):
             trans, base, value = entry.get("transCur"), entry.get("baseCur"), entry.get("rateData")
             try:
                 value = float(value)
             except (TypeError, ValueError):
                 continue
-            if base == "CNY" and trans in CODES:
-                rates[trans] = value
-            elif trans == "CNY" and base == "USD":
-                cny_usd = value  # 1 人民币 = ? 美元（美元账单卡在人民币消费时）
-            elif trans == "CNY" and base == "HKD":
-                cny_hkd = value  # 1 人民币 = ? 港元（港元账单卡在人民币消费时）
-        if rates:
-            return {"date": day.isoformat(), "rates": rates, "cny_usd": cny_usd, "cny_hkd": cny_hkd}
+            if base in BILLING and trans in TRANS and trans != base:
+                matrix[base][trans] = value
+        if matrix["CNY"]:
+            return {"date": day.isoformat(), "rates": matrix["CNY"], "matrix": matrix}
         last_err = f"文件里没有以人民币计价的汇率（{url}）"
     raise RuntimeError(last_err)
 
@@ -276,16 +277,19 @@ def fetch_jcb():
                 mids[code] = nums[1]  # Buy / Mid / Sell
             elif nums:
                 mids[code] = nums[0]
-        usd_cny = mids.get("CNY")
-        if not usd_cny:
+        if not mids.get("CNY"):
             errors.append(f"{url}: 表里没有 CNY")
             continue
-        rates = {"USD": round(usd_cny, 6)}
-        for code in CODES:
-            if code != "USD" and mids.get(code):
-                rates[code] = round(usd_cny / mids[code], 8)
-        cny_hkd = round(mids["HKD"] / usd_cny, 8) if mids.get("HKD") else None
-        return {"date": f"{stamp[4:]}-{stamp[:2]}-{stamp[2:4]}", "rates": rates, "cny_usd": round(1 / usd_cny, 8), "cny_hkd": cny_hkd}
+        mids["USD"] = 1.0
+        # mids[X] = 1 美元 = ? X；账单币 B 每 1 消费币 X = mids[B] / mids[X]
+        matrix = {b: {} for b in BILLING}
+        for b in BILLING:
+            if not mids.get(b):
+                continue
+            for x in TRANS:
+                if x != b and mids.get(x):
+                    matrix[b][x] = round(mids[b] / mids[x], 8)
+        return {"date": f"{stamp[4:]}-{stamp[:2]}-{stamp[2:4]}", "rates": matrix["CNY"], "matrix": matrix}
     raise RuntimeError("; ".join(errors)[:300])
 
 
@@ -320,28 +324,14 @@ def _kylc_card_page(code):
 
 
 def _kylc_cards():
-    """抓一次，万事达和 Visa 共用：先取美元/人民币，再逐币种换算。"""
+    """抓一次，万事达和 Visa 共用：每个币种页给出 1 X = ? 美元；账单币 B 每 1 X = usd[X] / usd[B]。"""
     if _KYLC_CARDS:
         return _KYLC_CARDS
-    base = _kylc_card_page("CNY")  # usd per 1 CNY
-    result = {"mastercard": {"rates": {}, "date": None}, "visa": {"rates": {}, "date": None}}
-    for org in result:
-        if org in base and base[org][0]:
-            result[org]["cny_usd"] = base[org][0]
-    try:
-        hkd = _kylc_card_page("HKD")  # usd per 1 HKD
-        for org in result:
-            if org in base and org in hkd and base[org][0] and hkd[org][0]:
-                result[org]["cny_hkd"] = round(base[org][0] / hkd[org][0], 8)
-    except Exception as exc:  # noqa: BLE001
-        warn(f"快易理财网港币页失败：{str(exc)[:100]}")
+    usd = {"mastercard": {"USD": 1.0}, "visa": {"USD": 1.0}}
+    dates = {"mastercard": None, "visa": None}
     errors = []
-    for code in CODES:
+    for code in TRANS:
         if code == "USD":
-            for org in result:
-                if org in base and base[org][0]:
-                    result[org]["rates"]["USD"] = round(1 / base[org][0], 6)
-                    result[org]["date"] = base[org][1]
             continue
         try:
             page = _kylc_card_page(code)
@@ -349,12 +339,22 @@ def _kylc_cards():
             errors.append(f"{code}: {str(exc)[:60]}")
             continue
         for org, (usd_per_unit, date) in page.items():
-            if org in base and base[org][0] and usd_per_unit:
-                result[org]["rates"][code] = round(usd_per_unit / base[org][0], 8)
-                result[org]["date"] = result[org]["date"] or date
+            if usd_per_unit:
+                usd[org][code] = usd_per_unit
+                dates[org] = dates[org] or date
         time.sleep(0.3)
     if errors:
         warn("快易理财网卡组织页部分币种失败：" + "; ".join(errors)[:300])
+    result = {}
+    for org in usd:
+        matrix = {b: {} for b in BILLING}
+        for b in BILLING:
+            if not usd[org].get(b):
+                continue
+            for x in TRANS:
+                if x != b and usd[org].get(x):
+                    matrix[b][x] = round(usd[org][x] / usd[org][b], 8)
+        result[org] = {"rates": matrix["CNY"], "matrix": matrix, "date": dates[org]}
     _KYLC_CARDS.update(result)
     return _KYLC_CARDS
 
@@ -744,8 +744,7 @@ def main():
         "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "sources": {},
         "card": {code: {} for code in CODES},
-        "card_cny_usd": {},
-        "card_cny_hkd": {},
+        "cards": {b: {} for b in BILLING},   # cards[账单币][消费币][卡组织] = 1 消费币 = ? 账单币
         "banks_cn": {},
         "banks_hk": {},
     }
@@ -771,10 +770,9 @@ def main():
                 for code, value in result["rates"].items():
                     if code in out["card"]:
                         out["card"][code][key] = value
-                if result.get("cny_usd"):
-                    out["card_cny_usd"][key] = round(float(result["cny_usd"]), 8)
-                if result.get("cny_hkd"):
-                    out["card_cny_hkd"][key] = round(float(result["cny_hkd"]), 8)
+                for b, row in (result.get("matrix") or {}).items():
+                    for x, value in row.items():
+                        out["cards"].setdefault(b, {}).setdefault(x, {})[key] = round(float(value), 8)
             elif group == "cn":
                 out["banks_cn"][key] = result["rates"]
             else:
@@ -790,9 +788,10 @@ def main():
                     if v is not None:
                         out["card"][code][key] = v
                         kept += 1
-                for bucket in ("card_cny_usd", "card_cny_hkd"):
-                    if (previous.get(bucket) or {}).get(key):
-                        out[bucket][key] = previous[bucket][key]
+                for b, row in (previous.get("cards") or {}).items():
+                    for x, orgs in row.items():
+                        if key in orgs:
+                            out["cards"].setdefault(b, {}).setdefault(x, {})[key] = orgs[key]
             else:
                 bucket = "banks_cn" if group == "cn" else "banks_hk"
                 old_rates = previous.get(bucket, {}).get(key)
