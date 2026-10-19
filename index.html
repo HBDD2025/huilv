@@ -317,8 +317,8 @@ footer p{margin:3px 0; max-width:90ch}
     <table id="card-table">
       <thead><tr>
         <th>货币</th>
-        <th class="num">银联</th>
-        <th class="num">万事达</th>
+        <th class="num">UnionPay</th>
+        <th class="num">Mastercard</th>
         <th class="num">Visa</th>
         <th class="num">JCB</th>
         <th class="num">中间价</th>
@@ -328,7 +328,7 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="card-status"></p>
-  <p class="foot">银联：卡组织当日结算汇率，官网。带 ≈ 的是近似值：万事达、Visa 官网拦截服务器访问，取快易理财网整理的「人民币→美元」价倒算；JCB 用官网美元中间价折算；三家都不含它们在这个方向上的价差。运通不公布汇率。四家里最低的标绿、最高的标红。</p>
+  <p class="foot">UnionPay：卡组织当日结算汇率，官网。带 ≈ 的是近似值：Mastercard、Visa 官网拦截服务器访问，取快易理财网整理的「人民币→美元」价倒算；JCB 用官网美元中间价折算；三家都不含它们在这个方向上的价差。Amex 不公布汇率。四家里最低的标绿、最高的标红。</p>
 </section>
 
 <section id="cn">
@@ -438,7 +438,7 @@ footer p{margin:3px 0; max-width:90ch}
 </main>
 
 <footer>
-  <p>数据来源：中间价与各国央行参考汇率来自 <a href="https://frankfurter.dev" target="_blank" rel="noopener">Frankfurter</a>（中间价出自中国外汇交易中心）；银联、JCB 与各银行牌价由定时任务抓取自各家官网（个别银行来自快易理财网）；各国数据来自 <a href="https://data.worldbank.org" target="_blank" rel="noopener">世界银行</a>。</p>
+  <p>数据来源：中间价与各国央行参考汇率来自 <a href="https://frankfurter.dev" target="_blank" rel="noopener">Frankfurter</a>（中间价出自中国外汇交易中心）；UnionPay、JCB 与各银行牌价由定时任务抓取自各家官网（个别银行来自快易理财网）；各国数据来自 <a href="https://data.worldbank.org" target="_blank" rel="noopener">世界银行</a>。</p>
   <p>数字仅供参考，换汇、刷卡以银行和卡组织实际执行为准。</p>
 </footer>
 
@@ -493,9 +493,9 @@ const BANKS_HK = [
 ];
 
 const DEFAULT_LINKS = [
-  {name:'万事达 汇率换算', url:'https://www.mastercard.us/en-us/personal/get-support/convert-currency.html'},
+  {name:'Mastercard 汇率换算', url:'https://www.mastercard.us/en-us/personal/get-support/convert-currency.html'},
   {name:'Visa 汇率计算器', url:'https://usa.visa.com/support/consumer/travel-support/exchange-rate-calculator.html'},
-  {name:'银联 汇率查询', url:'https://www.unionpayintl.com/cn/rate/'},
+  {name:'UnionPay 汇率查询', url:'https://www.unionpayintl.com/cn/rate/'},
   {name:'JCB 汇率表', url:'https://www.jcb.jp/rate/usd.html'},
   {name:'中国银行 外汇牌价', url:'https://www.boc.cn/sourcedb/whpj/'},
   {name:'中国外汇交易中心', url:'https://www.chinamoney.com.cn/'},
@@ -951,7 +951,7 @@ function generatedText() {
   const g = state.data && state.data.generated_at; if (!g) return null;
   const t = new Date(g); return `抓取于 ${t.getMonth() + 1}月${t.getDate()}日 ${pad(t.getHours())}:${pad(t.getMinutes())}`;
 }
-const CARD_ORGS = [['unionpay', '银联'], ['mastercard', '万事达'], ['visa', 'Visa'], ['jcb', 'JCB']];
+const CARD_ORGS = [['unionpay', 'UnionPay'], ['mastercard', 'Mastercard'], ['visa', 'Visa'], ['jcb', 'JCB']];
 const APPROX = {mastercard: true, visa: true, jcb: true};  // 这几家的「外币→人民币」价由反方向价或中间价倒算，近似值
 function renderCards() {
   if (!state.data) return;
@@ -988,7 +988,7 @@ const CARD_GROUPS = [
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   // 账单币种 = 卡的记账货币；卡组织按自己的汇率把当地货币一次换成它，表里的就是入账金额
 ];
-const ORG_NAME = {unionpay: '银联', visa: 'Visa', mastercard: '万事达', jcb: 'JCB', amex: '运通'};
+const ORG_NAME = {unionpay: 'UnionPay', visa: 'Visa', mastercard: 'Mastercard', jcb: 'JCB', amex: 'Amex'};
 function cnyPerUnit(code) { if (code === 'CNY') return 1; const l = cfetsLatest(code); return l ? l.v / CUR_BY[code].unit : null; }
 
 function renderQuick() {
