@@ -10,7 +10,7 @@
   --bg:#f4f6f9; --surface:#ffffff; --surface-2:#eaeef4; --fg:#182230; --fg-2:#4a5664; --muted:#76838f;
   --line:#dde3ea; --line-2:#c9d1db; --accent:#2e5aa8; --accent-ink:#ffffff;
   --band:#2e5aa8; --band-ink:#ffffff; --band-2:#3a6fc4;
-  --tint-1:#eaf0fa; --tint-2:#f0f3ee;
+  --tint-1:#eaf0fa; --tint-2:#f0f3ee; --tint-3:#fdf5e3;
   --up:#b93a2c; --down:#1d7f55;
   --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
   --font-ui:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Helvetica Neue",Arial,sans-serif;
@@ -23,7 +23,7 @@
     --bg:#111820; --surface:#1a222c; --surface-2:#222c38; --fg:#e7ecf2; --fg-2:#b4bfcc; --muted:#8290a0;
     --line:#2a3542; --line-2:#36424f; --accent:#9db7ff; --accent-ink:#0f1620;
     --band:#24427a; --band-ink:#eef3ff; --band-2:#2d5296;
-    --tint-1:#182334; --tint-2:#1b2420;
+    --tint-1:#182334; --tint-2:#1b2420; --tint-3:#2a2416;
     --up:#ff7466; --down:#4fd08a;
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
     color-scheme:dark;
@@ -33,7 +33,7 @@
   --bg:#111820; --surface:#1a222c; --surface-2:#222c38; --fg:#e7ecf2; --fg-2:#b4bfcc; --muted:#8290a0;
   --line:#2a3542; --line-2:#36424f; --accent:#9db7ff; --accent-ink:#0f1620;
   --band:#24427a; --band-ink:#eef3ff; --band-2:#2d5296;
-  --tint-1:#182334; --tint-2:#1b2420;
+  --tint-1:#182334; --tint-2:#1b2420; --tint-3:#2a2416;
   --up:#ff7466; --down:#4fd08a;
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
   color-scheme:dark;
@@ -152,13 +152,14 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .chart-table table{font-size:12px}
 
 /* 走势下方：行情摘要 + 怎么付最省 */
-.quick{margin-top:10px; border-top:1px solid var(--line); padding-top:8px}
+.quick{margin-top:10px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 10px 6px}
+.quick .tablewrap{background:var(--surface); border-radius:4px; padding:2px 4px}
 .quick-stats{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--fg-2); font-variant-numeric:tabular-nums; align-items:center}
 .quick-stats b{color:var(--fg); font-weight:600; font-family:var(--font-num)}
 .range{display:inline-flex; align-items:center; gap:6px}
 .range .bar{position:relative; width:110px; height:6px; background:var(--surface-2); border-radius:3px; overflow:visible}
 .range .bar i{position:absolute; top:-3px; width:4px; height:12px; margin-left:-2px; background:var(--accent); border-radius:2px}
-.quick-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:4px 10px; margin:8px 0 4px}
+.quick-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:4px 10px; margin:8px 0 6px}
 .quick-title{font-weight:700}
 .quick-head label{font-size:12px; color:var(--muted)}
 .quick-head input{width:90px; padding:2px 6px}
