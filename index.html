@@ -167,6 +167,7 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .cardgroups{display:grid; grid-template-columns:1fr; gap:8px}
 .cardgroup{background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:4px 6px 2px; min-width:0}
 .cardgroup .gh{display:flex; justify-content:space-between; align-items:baseline; gap:6px; font-weight:700; padding:2px 2px 4px; border-bottom:1px solid var(--line-2)}
+.cardgroup .gh .gname{color:var(--up); font-size:13px}
 .cardgroup .gh small{color:var(--muted); font-weight:500; font-size:11px}
 .cardgroup table{font-size:12px}
 .cardgroup td,.cardgroup th{padding:3px 4px}
@@ -1015,7 +1016,7 @@ function renderQuick() {
   const candidates = [];                 // {group, org, bill, cny}
   for (const g of CARD_GROUPS) {
     const box = el('div', {class: 'cardgroup'});
-    box.append(el('div', {class: 'gh'}, g.name, el('small', null, X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`)));
+    box.append(el('div', {class: 'gh'}, el('span', {class: 'gname'}, g.name), el('small', null, X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`)));
     if (X === g.key) {
       box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}`));
       const cny = cnyPerUnit(g.key);
