@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>汇率瞭望台</title>
+<title>PayGlobe by CZH</title>
 <meta name="theme-color" content="#2e5aa8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="汇率">
+<meta name="apple-mobile-web-app-title" content="PayGlobe">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="manifest" href="manifest.json">
@@ -65,6 +65,7 @@ button,input,select{font:inherit; color:inherit}
 /* 刊头 */
 .masthead{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 16px; padding:10px 0 6px}
 .masthead h1{font-size:19px; font-weight:700; margin:0; letter-spacing:.04em}
+.masthead h1 .by{font-size:12px; color:var(--fg-2); font-weight:500; margin-left:6px; letter-spacing:0}
 .masthead h1 small{font-size:12px; color:var(--muted); font-weight:400; margin-left:10px; letter-spacing:0}
 .masthead .tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
 .status{font-size:12px; color:var(--muted)}
@@ -241,7 +242,7 @@ footer p{margin:3px 0; max-width:90ch}
 <div class="wrap">
 
 <header class="masthead">
-  <h1>汇率瞭望台<small id="dateline"></small></h1>
+  <h1>PayGlobe <span class="by">by CZH</span><small id="dateline"></small></h1>
   <div class="tools">
     <span class="status" id="fx-status">正在读取…</span>
     <button class="btn btn-sm" id="refresh" type="button">刷新</button>

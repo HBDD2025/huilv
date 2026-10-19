@@ -1,13 +1,21 @@
 {
-  "name": "汇率瞭望台",
-  "short_name": "汇率",
+  "name": "PayGlobe by CZH",
+  "short_name": "PayGlobe",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f6f9",
   "theme_color": "#2e5aa8",
   "icons": [
-    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"}
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }

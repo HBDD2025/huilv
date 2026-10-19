@@ -1,4 +1,4 @@
-# 汇率瞭望台
+# PayGlobe by CZH
 
 自用的汇率与理财数据页，放在 GitHub Pages 上，打开网址即可。
 
