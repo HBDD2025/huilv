@@ -88,7 +88,7 @@ button,input,select{font:inherit; color:inherit}
   #trend{grid-column:1 / -1}
   .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
 }
-section{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:0 0 6px; min-width:0}
+section{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:0 0 6px; min-width:0; scroll-margin-top:40px}
 section.tint-1{background:var(--tint-1)}
 section.tint-2{background:var(--tint-2)}
 .band{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:4px 12px; background:var(--band); color:var(--band-ink); padding:6px 10px; border-radius:var(--radius) var(--radius) 0 0}
@@ -1304,6 +1304,20 @@ async function renderGDP() {
   } catch (e) {
     host.replaceChildren(el('p', {class: 'empty'}, '世界银行接口读取失败：' + errorHint(e)));
   }
+}
+
+/* ======================= 导航 ======================= */
+// 导航只滚动页面，不改网址（否则收藏的网址带着 #xxx，再打开就定位到中间、看不到页头）
+document.querySelectorAll('.nav a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const target = document.querySelector(a.getAttribute('href'));
+  if (!target) return;
+  e.preventDefault();
+  target.scrollIntoView({behavior: 'smooth', block: 'start'});
+}));
+if (location.hash) {
+  history.replaceState(null, '', location.pathname + location.search);
+  window.scrollTo(0, 0);
+  setTimeout(() => window.scrollTo(0, 0), 0);
 }
 
 /* ======================= 启动 ======================= */
