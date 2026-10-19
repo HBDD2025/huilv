@@ -41,6 +41,8 @@ jobs:
             echo "数据没有变化，不用提交"
           else
             git commit -m "更新牌价 $(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M')"
+            # 跑的期间 main 可能有新提交，先对齐再推
+            git pull --rebase origin main || { git checkout --theirs data/rates.json; git add data/rates.json; GIT_EDITOR=true git rebase --continue; }
             git push
           fi
 
