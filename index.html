@@ -42,13 +42,13 @@
 *{box-sizing:border-box}
 html{height:100%}
 body{
-  margin:0; background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-size:13px; line-height:1.45;
+  margin:0; background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-size:12.5px; line-height:1.4; overflow-x:hidden;
   padding-block:0 32px;
   padding-left:max(12px,env(safe-area-inset-left,0px));
   padding-right:max(12px,env(safe-area-inset-right,0px));
   -webkit-text-size-adjust:100%;
 }
-.wrap{max-width:1180px; margin:0 auto}
+.wrap{max-width:1000px; margin:0 auto}
 a{color:var(--accent)}
 button,input,select{font:inherit; color:inherit}
 :focus-visible{outline:2px solid var(--accent); outline-offset:1px}
@@ -69,22 +69,27 @@ button,input,select{font:inherit; color:inherit}
 .nav a:hover{background:var(--surface-2); color:var(--fg)}
 
 /* 栅格与分区 */
-.grid{display:grid; grid-template-columns:1fr; gap:12px}
+.grid{display:grid; grid-template-columns:1fr; gap:10px}
+.grid > *{min-width:0}
 @media (min-width:900px){
   .grid{grid-template-columns:1fr 1fr}
   .span2{grid-column:1 / -1}
+  #rates{grid-column:2; grid-row:1 / span 2}
+  #quick-sec,#trend{grid-column:1}
   .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
 }
-section{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:0 0 8px; min-width:0}
+section{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:0 0 6px; min-width:0}
 section.tint-1{background:var(--tint-1)}
 section.tint-2{background:var(--tint-2)}
 .band{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:4px 12px; background:var(--band); color:var(--band-ink); padding:6px 10px; border-radius:var(--radius) var(--radius) 0 0}
 .band h2{font-size:14px; margin:0; font-weight:700; letter-spacing:.03em}
 .band .note{color:var(--band-ink); opacity:.85; font-size:12px; margin:0}
-.band select,.band button{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35); color:var(--band-ink); border-radius:4px; padding:2px 6px; font-size:12px}
+.band select,.band button,.band input{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35); color:var(--band-ink); border-radius:4px; padding:2px 6px; font-size:12px}
+.band .amt{font-size:12px}
+.band .amt input{width:86px}
 .band select option{color:#182230; background:#fff}
 .band .legend{color:var(--band-ink)}
-.body{padding:8px 10px 0}
+.body{padding:6px 8px 0}
 .note{color:var(--muted); font-size:12px; margin:0}
 .foot{padding:6px 10px 0; color:var(--muted); font-size:11.5px}
 .lead{color:var(--fg-2); max-width:70ch; margin:0 0 8px}
@@ -101,9 +106,9 @@ input:focus,select:focus{border-color:var(--accent)}
 
 /* 表格 */
 .tablewrap{overflow-x:auto; max-width:100%}
-table{border-collapse:collapse; width:100%; font-size:12.5px}
-th{font-size:11px; font-weight:600; color:var(--muted); text-align:left; padding:4px 7px; border-bottom:1px solid var(--line-2); white-space:nowrap}
-td{padding:4px 7px; border-bottom:1px solid var(--line); vertical-align:middle; white-space:nowrap}
+table{border-collapse:collapse; width:100%; font-size:12px}
+th{font-size:11px; font-weight:600; color:var(--muted); text-align:left; padding:3px 6px; border-bottom:1px solid var(--line-2); white-space:nowrap}
+td{padding:3px 6px; border-bottom:1px solid var(--line); vertical-align:middle; white-space:nowrap}
 tr:last-child td{border-bottom:0}
 tbody tr:hover td{background:rgba(46,90,168,.06)}
 .num,th.num{text-align:right; font-family:var(--font-num); font-variant-numeric:tabular-nums}
@@ -155,9 +160,9 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .chart-table table{font-size:12px}
 
 /* 走势下方：行情摘要 + 怎么付最省 */
-.quick{margin-top:10px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 10px 6px}
+.quick{margin-top:4px; background:var(--tint-3); border:1px solid var(--line); border-radius:var(--radius); padding:8px 10px 6px}
 .quick .tablewrap{background:var(--surface); border-radius:4px; padding:2px 4px}
-.quick-stats{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--fg-2); font-variant-numeric:tabular-nums; align-items:center}
+.quick-stats{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:11.5px; color:var(--fg-2); font-variant-numeric:tabular-nums; align-items:center; margin-top:6px; padding-top:6px; border-top:1px dashed var(--line-2)}
 .quick-stats b{color:var(--fg); font-weight:600; font-family:var(--font-num)}
 .range{display:inline-flex; align-items:center; gap:6px}
 .range .bar{position:relative; width:110px; height:6px; background:var(--surface-2); border-radius:3px; overflow:visible}
@@ -210,6 +215,10 @@ tr.best td{color:var(--down)}
 footer{margin-top:14px; color:var(--muted); font-size:11.5px}
 footer p{margin:3px 0; max-width:90ch}
 @media (max-width:560px){
+  table{font-size:11.5px}
+  th,td{padding:3px 4px}
+  #rates-table th:last-child,#rates-table td:last-child{display:none}
+  .masthead h1{font-size:17px}
   .convert{grid-template-columns:1fr}
   .convert .amount{grid-column:auto}
   th,td{padding-left:5px; padding-right:5px}
@@ -235,6 +244,42 @@ footer p{margin:3px 0; max-width:90ch}
 
 <main class="grid">
 
+<section id="quick-sec">
+  <div class="band">
+    <h2>怎么付最省</h2>
+    <label class="amt">金额 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <select id="quick-unit" aria-label="金额币种"></select></label>
+  </div>
+  <div class="body">
+    <div class="tabs" id="trend-tabs" role="tablist"></div>
+    <div class="quick" id="quick">
+      <div class="verdict" id="quick-verdict"></div>
+      <div class="tablewrap">
+        <table class="quick-table">
+          <thead><tr><th>方式</th><th class="num">汇率</th><th class="num">折合人民币</th><th class="num">比中间价</th></tr></thead>
+          <tbody id="quick-body"></tbody>
+        </table>
+      </div>
+      <div class="quick-stats" id="quick-stats"></div>
+    </div>
+  </div>
+</section>
+
+<section id="trend">
+  <div class="band">
+    <h2 id="trend-h2">汇率走势</h2>
+    <div class="legend" style="margin:0">
+      <span><i class="key" style="border-color:#9ec5f4"></i>中间价</span>
+      <span><i class="key" style="border-color:#ffb28f"></i>国际参考</span>
+      <button class="btn-sm" id="trend-table-btn" type="button" aria-expanded="false">表格</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="tabs ranges" id="range-tabs" role="tablist"></div>
+    <div class="chart-host" id="trend-chart"></div>
+    <div class="chart-table" id="trend-table" hidden></div>
+  </div>
+</section>
+
 <section id="rates">
   <div class="band">
     <h2>汇率总览</h2>
@@ -255,36 +300,7 @@ footer p{margin:3px 0; max-width:90ch}
   <p class="foot">币种按中行长城跨境通（莫奈卡）19 种免货币转换费币种，另加马来西亚元、印尼盾、老挝基普。中间价：中国外汇交易中心每个交易日 9:15 公布。国际参考：Frankfurter 汇总各国央行参考汇率，含周末，接近离岸水平但不是 CNH。</p>
 </section>
 
-<section id="trend">
-  <div class="band">
-    <h2 id="trend-h2">汇率走势</h2>
-    <div class="legend" style="margin:0">
-      <span><i class="key" style="border-color:#9ec5f4"></i>中间价</span>
-      <span><i class="key" style="border-color:#ffb28f"></i>国际参考</span>
-      <button class="btn-sm" id="trend-table-btn" type="button" aria-expanded="false">表格</button>
-    </div>
-  </div>
-  <div class="body">
-    <div class="tabs" id="trend-tabs" role="tablist"></div>
-    <div class="tabs ranges" id="range-tabs" role="tablist"></div>
-    <div class="chart-host" id="trend-chart"></div>
-    <div class="chart-table" id="trend-table" hidden></div>
-    <div class="quick" id="quick">
-      <div class="quick-stats" id="quick-stats"></div>
-      <div class="quick-head">
-        <span class="quick-title">怎么付最省</span>
-        <label>金额 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <select id="quick-unit" aria-label="金额币种"></select></label>
-      </div>
-      <div class="verdict" id="quick-verdict"></div>
-      <div class="tablewrap">
-        <table class="quick-table">
-          <thead><tr><th>方式</th><th class="num">汇率</th><th class="num">折合人民币</th><th class="num">比中间价</th></tr></thead>
-          <tbody id="quick-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <section id="cards" class="tint-1 span2">
   <div class="band">
@@ -413,7 +429,7 @@ footer p{margin:3px 0; max-width:90ch}
     <p class="note">世界银行最新可得年份</p>
   </div>
   <div class="body grid" style="gap:10px">
-    <div>
+    <div style="min-width:0">
       <div class="controls">
         <select id="indicator" aria-label="指标"></select>
         <input type="text" id="country-search" placeholder="搜索国家或地区" aria-label="搜索国家">
@@ -427,7 +443,7 @@ footer p{margin:3px 0; max-width:90ch}
       </div>
       <div style="margin-top:6px"><button class="btn btn-ghost btn-sm" id="stats-more" type="button" hidden>显示全部</button></div>
     </div>
-    <div>
+    <div style="min-width:0">
       <div class="legend" id="gdp-legend"><span style="font-weight:600;color:var(--fg)">美中日德英 GDP（现价美元）</span></div>
       <div class="chart-host" id="gdp-chart"><p class="empty">正在读取…</p></div>
       <div class="chart-table" id="gdp-table" hidden></div>
