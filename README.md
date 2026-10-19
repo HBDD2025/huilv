@@ -11,7 +11,6 @@
 
 ## 常改的地方
 
-- 存款利率：`index.html` 里的 `DEPOSIT`。
 - 货币列表：`index.html` 的 `CURRENCIES` 和 `scripts/fetch_rates.py` 的 `CODES` 保持一致。
 - 手续费备忘、自定义链接：在页面里直接增删，存在浏览器本地，不进仓库。
 

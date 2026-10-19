@@ -179,16 +179,6 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .quick-table td .who{color:var(--muted); font-weight:400; margin-left:4px; font-size:11px}
 tr.best td{color:var(--down)}
 
-/* 换算器 */
-.convert{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:end}
-.convert .amount{grid-column:1 / -1}
-.convert label{display:block; font-size:11px; color:var(--muted); margin-bottom:2px}
-.convert select,.convert input{width:100%}
-.result{margin-top:8px}
-.result .big{font-size:24px; font-weight:600; letter-spacing:-.01em; line-height:1.2}
-.result .big small{font-size:13px; color:var(--fg-2); font-weight:500; margin-left:5px}
-.result .sub{color:var(--muted); font-size:12px; margin-top:2px; font-variant-numeric:tabular-nums}
-
 /* 链接清单 */
 .link-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:6px}
 .link-card{position:relative; display:block; padding:6px 24px 6px 9px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); text-decoration:none; color:inherit; min-width:0}
@@ -199,13 +189,6 @@ tr.best td{color:var(--down)}
 .link-card .x:hover{background:var(--surface-2); color:var(--up)}
 .addrow{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
 .addrow input{flex:1 1 130px}
-
-/* 存款利率 */
-.rates{display:grid; grid-template-columns:repeat(auto-fit,minmax(78px,1fr)); gap:6px}
-.rate{padding:6px 8px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface)}
-.rate .k{font-size:11px; color:var(--muted)}
-.rate .v{font-size:16px; font-weight:600; font-variant-numeric:tabular-nums}
-.rate .v small{font-size:11px; color:var(--muted); font-weight:500}
 
 /* 各国数据 */
 .controls{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px}
@@ -239,7 +222,7 @@ footer p{margin:3px 0; max-width:90ch}
 </header>
 
 <nav class="nav" aria-label="页面导航">
-  <a href="#rates">汇率总览</a><a href="#trend">走势</a><a href="#cards">刷卡汇率</a><a href="#cn">内地银行</a><a href="#hk">香港银行</a><a href="#convert">换算</a><a href="#deposit">利率</a><a href="#fees">手续费</a><a href="#links">入口</a><a href="#stats">各国数据</a>
+  <a href="#rates">汇率总览</a><a href="#trend">走势</a><a href="#cards">刷卡汇率</a><a href="#cn">内地银行</a><a href="#hk">香港银行</a><a href="#fees">手续费</a><a href="#links">入口</a><a href="#stats">各国数据</a>
 </nav>
 
 <main class="grid">
@@ -369,28 +352,6 @@ footer p{margin:3px 0; max-width:90ch}
   <p class="foot">1 外币 = 港元（日元、韩元按 100）。买入价是你把该货币换成港元时银行给的价，卖出价是你买入该货币付的价。</p>
 </section>
 
-<section id="convert">
-  <div class="band"><h2>换算</h2><p class="note">按国际参考汇率，另给中间价结果</p></div>
-  <div class="body">
-    <form class="convert" id="convert-form">
-      <div class="amount"><label for="amount">金额</label><input type="number" id="amount" inputmode="decimal" min="0" step="any" value="1000"></div>
-      <div><label for="from">从</label><select id="from"></select></div>
-      <button class="btn swap" type="button" id="swap" title="交换币种" aria-label="交换币种">⇄</button>
-      <div><label for="to">到</label><select id="to"></select></div>
-    </form>
-    <div class="result">
-      <div class="big" id="conv-result">—</div>
-      <div class="sub" id="conv-sub"></div>
-    </div>
-  </div>
-</section>
-
-<section id="deposit">
-  <div class="band"><h2>存款挂牌利率</h2><p class="note" id="deposit-note"></p></div>
-  <div class="body"><div class="rates" id="deposit-grid"></div></div>
-  <p class="foot">国有大行人民币整存整取挂牌利率，各行实际执行常有上浮，以网点或手机银行为准。改 index.html 里的 DEPOSIT 即可更新。</p>
-</section>
-
 <section id="fees" class="tint-1 span2">
   <div class="band"><h2>手续费备忘</h2><p class="note">记你常用卡的费用，存在本机浏览器</p></div>
   <div class="body">
@@ -493,8 +454,9 @@ const CURRENCIES = [
   {code:'ZAR', name:'南非兰特', unit:1},
 ];
 const CUR_BY = Object.fromEntries(CURRENCIES.map(c => [c.code, c]));
-const CNY_TAB = {code: 'CNY', name: '人民币', unit: 1};   // 走势里的反向行情：1 人民币 = ? 港元
-const trendCur = () => CUR_BY[state.trendCode] || CNY_TAB;
+const CNY_TAB = {code: 'CNY', name: '人民币', unit: 1};       // 反向行情：1 人民币 = ? 港元
+const CNYUSD_TAB = {code: 'CNYUSD', name: '人民币', unit: 1}; // 反向行情：1 人民币 = ? 美元（美元账单卡）
+const trendCur = () => CUR_BY[state.trendCode] || (state.trendCode === 'CNYUSD' ? CNYUSD_TAB : CNY_TAB);
 const unitLabel = c => c.unit > 1 ? `${c.unit} ${c.code}` : c.code;
 
 // 银行顺序即默认显示顺序；key 与抓取脚本里的一致
@@ -506,12 +468,6 @@ const BANKS_HK = [
   ['hsbc','汇丰'], ['hangseng','恒生'], ['bochk','中银香港'], ['icbcasia','工银亚洲'], ['ccbasia','建行亚洲'],
   ['cncbi','信银国际'], ['bea','东亚'], ['cmbwlb','招商永隆'], ['airstar','大象（原天星）'],
 ];
-
-// 存款挂牌利率（%），改这里即可
-const DEPOSIT = {
-  checked: '2026-10-19',
-  rows: [['活期', 0.05], ['三个月', 0.65], ['半年', 0.85], ['一年', 0.95], ['二年', 1.05], ['三年', 1.25], ['五年', 1.30]],
-};
 
 const DEFAULT_LINKS = [
   {name:'万事达 汇率换算', url:'https://www.mastercard.us/en-us/personal/get-support/convert-currency.html'},
@@ -682,7 +638,7 @@ async function loadFX() {
     const cached = state.fx ? `，显示 ${new Date(state.fx.fetchedAt).toLocaleString('zh-CN')} 的缓存` : '';
     setStatus(status, `汇率读取失败（${errorHint(b.reason)}）${cached}`, true);
   }
-  renderRates(); renderTrend(); renderConvert(); renderCards();
+  renderRates(); renderTrend(); renderCards();
 }
 function latest(series) { return series && series.length ? series[series.length - 1] : null; }
 function cfetsLatest(code) { return latest(state.fx && state.fx.cfets[code]); }
@@ -859,8 +815,8 @@ const RANGES = [[30, '月'], [90, '季度'], [180, '半年'], [365, '年']];
 function renderTrendTabs() {
   const tabs = $('trend-tabs');
   tabs.replaceChildren();
-  for (const c of [...CURRENCIES, CNY_TAB]) {
-    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.code === 'CNY' ? '人民币→港元' : c.name);
+  for (const c of [...CURRENCIES, CNY_TAB, CNYUSD_TAB]) {
+    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.code === 'CNY' ? '人民币→港元' : c.code === 'CNYUSD' ? '人民币→美元' : c.name);
     b.addEventListener('click', () => {
       state.trendCode = c.code; store.set('trend_code', c.code);
       tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
@@ -882,8 +838,8 @@ function renderTrendTabs() {
 }
 // 当前币种 + 周期的两条序列；30 日直接用总览数据，长周期按币种单独取并缓存
 async function rangeSeries(code, days) {
-  if (code === 'CNY') {  // 人民币兑港元：把港币序列倒过来
-    const base = await rangeSeries('HKD', days);
+  if (code === 'CNY' || code === 'CNYUSD') {  // 人民币兑港元 / 美元：把对应序列倒过来
+    const base = await rangeSeries(code === 'CNY' ? 'HKD' : 'USD', days);
     const inv = s => (s || []).map(p => ({d: p.d, v: 1 / p.v}));
     return {blend: inv(base.blend), cfets: inv(base.cfets)};
   }
@@ -914,7 +870,7 @@ async function renderTrend() {
   const days = state.range;
   const label = RANGES.find(r => r[0] === days)[1];
   const span = days === 30 ? '一个月' : days === 90 ? '一季度' : days === 180 ? '半年' : '一年';
-  $('trend-h2').textContent = c.code === 'CNY' ? `汇率走势 · 人民币兑港元（1 CNY = ? HKD）· 近${span}` : `汇率走势 · ${c.name}（${unitLabel(c)}）· 近${span}`;
+  $('trend-h2').textContent = c.code === 'CNY' ? `汇率走势 · 人民币兑港元（1 CNY = ? HKD）· 近${span}` : c.code === 'CNYUSD' ? `汇率走势 · 人民币兑美元（1 CNY = ? USD）· 近${span}` : `汇率走势 · ${c.name}（${unitLabel(c)}）· 近${span}`;
   const host = $('trend-chart');
   const token = ++trendToken;
   let data;
@@ -929,7 +885,7 @@ async function renderTrend() {
     xFmtLong: x => { const s = fromUTC(x); return `${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
     yFmt: (v, precise) => fmt(v, precise ? dec(v) : Math.max(0, dec(v) - 1)),
     endLabels: true,
-    ariaLabel: c.code === 'CNY' ? `人民币兑港元近${label}走势` : `${c.name}兑人民币近${label}走势`,
+    ariaLabel: c.code === 'CNY' ? `人民币兑港元近${label}走势` : c.code === 'CNYUSD' ? `人民币兑美元近${label}走势` : `${c.name}兑人民币近${label}走势`,
   }));
   if (!$('trend-table').hidden) renderTrendTable();
   renderQuick();
@@ -1002,7 +958,8 @@ function renderCards() {
 /* ---- 走势下方：行情摘要 + 怎么付最省 ---- */
 function renderQuick() {
   const c = trendCur();
-  const isCny = c.code === 'CNY';
+  const mode = c.code === 'CNY' ? 'hkd' : c.code === 'CNYUSD' ? 'usd' : 'fx';
+  const isCny = mode !== 'fx';
   const statsEl = $('quick-stats'), body = $('quick-body'), verdict = $('quick-verdict');
   // 金额单位：外币 / 人民币；人民币→港元 时只有人民币
   const unitSel = $('quick-unit');
@@ -1026,8 +983,9 @@ function renderQuick() {
     const avg = vs.reduce((a, b) => a + b, 0) / vs.length;
     const last = series[series.length - 1];
     const pos = hi.v === lo.v ? 0.5 : (last.v - lo.v) / (hi.v - lo.v);
-    const label = isCny ? (pos >= 0.75 ? '偏高，人民币换港元相对划算' : pos <= 0.25 ? '偏低，不急的话等等' : '居中')
-                        : (pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中');
+    const label = mode === 'hkd' ? (pos >= 0.75 ? '偏高，人民币换港元相对划算' : pos <= 0.25 ? '偏低，不急的话等等' : '居中')
+                : mode === 'usd' ? (pos <= 0.25 ? '偏低，用美国卡付人民币相对划算' : pos >= 0.75 ? '偏高，用美国卡付人民币偏贵' : '居中')
+                : (pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中');
     const bar = el('span', {class: 'range'}, el('span', null, `${days} 日区间`), el('span', {class: 'bar'}, (() => { const i = el('i'); i.style.left = (pos * 100).toFixed(1) + '%'; return i; })()), el('span', null, `${Math.round(pos * 100)}%，${label}`));
     const fd = d => days >= 180 ? d : shortDate(d);
     statsEl.append(
@@ -1045,7 +1003,32 @@ function renderQuick() {
   if (!isFinite(amt) || amt <= 0) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '填一个金额'))); return; }
   const head = $('quick-body').parentElement.querySelector('thead tr');
 
-  if (isCny) {
+  if (mode === 'usd') {
+    // 美元账单卡（美国卡）付人民币：各卡组织 1 人民币 = ? 美元，越低扣得越少
+    head.replaceChildren(el('th', null, '卡组织'), el('th', {class: 'num'}, '1 CNY = USD'), el('th', {class: 'num'}, '扣款美元'), el('th', {class: 'num'}, '比中间价'));
+    const cfUSD = cfetsLatest('USD');
+    const ref = cfUSD ? 1 / cfUSD.v : null;
+    const rows = [];
+    if (ref != null) rows.push({way: '中间价（参考）', rate: ref, isRef: true});
+    const cu = (state.data && state.data.card_cny_usd) || {};
+    for (const [k, name] of CARD_ORGS) if (cu[k] != null) rows.push({way: name, rate: cu[k]});
+    const cmp = rows.filter(r => !r.isRef);
+    if (!cmp.length) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '暂无卡组织的人民币→美元汇率'))); return; }
+    const best = cmp.reduce((a, b) => (b.rate < a.rate ? b : a)), worst = cmp.reduce((a, b) => (b.rate > a.rate ? b : a));
+    for (const r of rows) {
+      body.append(el('tr', {class: r === best ? 'best' : null},
+        el('td', {class: 'way'}, r.way),
+        el('td', {class: 'num'}, fmt(r.rate, 6)),
+        el('td', {class: 'num'}, fmt(amt * r.rate, 2)),
+        el('td', {class: 'num'}, r.isRef || ref == null ? el('span', {class: 'dim'}, '—') : deltaSpan(r.rate, ref))));
+    }
+    const line = el('div', null, `用美国卡付 ${fmt(amt, 0)} 元人民币：`, el('b', null, best.way), ` 扣得最少 ${fmt(amt * best.rate, 2)} 美元`);
+    if (cmp.length > 1 && worst !== best) line.append(el('span', {class: 'vs'}, `；${worst.way} 最多，多扣 ${fmt(amt * (worst.rate - best.rate), 2)} 美元`));
+    verdict.append(line, el('div', {class: 'vs'}, '不含发卡行的外币交易手续费（通常 0–3%）。'));
+    return;
+  }
+
+  if (mode === 'hkd') {
     // 人民币换港元：各香港银行电汇买入价（1 人民币 = ? 港元），越高换到越多
     head.replaceChildren(el('th', null, '方式'), el('th', {class: 'num'}, '1 CNY = HKD'), el('th', {class: 'num'}, '换到港元'), el('th', {class: 'num'}, '比中间价'));
     const cfHKD = cfetsLatest('HKD');
@@ -1220,36 +1203,6 @@ for (const kind of ['cn', 'hk']) {
   }));
 }
 
-/* ======================= 换算 ======================= */
-function rateCNY(code, src) {
-  if (code === 'CNY') return 1;
-  const l = latest(state.fx && state.fx[src] && state.fx[src][code]);
-  return l ? l.v / CUR_BY[code].unit : null;
-}
-function fillCurrencySelects() {
-  const opts = () => [el('option', {value: 'CNY'}, '人民币 CNY'), ...CURRENCIES.map(c => el('option', {value: c.code}, `${c.name} ${c.code}`))];
-  $('from').replaceChildren(...opts()); $('to').replaceChildren(...opts());
-  $('from').value = store.get('conv_from', 'USD'); $('to').value = store.get('conv_to', 'CNY');
-}
-function renderConvert() {
-  const amt = parseFloat($('amount').value);
-  const f = $('from').value, t = $('to').value;
-  store.set('conv_from', f); store.set('conv_to', t);
-  const out = $('conv-result'), sub = $('conv-sub');
-  const rf = rateCNY(f, 'blend'), rt = rateCNY(t, 'blend');
-  if (!isFinite(amt) || rf == null || rt == null) { out.textContent = '—'; sub.textContent = rf == null || rt == null ? '这对币种暂无参考汇率' : ''; return; }
-  const v = amt * rf / rt;
-  out.replaceChildren(fmt(v, v >= 1000 ? 2 : 4), el('small', null, t));
-  const uf = (CUR_BY[f] && CUR_BY[f].unit) || 1;
-  const lines = [`${uf} ${f} = ${fmt(uf * rf / rt, dec(uf * rf / rt))} ${t}（国际参考）`];
-  const cf = rateCNY(f, 'cfets'), ct = rateCNY(t, 'cfets');
-  if (cf != null && ct != null) lines.push(`按中间价 ${fmt(amt * cf / ct, v >= 1000 ? 2 : 4)} ${t}`);
-  sub.textContent = lines.join(' · ');
-}
-$('convert-form').addEventListener('submit', e => e.preventDefault());
-['amount', 'from', 'to'].forEach(id => $(id).addEventListener('input', renderConvert));
-$('swap').addEventListener('click', () => { const a = $('from').value; $('from').value = $('to').value; $('to').value = a; renderConvert(); });
-
 /* ======================= 查询入口 ======================= */
 function renderLinks() {
   const links = store.get('links_v2', DEFAULT_LINKS);
@@ -1270,12 +1223,6 @@ $('link-form').addEventListener('submit', e => {
   $('link-name').value = ''; $('link-url').value = ''; renderLinks();
 });
 $('link-reset').addEventListener('click', () => { store.del('links_v2'); renderLinks(); });
-
-/* ======================= 存款利率 ======================= */
-(function renderDeposit() {
-  $('deposit-note').textContent = `核对于 ${DEPOSIT.checked}`;
-  $('deposit-grid').replaceChildren(...DEPOSIT.rows.map(([k, v]) => el('div', {class: 'rate'}, el('div', {class: 'k'}, k), el('div', {class: 'v'}, fmt(v, 2), el('small', null, ' %')))));
-})();
 
 /* ======================= 手续费 ======================= */
 function renderFees() {
@@ -1380,10 +1327,9 @@ async function renderGDP() {
 
 /* ======================= 启动 ======================= */
 renderTrendTabs();
-fillCurrencySelects();
 renderLinks();
 renderFees();
-if (state.fx) { renderRates(); renderTrend(); renderConvert(); } else { renderTrend(); }
+if (state.fx) { renderRates(); renderTrend(); } else { renderTrend(); }
 $('refresh').addEventListener('click', () => {
   const id = $('indicator').value; delete state.indCache[id]; store.del('wb_ind_' + id);
   loadFX(); loadData(); renderStats();
