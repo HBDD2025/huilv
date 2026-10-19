@@ -1024,7 +1024,7 @@ function renderQuick() {
       continue;
     }
     const table = el('table'), tbody = el('tbody');
-    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num'}, '≈ 元'))), tbody);
+    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num', title: '按今天中间价折成人民币，只用于三类卡之间比较'}, '折合元'))), tbody);
     const row = (cards[g.key] && cards[g.key][X]) || {};
     const cnyB = cnyPerUnit(g.key);
     const rows = g.orgs.map(org => ({org, rate: row[org] != null ? row[org] : null}));
@@ -1064,7 +1064,7 @@ function renderQuick() {
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「≈ 元」按中间价折算，只用于三类卡之间比较。'));
+  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「折合元」按中间价折成人民币，只用于三类卡之间比较。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
