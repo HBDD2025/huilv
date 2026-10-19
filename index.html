@@ -151,6 +151,21 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .chart-table{margin-top:8px; max-height:240px; overflow:auto; border-top:1px solid var(--line)}
 .chart-table table{font-size:12px}
 
+/* 走势下方：行情摘要 + 怎么付最省 */
+.quick{margin-top:10px; border-top:1px solid var(--line); padding-top:8px}
+.quick-stats{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--fg-2); font-variant-numeric:tabular-nums; align-items:center}
+.quick-stats b{color:var(--fg); font-weight:600; font-family:var(--font-num)}
+.range{display:inline-flex; align-items:center; gap:6px}
+.range .bar{position:relative; width:110px; height:6px; background:var(--surface-2); border-radius:3px; overflow:visible}
+.range .bar i{position:absolute; top:-3px; width:4px; height:12px; margin-left:-2px; background:var(--accent); border-radius:2px}
+.quick-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:4px 10px; margin:8px 0 4px}
+.quick-title{font-weight:700}
+.quick-head label{font-size:12px; color:var(--muted)}
+.quick-head input{width:90px; padding:2px 6px}
+.quick-table td.way{font-weight:600}
+.quick-table td .who{color:var(--muted); font-weight:400; margin-left:4px; font-size:11px}
+tr.best td{color:var(--down)}
+
 /* 换算器 */
 .convert{display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:end}
 .convert .amount{grid-column:1 / -1}
@@ -245,6 +260,19 @@ footer p{margin:3px 0; max-width:90ch}
     <div class="tabs" id="trend-tabs" role="tablist"></div>
     <div class="chart-host" id="trend-chart"></div>
     <div class="chart-table" id="trend-table" hidden></div>
+    <div class="quick" id="quick">
+      <div class="quick-stats" id="quick-stats"></div>
+      <div class="quick-head">
+        <span class="quick-title">怎么付最省</span>
+        <label>金额 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span></label>
+      </div>
+      <div class="tablewrap">
+        <table class="quick-table">
+          <thead><tr><th>方式</th><th class="num">汇率</th><th class="num">折合人民币</th><th class="num">比中间价</th></tr></thead>
+          <tbody id="quick-body"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -258,16 +286,17 @@ footer p{margin:3px 0; max-width:90ch}
       <thead><tr>
         <th>货币</th>
         <th class="num">银联</th>
+        <th class="num">万事达</th>
+        <th class="num">Visa</th>
         <th class="num">JCB</th>
         <th class="num">中间价</th>
-        <th class="num">银联 vs 中间价</th>
-        <th class="num">JCB vs 中间价</th>
+        <th class="num">最低 vs 中间价</th>
       </tr></thead>
-      <tbody id="card-body"><tr><td colspan="6" class="empty">正在读取…</td></tr></tbody>
+      <tbody id="card-body"><tr><td colspan="7" class="empty">正在读取…</td></tr></tbody>
     </table>
   </div>
   <p class="foot" id="card-status"></p>
-  <p class="foot">银联：卡组织当日结算汇率。JCB：官网美元基准中间价折算成人民币。万事达拦截服务器访问、Visa 禁止自动抓取、运通不公布汇率，这三家用「入口」里的链接查。</p>
+  <p class="foot">银联：卡组织当日结算汇率，官网。JCB：官网美元基准中间价折算成人民币。万事达、Visa：官网拦截服务器访问，取自快易理财网整理的美元基准汇率，再按各自的美元/人民币换算，仅供比较。运通不公布汇率。四家里最低的标绿、最高的标红。</p>
 </section>
 
 <section id="cn">
@@ -829,6 +858,7 @@ function renderTrend() {
     ariaLabel: `${c.name}兑人民币 30 日走势`,
   }));
   if (!$('trend-table').hidden) renderTrendTable();
+  renderQuick();
 }
 function renderTrendTable() {
   const s = trendSeries().filter(x => x.points.length);
@@ -851,7 +881,7 @@ async function loadData() {
     for (const [id, n] of [['card-body', 6], ['cn-body', 6], ['hk-body', 6]]) $(id).replaceChildren(el('tr', null, el('td', {colspan: String(n), class: 'empty'}, msg)));
     return;
   }
-  renderCards(); renderBankTable('cn'); renderBankTable('hk');
+  renderCards(); renderBankTable('cn'); renderBankTable('hk'); renderQuick();
 }
 function sourceStatus(keys, labels) {
   const src = (state.data && state.data.sources) || {};
@@ -867,30 +897,91 @@ function generatedText() {
   const g = state.data && state.data.generated_at; if (!g) return null;
   const t = new Date(g); return `抓取于 ${t.getMonth() + 1}月${t.getDate()}日 ${pad(t.getHours())}:${pad(t.getMinutes())}`;
 }
+const CARD_ORGS = [['unionpay', '银联'], ['mastercard', '万事达'], ['visa', 'Visa'], ['jcb', 'JCB']];
 function renderCards() {
   if (!state.data) return;
   const body = $('card-body'); body.replaceChildren();
   const card = state.data.card || {};
   if (!CURRENCIES.some(c => card[c.code] && Object.keys(card[c.code]).length)) {
-    body.append(el('tr', null, el('td', {colspan: '6', class: 'empty'}, '定时任务还没抓到刷卡汇率。')));
+    body.append(el('tr', null, el('td', {colspan: '7', class: 'empty'}, '定时任务还没抓到刷卡汇率。')));
     $('card-status').textContent = ''; return;
   }
   for (const c of CURRENCIES) {
     const r = card[c.code] || {}; const cf = cfetsLatest(c.code);
-    const up = r.unionpay != null ? r.unionpay * c.unit : null, jcb = r.jcb != null ? r.jcb * c.unit : null;
-    const vs = v => (v != null && cf) ? el('td', {class: 'num'}, deltaSpan(v, cf.v)) : dimCell();
-    body.append(el('tr', null,
-      el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, unitLabel(c))),
-      up != null ? el('td', {class: 'num'}, fmt(up, dec(up))) : dimCell(),
-      jcb != null ? el('td', {class: 'num'}, fmt(jcb, dec(jcb))) : dimCell(),
-      cf ? el('td', {class: 'num'}, fmt(cf.v, dec(cf.v))) : dimCell(),
-      vs(up), vs(jcb)));
+    const vals = CARD_ORGS.map(([k]) => r[k] != null ? r[k] * c.unit : null);
+    const have = vals.filter(v => v != null);
+    const lo = have.length > 1 ? Math.min(...have) : null, hi = have.length > 1 ? Math.max(...have) : null;
+    const tr = el('tr', null, el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, unitLabel(c))));
+    vals.forEach(v => tr.append(v == null ? dimCell() : el('td', {class: 'num' + (v === lo ? ' best' : v === hi ? ' worst' : '')}, fmt(v, dec(v)))));
+    tr.append(cf ? el('td', {class: 'num'}, fmt(cf.v, dec(cf.v))) : dimCell());
+    tr.append(have.length && cf ? el('td', {class: 'num'}, deltaSpan(Math.min(...have), cf.v)) : dimCell());
+    body.append(tr);
   }
-  const parts = sourceStatus(['unionpay', 'jcb'], {unionpay: '银联', jcb: 'JCB'});
+  const keys = CARD_ORGS.map(([k]) => k);
+  const parts = sourceStatus(keys, Object.fromEntries(CARD_ORGS));
   const g = generatedText(); if (g) parts.push(g);
   const src = state.data.sources || {};
-  setStatus($('card-status'), parts.join(' · '), ['unionpay', 'jcb'].some(k => src[k] && !src[k].ok));
+  setStatus($('card-status'), parts.join(' · '), keys.some(k => src[k] && !src[k].ok));
+  renderQuick();
 }
+
+/* ---- 走势下方：行情摘要 + 怎么付最省 ---- */
+function renderQuick() {
+  const c = CUR_BY[state.trendCode];
+  const statsEl = $('quick-stats'), body = $('quick-body');
+  $('quick-unit').textContent = c.code;
+  // 30 日摘要：优先用中间价，没有就用国际参考
+  const series = (state.fx && (state.fx.cfets[c.code] && state.fx.cfets[c.code].length ? state.fx.cfets[c.code] : state.fx.blend[c.code])) || [];
+  statsEl.replaceChildren();
+  if (series.length >= 2) {
+    const vs = series.map(p => p.v);
+    const hi = series.reduce((a, b) => (b.v > a.v ? b : a)), lo = series.reduce((a, b) => (b.v < a.v ? b : a));
+    const avg = vs.reduce((a, b) => a + b, 0) / vs.length;
+    const last = series[series.length - 1];
+    const pos = hi.v === lo.v ? 0.5 : (last.v - lo.v) / (hi.v - lo.v);
+    const label = pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中';
+    const bar = el('span', {class: 'range'}, el('span', null, '30 日区间'), el('span', {class: 'bar'}, (() => { const i = el('i'); i.style.left = (pos * 100).toFixed(1) + '%'; return i; })()), el('span', null, `${Math.round(pos * 100)}%，${label}`));
+    statsEl.append(
+      el('span', null, `今日 ${series === state.fx.cfets[c.code] ? '中间价' : '参考'} `, el('b', null, fmt(last.v, dec(last.v)))),
+      el('span', null, '最高 ', el('b', null, fmt(hi.v, dec(hi.v))), ` ${shortDate(hi.d)}`),
+      el('span', null, '最低 ', el('b', null, fmt(lo.v, dec(lo.v))), ` ${shortDate(lo.d)}`),
+      el('span', null, '均值 ', el('b', null, fmt(avg, dec(avg)))),
+      bar);
+  } else {
+    statsEl.append(el('span', {class: 'dim'}, '暂无 30 日数据'));
+  }
+  // 怎么付最省
+  body.replaceChildren();
+  const amt = parseFloat($('quick-amount').value);
+  const cf = cfetsLatest(c.code);
+  const ref = cf ? cf.v / c.unit : null;  // 1 外币兑人民币
+  if (!isFinite(amt) || amt <= 0) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '填一个金额'))); return; }
+  const rows = [];
+  if (ref != null) rows.push({way: '中间价（参考）', rate: ref, who: null, isRef: true});
+  const card = (state.data && state.data.card && state.data.card[c.code]) || {};
+  for (const [k, name] of CARD_ORGS) if (card[k] != null) rows.push({way: name + ' 刷卡', rate: card[k]});
+  const banks = (state.data && state.data.banks_cn) || {};
+  for (const [col, label] of [['hui_sell', '银行现汇最低'], ['chao_sell', '银行现钞最低']]) {
+    let best = null;
+    for (const [key, name] of BANKS_CN) {
+      const r = banks[key] && banks[key][c.code];
+      if (r && r[col] != null && (best == null || r[col] < best.rate)) best = {rate: r[col], who: name};
+    }
+    if (best) rows.push({way: label, rate: best.rate, who: best.who});
+  }
+  if (!rows.length) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '这个币种暂无可比价格'))); return; }
+  const cmp = rows.filter(r => !r.isRef);
+  const minRate = cmp.length ? Math.min(...cmp.map(r => r.rate)) : null;
+  for (const r of rows) {
+    const tr = el('tr', {class: !r.isRef && r.rate === minRate ? 'best' : null},
+      el('td', {class: 'way'}, r.way, r.who ? el('span', {class: 'who'}, r.who) : null),
+      el('td', {class: 'num'}, fmt(r.rate * c.unit, dec(r.rate * c.unit))),
+      el('td', {class: 'num'}, fmt(amt * r.rate, 2)),
+      el('td', {class: 'num'}, r.isRef || ref == null ? el('span', {class: 'dim'}, '—') : deltaSpan(r.rate, ref)));
+    body.append(tr);
+  }
+}
+$('quick-amount').addEventListener('input', renderQuick);
 
 /* ---- 银行牌价表：按币种看各行，可排序 ---- */
 const BANK_CFG = {

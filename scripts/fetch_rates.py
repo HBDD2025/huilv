@@ -283,6 +283,80 @@ def fetch_jcb():
     raise RuntimeError("; ".join(errors)[:300])
 
 
+_KYLC_CARDS = {}
+
+
+def _kylc_card_page(code):
+    """快易理财网 /huilv/c-xxx.html 的卡组织表：卡组织｜基准货币｜交易货币｜汇率｜发布日期｜换算。
+    返回 {org: (usd_per_unit, date)}，org 为 mastercard / visa。"""
+    resp = get(f"https://www.kylc.com/huilv/c-{code.lower()}.html")
+    resp.encoding = resp.apparent_encoding or "utf-8"
+    soup = BeautifulSoup(resp.text, "html.parser")
+    out = {}
+    year = dt.datetime.now(BJT).year
+    for tr in soup.find_all("tr"):
+        cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+        if len(cells) < 4:
+            continue
+        head = cells[0].lower()
+        org = "mastercard" if ("mastercard" in head or "万事达" in head) else "visa" if "visa" in head else None
+        if not org:
+            continue
+        nums = [num(c) for c in cells[1:5] if num(c) is not None]
+        if not nums:
+            continue
+        m = re.search(r"(\d{1,2})月(\d{1,2})日", " ".join(cells))
+        date = f"{year}-{int(m.group(1)):02d}-{int(m.group(2)):02d}" if m else None
+        out[org] = (nums[0], date)
+    if not out:
+        raise RuntimeError(f"c-{code.lower()} 页里没有万事达/Visa 行")
+    return out
+
+
+def _kylc_cards():
+    """抓一次，万事达和 Visa 共用：先取美元/人民币，再逐币种换算。"""
+    if _KYLC_CARDS:
+        return _KYLC_CARDS
+    base = _kylc_card_page("CNY")  # usd per 1 CNY
+    result = {"mastercard": {"rates": {}, "date": None}, "visa": {"rates": {}, "date": None}}
+    errors = []
+    for code in CODES:
+        if code == "USD":
+            for org in result:
+                if org in base and base[org][0]:
+                    result[org]["rates"]["USD"] = round(1 / base[org][0], 6)
+                    result[org]["date"] = base[org][1]
+            continue
+        try:
+            page = _kylc_card_page(code)
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"{code}: {str(exc)[:60]}")
+            continue
+        for org, (usd_per_unit, date) in page.items():
+            if org in base and base[org][0] and usd_per_unit:
+                result[org]["rates"][code] = round(usd_per_unit / base[org][0], 8)
+                result[org]["date"] = result[org]["date"] or date
+        time.sleep(0.3)
+    if errors:
+        warn("快易理财网卡组织页部分币种失败：" + "; ".join(errors)[:300])
+    _KYLC_CARDS.update(result)
+    return _KYLC_CARDS
+
+
+def fetch_mastercard_kylc():
+    r = _kylc_cards()["mastercard"]
+    if not r["rates"]:
+        raise RuntimeError("没有拿到万事达数据")
+    return r
+
+
+def fetch_visa_kylc():
+    r = _kylc_cards()["visa"]
+    if not r["rates"]:
+        raise RuntimeError("没有拿到 Visa 数据")
+    return r
+
+
 # ================================================================ 内地银行（1 外币兑人民币）
 def fetch_boc():
     resp = get("https://www.boc.cn/sourcedb/whpj/")
@@ -367,6 +441,16 @@ def fetch_ccb():
 
 
 def fetch_bocom():
+    try:
+        return fetch_bocom_official()
+    except Exception as exc:  # noqa: BLE001
+        log(f"  交行官网失败（{str(exc)[:80]}），改用快易理财网")
+        r = make_kylc("bocm")()
+        r["origin"] = "kylc"
+        return r
+
+
+def fetch_bocom_official():
     resp = get("https://www.bankcomm.com/BankCommSite/zh-cn/personal/forex/forexQuotation.html", insecure_fallback=True)
     resp.encoding = resp.apparent_encoding or "utf-8"
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -471,6 +555,8 @@ SOURCES = [
     # key, 显示名, 分组, 来源, 函数
     ("unionpay", "银联", "card", "官网", fetch_unionpay),
     ("jcb", "JCB", "card", "官网", fetch_jcb),
+    ("mastercard", "万事达", "card", "kylc", fetch_mastercard_kylc),
+    ("visa", "Visa", "card", "kylc", fetch_visa_kylc),
     ("icbc", "工商银行", "cn", "官网", fetch_icbc),
     ("abc", "农业银行", "cn", "官网", fetch_abc),
     ("boc", "中国银行", "cn", "官网", fetch_boc),
@@ -520,7 +606,7 @@ def main():
                     for k, v in list(row.items()):
                         if isinstance(v, float):
                             row[k] = round(v, 6)
-            out["sources"][key] = {"ok": True, "date": result.get("date"), "stale": False, "name": label, "group": group, "origin": origin, "error": None}
+            out["sources"][key] = {"ok": True, "date": result.get("date"), "stale": False, "name": label, "group": group, "origin": result.get("origin") or origin, "error": None}
             if group == "card":
                 for code, value in result["rates"].items():
                     if code in out["card"]:
