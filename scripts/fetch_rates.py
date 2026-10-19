@@ -93,10 +93,31 @@ def fetch_unionpay():
 # ---------------------------------------------------------------- 万事达
 def fetch_mastercard():
     """万事达结算汇率查询接口，逐个币种查询：1 外币 = ? 人民币（账单币种人民币，银行附加费 0）。"""
+    page = "https://www.mastercard.us/en-us/personal/get-support/convert-currency.html"
     session = requests.Session()
     session.headers.update(HEADERS)
-    session.headers["Accept"] = "application/json, text/plain, */*"
-    session.headers["Referer"] = "https://www.mastercard.us/en-us/personal/get-support/convert-currency.html"
+    session.headers.update({
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Dest": "document",
+        "Upgrade-Insecure-Requests": "1",
+    })
+    try:
+        session.get(page, timeout=30)  # 先拿页面的 cookie，再调接口
+    except Exception:  # noqa: BLE001
+        pass
+    session.headers.update({
+        "Accept": "application/json, text/plain, */*",
+        "Referer": page,
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+    })
+    session.headers.pop("Upgrade-Insecure-Requests", None)
     rates, errors, fx_date = {}, [], None
     for code in CODES:
         url = (
@@ -114,6 +135,10 @@ def fetch_mastercard():
             fx_date = data.get("fxDate") or fx_date
         except Exception as exc:  # noqa: BLE001
             errors.append(f"{code}: {str(exc)[:80]}")
+            # 连着两个币种都被拒，多半是整站拦截，后面的不用再试
+            if len(errors) >= 2 and not rates:
+                errors.append("前两个币种都失败，放弃其余币种")
+                break
         time.sleep(0.8)
     if rates:
         return {"ok": True, "date": fx_date, "rates": rates, "error": "; ".join(errors) or None}
@@ -142,7 +167,9 @@ def fetch_boc():
         code = BOC_NAMES.get(cells[0])
         if not code:
             continue
-        stamp = f"{cells[6]} {cells[7]}".strip()
+        # 发布日期一栏有时已经带了时间，别重复拼
+        stamp = cells[6].strip() if ":" in cells[6] else f"{cells[6]} {cells[7]}".strip()
+        stamp = stamp.replace("/", "-")
         rates[code] = {
             "hui_buy": num(cells[1]),
             "chao_buy": num(cells[2]),
