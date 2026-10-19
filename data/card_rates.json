@@ -1,17 +1,11 @@
 {
- "generated_at": "2026-10-19T03:14:35+00:00",
+ "generated_at": "2026-10-19T03:16:40+00:00",
  "sources": {
   "unionpay": {
    "ok": true,
    "date": "2026-10-19",
    "error": null,
    "stale": false
-  },
-  "mastercard": {
-   "ok": false,
-   "date": null,
-   "error": "USD: 403 Client Error: Forbidden for url: https://www.mastercard.us/settlement/curren; EUR: 403 Client Error: Forbidden for url: https://www.mastercard.us/settlement/curren; 前两个币种都失败，放弃其余币种",
-   "stale": true
   },
   "boc": {
    "ok": true,
