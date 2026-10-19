@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>汇率瞭望台</title>
+<style>
+/* 布局：报刊式刊头 + 单栏信息台；表格承载数据，图表只出现在走势处 */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eaeef3; --fg:#182230; --fg-2:#4a5664; --muted:#76838f;
+  --line:#dde3ea; --line-2:#c9d1db; --accent:#2e4b89; --accent-ink:#ffffff; --accent-soft:#e8eef9;
+  --up:#b93a2c; --down:#1d7f55;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4;
+  --font-ui:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Helvetica Neue",Arial,sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono","Noto Sans Mono",monospace;
+  --font-display:"Songti SC","STSong","SimSun","Noto Serif CJK SC","Source Han Serif SC",Georgia,serif;
+  --radius:6px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#111820; --surface:#1a222c; --surface-2:#222c38; --fg:#e7ecf2; --fg-2:#b4bfcc; --muted:#8290a0;
+    --line:#2a3542; --line-2:#36424f; --accent:#9db7ff; --accent-ink:#0f1620; --accent-soft:#232f44;
+    --up:#ff7466; --down:#4fd08a;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111820; --surface:#1a222c; --surface-2:#222c38; --fg:#e7ecf2; --fg-2:#b4bfcc; --muted:#8290a0;
+  --line:#2a3542; --line-2:#36424f; --accent:#9db7ff; --accent-ink:#0f1620; --accent-soft:#232f44;
+  --up:#ff7466; --down:#4fd08a;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg); font-family:var(--font-ui); font-size:15px; line-height:1.55;
+  padding-block:0 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:1060px; margin:0 auto}
+a{color:var(--accent)}
+button,input,select{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+[hidden]{display:none!important}
+
+/* 刊头 */
+.masthead{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 24px; padding:28px 0 16px; border-bottom:2px solid var(--fg)}
+.masthead h1{font-family:var(--font-display); font-weight:600; font-size:34px; letter-spacing:.08em; margin:0; line-height:1.1; text-wrap:balance}
+.masthead .dateline{color:var(--fg-2); font-size:14px; margin-top:6px}
+.masthead .tools{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.status{font-size:13px; color:var(--muted)}
+.status.err{color:var(--up)}
+
+/* 导航 */
+.nav{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line); display:flex; gap:4px; overflow-x:auto; padding:6px 0; margin-bottom:8px; scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap; text-decoration:none; color:var(--fg-2); font-size:14px; padding:6px 10px; border-radius:var(--radius)}
+.nav a:hover{background:var(--surface-2); color:var(--fg)}
+
+/* 章节 */
+section{padding:28px 0 8px}
+section + section{border-top:1px solid var(--line)}
+.sec-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:8px 16px; margin-bottom:12px}
+h2{font-size:19px; margin:0; font-weight:650; letter-spacing:.02em}
+.note{color:var(--muted); font-size:13px; margin:0}
+.lead{color:var(--fg-2); max-width:65ch; margin:0 0 14px}
+
+/* 按钮与输入 */
+.btn{border:1px solid var(--line-2); background:var(--surface); border-radius:var(--radius); padding:6px 12px; cursor:pointer; font-size:14px; line-height:1.3}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.btn-primary:hover{filter:brightness(1.08); background:var(--accent)}
+.btn-ghost{border-color:transparent; background:transparent; color:var(--fg-2)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-sm{padding:3px 8px; font-size:13px}
+input[type=text],input[type=number],input[type=url],select{border:1px solid var(--line-2); background:var(--surface); border-radius:var(--radius); padding:7px 10px; min-width:0}
+input:focus,select:focus{border-color:var(--accent)}
+
+/* 表格 */
+.tablewrap{overflow-x:auto; max-width:100%}
+table{border-collapse:collapse; width:100%; font-size:14px}
+th{font-size:12px; font-weight:600; color:var(--muted); letter-spacing:.06em; text-align:left; padding:8px 10px; border-bottom:1px solid var(--line-2); white-space:nowrap}
+td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+.num,th.num{text-align:right; font-family:var(--font-num); font-variant-numeric:tabular-nums}
+td.name{font-weight:600; white-space:nowrap}
+td .code{color:var(--muted); font-family:var(--font-num); font-size:12px; margin-left:6px; font-weight:400}
+.delta{font-family:var(--font-num); font-variant-numeric:tabular-nums; white-space:nowrap}
+.delta.up{color:var(--up)} .delta.down{color:var(--down)} .delta.flat{color:var(--muted)}
+.dim{color:var(--muted)}
+.spark{display:block; width:92px; height:28px; overflow:visible}
+.spark path{fill:none; stroke:var(--fg-2); stroke-width:1.5; stroke-linejoin:round; stroke-linecap:round}
+.spark circle{fill:var(--accent); stroke:var(--surface); stroke-width:1.5}
+.empty{color:var(--muted); padding:14px 0; margin:0}
+
+/* 卡片：只给图表与可编辑清单使用 */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px}
+.card-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; margin-bottom:8px}
+.card-head h3{margin:0; font-size:15px; font-weight:650}
+
+/* 标签页 */
+.tabs{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px}
+.tabs button{border:1px solid var(--line-2); background:var(--surface); border-radius:999px; padding:4px 12px; cursor:pointer; font-size:14px; color:var(--fg-2)}
+.tabs button:hover{background:var(--surface-2)}
+.tabs button[aria-selected="true"]{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+
+/* 图表 */
+.legend{display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; color:var(--fg-2)}
+.legend .key{display:inline-block; width:18px; height:0; border-top:2px solid; vertical-align:middle; margin-right:6px; border-radius:2px}
+.chart-host{position:relative; min-width:0}
+svg.chart{display:block; width:100%; height:auto; font-family:var(--font-num); font-variant-numeric:tabular-nums}
+svg.chart .grid{stroke:var(--line); stroke-width:1}
+svg.chart .axis{stroke:var(--line-2); stroke-width:1}
+svg.chart .tick{fill:var(--muted); font-size:11px}
+svg.chart .endlabel{fill:var(--fg-2); font-size:12px}
+svg.chart .line{fill:none; stroke-width:2; stroke-linejoin:round; stroke-linecap:round}
+svg.chart .area{opacity:.1}
+svg.chart .enddot{stroke:var(--surface); stroke-width:2}
+svg.chart .hoverdot{stroke:var(--surface); stroke-width:2}
+svg.chart .hair{stroke:var(--line-2); stroke-width:1}
+svg.chart .leader{stroke:var(--line-2); stroke-width:1}
+.tooltip{position:absolute; pointer-events:none; background:var(--surface); border:1px solid var(--line-2); border-radius:var(--radius); padding:8px 10px; font-size:13px; box-shadow:0 4px 14px rgba(0,0,0,.12); min-width:150px; z-index:3}
+.tooltip .tt-head{color:var(--muted); font-size:12px; margin-bottom:4px}
+.tooltip .tt-row{display:flex; align-items:center; gap:8px; white-space:nowrap}
+.tooltip .tt-row .key{width:14px}
+.tooltip .tt-row strong{font-family:var(--font-num); font-variant-numeric:tabular-nums; font-weight:600}
+.tooltip .tt-row span{color:var(--fg-2)}
+.chart-table{margin-top:12px; max-height:280px; overflow:auto; border-top:1px solid var(--line)}
+.chart-table table{font-size:13px}
+
+/* 换算器 */
+.convert{display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:end; max-width:620px}
+.convert .amount{grid-column:1 / -1}
+.convert label{display:block; font-size:12px; color:var(--muted); margin-bottom:4px}
+.convert select,.convert input{width:100%}
+.convert .swap{align-self:end; margin-bottom:1px}
+.result{margin-top:14px}
+.result .big{font-size:34px; font-weight:600; letter-spacing:-.01em; line-height:1.2}
+.result .big small{font-size:16px; color:var(--fg-2); font-weight:500; margin-left:6px}
+.result .sub{color:var(--muted); font-size:13px; margin-top:4px; font-variant-numeric:tabular-nums}
+
+/* 链接清单 */
+.link-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px}
+.link-card{position:relative; display:block; padding:12px 14px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); text-decoration:none; color:inherit; min-width:0}
+.link-card:hover{border-color:var(--accent)}
+.link-card .t{font-weight:600; display:block; margin-bottom:2px; padding-right:24px}
+.link-card .u{display:block; color:var(--muted); font-size:12px; font-family:var(--font-num); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.link-card .x{position:absolute; top:6px; right:6px; border:0; background:transparent; color:var(--muted); cursor:pointer; padding:2px 6px; border-radius:4px; font-size:14px; line-height:1}
+.link-card .x:hover{background:var(--surface-2); color:var(--up)}
+.addrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+.addrow input{flex:1 1 160px}
+
+/* 存款利率 */
+.rates{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; max-width:900px}
+.rate{padding:10px 12px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface)}
+.rate .k{font-size:12px; color:var(--muted)}
+.rate .v{font-size:20px; font-weight:600; font-variant-numeric:tabular-nums; margin-top:2px}
+.rate .v small{font-size:12px; color:var(--muted); font-weight:500}
+
+/* 各国数据 */
+.controls{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px}
+.controls select{min-width:220px}
+.controls input{flex:1 1 180px}
+.two{display:grid; grid-template-columns:1fr; gap:16px; margin-top:16px}
+
+footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:13px}
+footer p{margin:4px 0; max-width:80ch}
+
+@media (max-width:560px){
+  .masthead h1{font-size:28px}
+  .convert{grid-template-columns:1fr; }
+  .convert .amount{grid-column:auto}
+  .convert .swap{justify-self:start}
+  th,td{padding-left:6px; padding-right:6px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .refreshing{transition:opacity .2s}
+}
+.refreshing{opacity:.55}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div>
+    <h1>汇率瞭望台</h1>
+    <div class="dateline" id="dateline"></div>
+  </div>
+  <div class="tools">
+    <span class="status" id="fx-status">正在读取…</span>
+    <button class="btn" id="refresh" type="button">刷新</button>
+  </div>
+</header>
+
+<nav class="nav" aria-label="页面导航">
+  <a href="#rates">汇率</a><a href="#cards">刷卡汇率</a><a href="#trend">走势</a><a href="#convert">换算</a><a href="#links">牌价入口</a><a href="#deposit">存款利率</a><a href="#fees">手续费</a><a href="#stats">各国数据</a>
+</nav>
+
+<main>
+
+<section id="rates">
+  <div class="sec-head">
+    <h2>汇率总览</h2>
+    <p class="note">1 外币 = 人民币；日元、韩元按 100 计 · 红涨绿跌</p>
+  </div>
+  <div class="tablewrap">
+    <table id="rates-table">
+      <thead><tr>
+        <th>货币</th>
+        <th class="num">中间价</th>
+        <th class="num">国际参考</th>
+        <th class="num">价差</th>
+        <th class="num">30 日涨跌</th>
+        <th>30 日走势</th>
+      </tr></thead>
+      <tbody id="rates-body"><tr><td colspan="6" class="empty">正在读取汇率…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="note" style="margin-top:10px">中间价：中国外汇交易中心每个交易日 9:15 公布的人民币汇率中间价（在岸）。国际参考：Frankfurter 汇总各国央行当日参考汇率，含周末；更接近离岸市场水平，但不是 CNH 报价。价差 = 国际参考 − 中间价。</p>
+</section>
+
+<section id="cards">
+  <div class="sec-head">
+    <h2>刷卡汇率与中行牌价</h2>
+    <p class="note" id="card-note">每天抓取两次，1 外币 = 人民币；日元、韩元按 100 计</p>
+  </div>
+  <div class="tablewrap">
+    <table id="card-table">
+      <thead><tr>
+        <th>货币</th>
+        <th class="num">银联</th>
+        <th class="num">万事达</th>
+        <th class="num">中行现汇买入</th>
+        <th class="num">现钞买入</th>
+        <th class="num">现汇卖出</th>
+        <th class="num">现钞卖出</th>
+        <th class="num">中间价</th>
+      </tr></thead>
+      <tbody id="card-body"><tr><td colspan="8" class="empty">正在读取…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="note" id="card-status" style="margin-top:10px"></p>
+  <p class="note">银联、万事达为卡组织当日结算汇率（账单币种人民币，不含发卡行附加费）；中行为外汇牌价，买入价是你把外币换成人民币时银行给的价，卖出价是你买外币时付的价。Visa 的网站不允许自动抓取，请用下方「牌价入口」查询。</p>
+</section>
+
+<section id="trend">
+  <div class="sec-head">
+    <h2>30 日走势</h2>
+    <p class="note">纵轴为 1 外币（或 100 日元/韩元）兑人民币</p>
+  </div>
+  <div class="tabs" id="trend-tabs" role="tablist"></div>
+  <div class="card">
+    <div class="card-head">
+      <h3 id="trend-title">美元 / 人民币</h3>
+      <div class="legend">
+        <span><i class="key" style="border-color:var(--s1)"></i>中间价</span>
+        <span><i class="key" style="border-color:var(--s2)"></i>国际参考</span>
+        <button class="btn btn-ghost btn-sm" id="trend-table-btn" type="button" aria-expanded="false">表格</button>
+      </div>
+    </div>
+    <div class="chart-host" id="trend-chart"></div>
+    <div class="chart-table" id="trend-table" hidden></div>
+  </div>
+</section>
+
+<section id="convert">
+  <div class="sec-head">
+    <h2>换算</h2>
+    <p class="note">按国际参考汇率折算；中间价折算一并给出</p>
+  </div>
+  <form class="convert" id="convert-form">
+    <div class="amount">
+      <label for="amount">金额</label>
+      <input type="number" id="amount" inputmode="decimal" min="0" step="any" value="1000">
+    </div>
+    <div>
+      <label for="from">从</label>
+      <select id="from"></select>
+    </div>
+    <button class="btn swap" type="button" id="swap" title="交换币种" aria-label="交换币种">⇄</button>
+    <div>
+      <label for="to">到</label>
+      <select id="to"></select>
+    </div>
+  </form>
+  <div class="result">
+    <div class="big" id="conv-result">—</div>
+    <div class="sub" id="conv-sub"></div>
+  </div>
+</section>
+
+<section id="links">
+  <div class="sec-head">
+    <h2>银行牌价与刷卡汇率</h2>
+    <p class="note">可自行增删，保存在本机浏览器</p>
+  </div>
+  <p class="lead">上面那张表之外的数字（Visa、其他银行的牌价）没有公开接口，这里放直达链接，一键查到官方数字。</p>
+  <div class="link-grid" id="link-grid"></div>
+  <form class="addrow" id="link-form">
+    <input type="text" id="link-name" placeholder="名称，例如：工商银行 外汇牌价" required>
+    <input type="url" id="link-url" placeholder="https://…" required>
+    <button class="btn" type="submit">添加链接</button>
+    <button class="btn btn-ghost" type="button" id="link-reset">恢复默认</button>
+  </form>
+</section>
+
+<section id="deposit">
+  <div class="sec-head">
+    <h2>存款挂牌利率</h2>
+    <p class="note" id="deposit-note"></p>
+  </div>
+  <div class="rates" id="deposit-grid"></div>
+  <p class="note" style="margin-top:10px">国有大行人民币整存整取挂牌利率，各行实际执行利率常有上浮，以网点或手机银行为准。数字写在页面脚本的 DEPOSIT 配置里，调整后改一下即可。</p>
+</section>
+
+<section id="fees">
+  <div class="sec-head">
+    <h2>手续费备忘</h2>
+    <p class="note">记你自己常用卡的费用，保存在本机浏览器</p>
+  </div>
+  <div class="card">
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>项目</th><th>银行 / 卡</th><th>费用</th><th>备注</th><th></th></tr></thead>
+        <tbody id="fees-body"></tbody>
+      </table>
+    </div>
+    <form class="addrow" id="fee-form">
+      <input type="text" id="fee-item" placeholder="项目，例如：境外 ATM 取现" required>
+      <input type="text" id="fee-bank" placeholder="银行 / 卡" required>
+      <input type="text" id="fee-cost" placeholder="费用" required>
+      <input type="text" id="fee-note" placeholder="备注（可空）">
+      <button class="btn" type="submit">添加</button>
+    </form>
+  </div>
+</section>
+
+<section id="stats">
+  <div class="sec-head">
+    <h2>各国数据</h2>
+    <p class="note" id="stats-note">世界银行最新可得年份</p>
+  </div>
+  <div class="controls">
+    <select id="indicator" aria-label="指标"></select>
+    <input type="text" id="country-search" placeholder="搜索国家或地区" aria-label="搜索国家">
+    <span class="status" id="stats-status"></span>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th class="num">#</th><th>国家 / 地区</th><th class="num" id="value-head">数值</th><th class="num">年份</th></tr></thead>
+      <tbody id="stats-body"><tr><td colspan="4" class="empty">正在读取…</td></tr></tbody>
+    </table>
+  </div>
+  <div style="margin-top:8px"><button class="btn btn-ghost btn-sm" id="stats-more" type="button" hidden>显示全部</button></div>
+
+  <div class="two">
+    <div class="card">
+      <div class="card-head">
+        <h3>美中日德英 GDP 走势（现价美元）</h3>
+        <div class="legend" id="gdp-legend"></div>
+      </div>
+      <div class="chart-host" id="gdp-chart"><p class="empty">正在读取…</p></div>
+      <div class="chart-table" id="gdp-table" hidden></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>数据来源：汇率中间价与各国央行参考汇率来自 <a href="https://frankfurter.dev" target="_blank" rel="noopener">Frankfurter</a>（中间价出自中国外汇交易中心）；各国数据来自 <a href="https://data.worldbank.org" target="_blank" rel="noopener">世界银行</a> 公开接口。页面直接在浏览器里请求上述接口，不经过任何中转。</p>
+  <p>本页数字仅供参考，换汇、刷卡以银行和卡组织实际执行汇率为准。</p>
+</footer>
+
+</div>
+
+<script>
+'use strict';
+/* ======================= 配置 ======================= */
+const FR = 'https://api.frankfurter.dev';
+const WB = 'https://api.worldbank.org/v2';
+
+const CURRENCIES = [
+  {code:'USD', name:'美元', unit:1},
+  {code:'EUR', name:'欧元', unit:1},
+  {code:'GBP', name:'英镑', unit:1},
+  {code:'JPY', name:'日元', unit:100},
+  {code:'HKD', name:'港币', unit:1},
+  {code:'TWD', name:'新台币', unit:1},
+  {code:'THB', name:'泰铢', unit:1},
+  {code:'SGD', name:'新加坡元', unit:1},
+  {code:'AUD', name:'澳大利亚元', unit:1},
+  {code:'KRW', name:'韩元', unit:100},
+  {code:'CAD', name:'加拿大元', unit:1},
+  {code:'CHF', name:'瑞士法郎', unit:1},
+  {code:'MYR', name:'马来西亚林吉特', unit:1},
+  {code:'NZD', name:'新西兰元', unit:1},
+];
+const CUR_BY = Object.fromEntries(CURRENCIES.map(c => [c.code, c]));
+
+// 存款挂牌利率（%），改这里即可
+const DEPOSIT = {
+  checked: '2026-10-19',
+  rows: [
+    ['活期', 0.05], ['三个月', 0.65], ['半年', 0.85], ['一年', 0.95], ['二年', 1.05], ['三年', 1.25], ['五年', 1.30],
+  ],
+};
+
+const DEFAULT_LINKS = [
+  {name:'中国银行 外汇牌价', url:'https://www.boc.cn/sourcedb/whpj/'},
+  {name:'中国外汇交易中心 中间价', url:'https://www.chinamoney.com.cn/'},
+  {name:'银联 汇率查询', url:'https://www.unionpayintl.com/cn/rate/'},
+  {name:'Visa 汇率计算器', url:'https://usa.visa.com/support/consumer/travel-support/exchange-rate-calculator.html'},
+  {name:'Mastercard 汇率换算', url:'https://www.mastercard.us/en-us/personal/get-support/convert-currency.html'},
+];
+
+const DEFAULT_FEES = [
+  {item:'境外 ATM 取现', bank:'示例卡', cost:'每笔 12 元 + 1%', note:'示例行，换成你自己的卡'},
+  {item:'境外电汇', bank:'示例网银', cost:'汇款额 0.1%，最低 50 元，另加电报费', note:'示例行'},
+  {item:'跨行 ATM 取款', bank:'示例卡', cost:'每月前 3 笔免费', note:'示例行'},
+];
+
+const INDICATORS = [
+  {id:'NY.GDP.MKTP.CD',    name:'GDP（现价美元）',            fmt:'money', unit:'美元'},
+  {id:'NY.GDP.MKTP.PP.CD', name:'GDP（购买力平价）',          fmt:'money', unit:'国际元'},
+  {id:'NY.GDP.PCAP.CD',    name:'人均 GDP（现价美元）',       fmt:'plain', unit:'美元'},
+  {id:'NY.GDP.PCAP.PP.CD', name:'人均 GDP（购买力平价）',     fmt:'plain', unit:'国际元'},
+  {id:'NY.GDP.MKTP.KD.ZG', name:'GDP 年增长率',              fmt:'pct'},
+  {id:'NY.GNP.MKTP.CD',    name:'GNI（现价美元）',            fmt:'money', unit:'美元'},
+  {id:'NY.GNP.PCAP.CD',    name:'人均 GNI（现价美元）',       fmt:'plain', unit:'美元'},
+  {id:'FP.CPI.TOTL.ZG',    name:'消费者价格通胀率',          fmt:'pct'},
+  {id:'FM.LBL.BMNY.ZG',    name:'广义货币增长率',            fmt:'pct'},
+  {id:'SP.POP.TOTL',       name:'人口总数',                  fmt:'count'},
+  {id:'SP.DYN.TFRT.IN',    name:'总和生育率',                fmt:'rate'},
+  {id:'SP.POP.GROW',       name:'人口年增长率',              fmt:'pct'},
+  {id:'AG.SRF.TOTL.K2',    name:'国土面积（平方公里）',       fmt:'area'},
+  {id:'AG.LND.TOTL.K2',    name:'土地面积（平方公里）',       fmt:'area'},
+];
+
+const GDP_COUNTRIES = [
+  {id:'USA', name:'美国', color:'var(--s1)'},
+  {id:'CHN', name:'中国', color:'var(--s2)'},
+  {id:'JPN', name:'日本', color:'var(--s3)'},
+  {id:'DEU', name:'德国', color:'var(--s4)'},
+  {id:'GBR', name:'英国', color:'var(--s5)'},
+];
+
+/* ======================= 工具 ======================= */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const parseISO = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+const fromUTC = t => { const d = new Date(t); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`; };
+const shortDate = s => { const [, m, d] = s.split('-'); return `${+m}月${+d}日`; };
+const WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+
+function fmt(v, dec) {
+  if (v == null || !isFinite(v)) return '—';
+  return v.toLocaleString('zh-CN', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+}
+function fmtBig(v) {
+  const a = Math.abs(v);
+  if (a >= 1e12) return fmt(v / 1e12, 2) + ' 万亿';
+  if (a >= 1e8) return fmt(v / 1e8, 2) + ' 亿';
+  if (a >= 1e4) return fmt(v / 1e4, 1) + ' 万';
+  return fmt(v, 0);
+}
+function fmtIndicator(v, ind) {
+  switch (ind.fmt) {
+    case 'money': return fmtBig(v) + ' ' + ind.unit;
+    case 'count': return fmtBig(v);
+    case 'plain': return fmt(v, 0) + ' ' + ind.unit;
+    case 'pct': return fmt(v, 2) + '%';
+    case 'rate': return fmt(v, 2);
+    case 'area': return fmt(v, 0);
+    default: return fmt(v, 2);
+  }
+}
+
+function el(tag, attrs, ...children) {
+  const n = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null) continue;
+    if (k === 'class') n.className = v;
+    else if (k === 'hidden') n.hidden = !!v;
+    else n.setAttribute(k, v);
+  }
+  for (const c of children.flat()) if (c != null) n.append(c);
+  return n;
+}
+const NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs) {
+  const n = document.createElementNS(NS, tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) if (v != null) n.setAttribute(k, v);
+  return n;
+}
+function svgText(x, y, text, attrs) {
+  const t = svgEl('text', Object.assign({x, y}, attrs));
+  t.textContent = text;
+  return t;
+}
+
+const store = {
+  get(key, fallback) {
+    try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }
+    catch (e) { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* 存不了就算了 */ }
+  },
+  del(key) { try { localStorage.removeItem(key); } catch (e) {} },
+};
+
+async function fetchJSON(url, timeoutMs = 20000) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {signal: ctl.signal, cache: 'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } finally { clearTimeout(timer); }
+}
+
+function setStatus(node, text, isErr) {
+  node.textContent = text;
+  node.classList.toggle('err', !!isErr);
+}
+function errorHint(e) {
+  const msg = (e && e.message) || '';
+  if (/abort/i.test(msg)) return '请求超时';
+  if (/Failed to fetch|NetworkError|Load failed/i.test(msg)) return '网络不通或接口暂不可用';
+  return msg || '未知错误';
+}
+
+/* ======================= 状态 ======================= */
+const state = {
+  fx: store.get('fx_cache_v1', null),  // {fetchedAt, blend:{USD:[{d,v}]}, cfets:{...}}
+  card: null,                           // data/card_rates.json 的内容
+  trendCode: store.get('trend_code', 'USD'),
+  countries: null,
+  indCache: {},
+};
+
+/* ======================= 刊头 ======================= */
+(function renderDateline() {
+  const now = new Date();
+  $('dateline').textContent = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日 星期${WEEK[now.getDay()]} · 中间价、各国央行参考汇率与世界银行数据`;
+})();
+
+/* ======================= 汇率 ======================= */
+function seriesFromRows(rows) {
+  const out = {};
+  if (!Array.isArray(rows)) return out;
+  for (const r of rows) {
+    if (!r || typeof r.rate !== 'number' || r.rate <= 0 || r.base !== 'CNY') continue;
+    const c = CUR_BY[r.quote];
+    if (!c) continue;
+    (out[r.quote] ||= []).push({d: r.date, v: c.unit / r.rate});
+  }
+  for (const k in out) out[k].sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+  return out;
+}
+
+async function loadFX() {
+  const status = $('fx-status');
+  setStatus(status, '正在更新汇率…');
+  const main = document.querySelector('main');
+  main.classList.add('refreshing');
+  const from = isoDate(addDays(new Date(), -31));
+  const q = CURRENCIES.map(c => c.code).join(',');
+  const [b, c] = await Promise.allSettled([
+    fetchJSON(`${FR}/v2/rates?base=CNY&quotes=${q}&from=${from}`),
+    fetchJSON(`${FR}/v2/providers/cfets/rates?base=CNY&quotes=${q}&from=${from}`),
+  ]);
+  main.classList.remove('refreshing');
+  const blend = b.status === 'fulfilled' ? seriesFromRows(b.value) : null;
+  const cfets = c.status === 'fulfilled' ? seriesFromRows(c.value) : null;
+  if (blend || cfets) {
+    state.fx = {
+      fetchedAt: Date.now(),
+      blend: blend || (state.fx && state.fx.blend) || {},
+      cfets: cfets || (state.fx && state.fx.cfets) || {},
+    };
+    store.set('fx_cache_v1', state.fx);
+    const t = new Date();
+    const parts = [`更新于 ${pad(t.getHours())}:${pad(t.getMinutes())}`];
+    if (!cfets) parts.push('中间价读取失败：' + errorHint(c.reason));
+    if (!blend) parts.push('国际参考读取失败：' + errorHint(b.reason));
+    setStatus(status, parts.join(' · '), !cfets || !blend);
+  } else {
+    const cached = state.fx ? `，显示 ${new Date(state.fx.fetchedAt).toLocaleString('zh-CN')} 的缓存` : '';
+    setStatus(status, `汇率读取失败（${errorHint(b.reason)}）${cached}。若是直接双击打开的文件被浏览器拦截，可在文件所在目录运行 python -m http.server 后访问。`, true);
+  }
+  renderRates();
+  renderTrend();
+  renderConvert();
+  renderCardRates();
+}
+
+function latest(series) { return series && series.length ? series[series.length - 1] : null; }
+function latestDates() {
+  if (!state.fx) return {};
+  const pick = obj => { let m = null; for (const k in obj) { const l = latest(obj[k]); if (l && (!m || l.d > m)) m = l.d; } return m; };
+  return {cfets: pick(state.fx.cfets), blend: pick(state.fx.blend)};
+}
+
+function sparkline(series) {
+  const W = 92, H = 28, P = 3;
+  const svg = svgEl('svg', {class: 'spark', viewBox: `0 0 ${W} ${H}`, 'aria-hidden': 'true'});
+  if (!series || series.length < 2) return svg;
+  const vs = series.map(p => p.v);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  if (hi === lo) { hi += 1e-9; lo -= 1e-9; }
+  const sx = i => P + (i / (series.length - 1)) * (W - 2 * P);
+  const sy = v => P + (1 - (v - lo) / (hi - lo)) * (H - 2 * P);
+  const d = series.map((p, i) => (i ? 'L' : 'M') + sx(i).toFixed(1) + ' ' + sy(p.v).toFixed(1)).join(' ');
+  svg.append(svgEl('path', {d}));
+  const last = series[series.length - 1];
+  svg.append(svgEl('circle', {cx: sx(series.length - 1), cy: sy(last.v), r: 2.5}));
+  return svg;
+}
+
+function deltaCell(cur, prev) {
+  if (cur == null || prev == null || prev === 0) return el('td', {class: 'num'}, el('span', {class: 'delta flat'}, '—'));
+  const pct = (cur - prev) / prev * 100;
+  const cls = pct > 0.0005 ? 'up' : pct < -0.0005 ? 'down' : 'flat';
+  const sign = pct > 0 ? '+' : '';
+  const arrow = cls === 'up' ? '▲ ' : cls === 'down' ? '▼ ' : '';
+  return el('td', {class: 'num'}, el('span', {class: 'delta ' + cls}, `${arrow}${sign}${fmt(pct, 2)}%`));
+}
+
+function renderRates() {
+  const body = $('rates-body');
+  body.replaceChildren();
+  if (!state.fx) {
+    body.append(el('tr', null, el('td', {colspan: '6', class: 'empty'}, '暂无汇率数据')));
+    return;
+  }
+  const dates = latestDates();
+  for (const c of CURRENCIES) {
+    const bl = state.fx.blend[c.code] || [];
+    const cf = state.fx.cfets[c.code] || [];
+    const lb = latest(bl), lc = latest(cf);
+    const first = bl[0];
+    const tr = el('tr', null,
+      el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, c.unit > 1 ? `${c.unit} ${c.code}` : c.code)),
+      el('td', {class: 'num'}, lc ? fmt(lc.v, 4) : el('span', {class: 'dim'}, '—')),
+      el('td', {class: 'num'}, lb ? fmt(lb.v, 4) : el('span', {class: 'dim'}, '—')),
+      el('td', {class: 'num'}, lb && lc ? (() => {
+        const diff = lb.v - lc.v;
+        const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+        return el('span', {class: 'delta ' + cls}, (diff > 0 ? '+' : '') + fmt(diff, 4));
+      })() : el('span', {class: 'dim'}, '—')),
+      deltaCell(lb && lb.v, first && first.v),
+      el('td', null, sparkline(bl)),
+    );
+    if (lc && dates.cfets && lc.d !== dates.cfets) tr.children[1].title = `中间价日期 ${lc.d}`;
+    if (lb && dates.blend && lb.d !== dates.blend) tr.children[2].title = `参考汇率日期 ${lb.d}`;
+    body.append(tr);
+  }
+  const note = $('rates').querySelector('.sec-head .note');
+  const parts = ['1 外币 = 人民币；日元、韩元按 100 计 · 红涨绿跌'];
+  if (dates.cfets) parts.push(`中间价 ${dates.cfets}`);
+  if (dates.blend) parts.push(`国际参考 ${dates.blend}`);
+  note.textContent = parts.join(' · ');
+}
+
+/* ======================= 刷卡汇率与中行牌价 ======================= */
+const SOURCE_LABEL = {unionpay: '银联', mastercard: '万事达', boc: '中行'};
+async function loadCardRates() {
+  const body = $('card-body');
+  try {
+    const data = await fetchJSON('data/card_rates.json');
+    state.card = data;
+    renderCardRates();
+  } catch (e) {
+    const local = location.protocol === 'file:';
+    body.replaceChildren(el('tr', null, el('td', {colspan: '8', class: 'empty'},
+      local ? '这张表要放到网站上（GitHub Pages）才有数据，浏览器不允许本地文件读取 data/card_rates.json。' : '读不到抓取结果：' + errorHint(e))));
+  }
+}
+function renderCardRates() {
+  const data = state.card;
+  if (!data) return;
+  const body = $('card-body');
+  body.replaceChildren();
+  const rates = data.rates || {};
+  const hasAny = CURRENCIES.some(c => rates[c.code] && Object.keys(rates[c.code]).length);
+  if (!hasAny) {
+    body.append(el('tr', null, el('td', {colspan: '8', class: 'empty'}, '定时任务还没跑过，第一次抓取后这里会有数字。')));
+    $('card-status').textContent = '';
+    return;
+  }
+  const cell = (v, unit, dec) => el('td', {class: 'num'}, v == null ? el('span', {class: 'dim'}, '—') : fmt(v * unit, dec));
+  for (const c of CURRENCIES) {
+    const r = rates[c.code] || {};
+    const boc = r.boc || {};
+    const cf = latest(state.fx && state.fx.cfets[c.code]);
+    const tr = el('tr', null,
+      el('td', {class: 'name'}, c.name, el('span', {class: 'code'}, c.unit > 1 ? `${c.unit} ${c.code}` : c.code)),
+      cell(r.unionpay, c.unit, 4),
+      cell(r.mastercard, c.unit, 4),
+      cell(boc.hui_buy, c.unit, 4),
+      cell(boc.chao_buy, c.unit, 4),
+      cell(boc.hui_sell, c.unit, 4),
+      cell(boc.chao_sell, c.unit, 4),
+      el('td', {class: 'num'}, cf ? fmt(cf.v, 4) : el('span', {class: 'dim'}, '—')),
+    );
+    if (boc.time) tr.children[3].title = `中行发布 ${boc.time}`;
+    body.append(tr);
+  }
+  const parts = [];
+  for (const key of ['unionpay', 'mastercard', 'boc']) {
+    const s = (data.sources || {})[key];
+    if (!s) continue;
+    const label = SOURCE_LABEL[key];
+    if (s.ok) parts.push(`${label} ${s.date || ''}`.trim());
+    else parts.push(`${label}抓取失败${s.date ? `，沿用 ${s.date}` : ''}`);
+  }
+  if (data.generated_at) {
+    const t = new Date(data.generated_at);
+    parts.push(`抓取于 ${t.getMonth() + 1}月${t.getDate()}日 ${pad(t.getHours())}:${pad(t.getMinutes())}`);
+  }
+  const status = $('card-status');
+  setStatus(status, parts.join(' · '), Object.values(data.sources || {}).some(s => s && !s.ok));
+}
+
+/* ======================= 折线图 ======================= */
+function niceTicks(min, max, count) {
+  if (!(max > min)) { max = min + 1; }
+  const span = max - min;
+  const step0 = span / Math.max(1, count);
+  const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const norm = step0 / mag;
+  const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step;
+  const ticks = [];
+  for (let v = lo; v <= hi + step / 2; v += step) ticks.push(+v.toPrecision(12));
+  return {ticks, lo, hi, step};
+}
+function pickIndices(n, k) {
+  if (n <= k) return [...Array(n).keys()];
+  const out = [];
+  for (let i = 0; i < k; i++) out.push(Math.round(i * (n - 1) / (k - 1)));
+  return [...new Set(out)];
+}
+function ttRow(series, valueText) {
+  const row = el('div', {class: 'tt-row'});
+  const key = el('i', {class: 'key'});
+  key.style.borderColor = series.color;
+  key.style.display = 'inline-block'; key.style.borderTop = '2px solid'; key.style.borderTopColor = series.color; key.style.height = '0';
+  row.append(key, el('strong', null, valueText), el('span', null, series.name));
+  return row;
+}
+
+/**
+ * cfg: {series:[{name,color,points:[{x,y}]}], xFmt, xFmtLong, yFmt(v, precise), zeroBase, endLabels, height, ariaLabel}
+ */
+function lineChart(host, cfg) {
+  host.replaceChildren();
+  const series = cfg.series.filter(s => s.points && s.points.length);
+  if (!series.length) { host.append(el('p', {class: 'empty'}, '暂无数据')); return; }
+  const W = Math.max(320, Math.floor(host.clientWidth) || 640);
+  const H = cfg.height || 280;
+  const m = {t: 14, r: cfg.endLabels ? 86 : 18, b: 30, l: 56};
+  const xs = [...new Set(series.flatMap(s => s.points.map(p => p.x)))].sort((a, b) => a - b);
+  const xmin = xs[0], xmax = xs[xs.length - 1];
+  let ymin = Infinity, ymax = -Infinity;
+  series.forEach(s => s.points.forEach(p => { ymin = Math.min(ymin, p.y); ymax = Math.max(ymax, p.y); }));
+  let yLo, yHi, ticks;
+  if (cfg.zeroBase) {
+    ({ticks, hi: yHi} = niceTicks(0, ymax * 1.05, 3)); yLo = 0;
+  } else {
+    const pad = (ymax - ymin) * 0.12 || Math.abs(ymax) * 0.01 || 1;
+    ({ticks, lo: yLo, hi: yHi} = niceTicks(ymin - pad, ymax + pad, 3));
+  }
+  const plotW = W - m.l - m.r, plotH = H - m.t - m.b;
+  const sx = x => m.l + (xmax === xmin ? 0.5 : (x - xmin) / (xmax - xmin)) * plotW;
+  const sy = y => m.t + (1 - (y - yLo) / (yHi - yLo)) * plotH;
+
+  const svg = svgEl('svg', {viewBox: `0 0 ${W} ${H}`, width: W, height: H, class: 'chart', tabindex: '0', role: 'img', 'aria-label': cfg.ariaLabel || ''});
+  ticks.filter(t => t >= yLo - 1e-9 && t <= yHi + 1e-9).forEach(t => {
+    svg.append(svgEl('line', {x1: m.l, x2: W - m.r, y1: sy(t), y2: sy(t), class: 'grid'}));
+    svg.append(svgText(m.l - 8, sy(t) + 4, cfg.yFmt(t, false), {class: 'tick', 'text-anchor': 'end'}));
+  });
+  svg.append(svgEl('line', {x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, class: 'axis'}));
+  pickIndices(xs.length, W < 480 ? 3 : 5).forEach(i => {
+    const anchor = i === 0 ? 'start' : i === xs.length - 1 ? 'end' : 'middle';
+    svg.append(svgText(sx(xs[i]), H - m.b + 18, cfg.xFmt(xs[i]), {class: 'tick', 'text-anchor': anchor}));
+  });
+  series.forEach(s => {
+    const pts = s.points.slice().sort((a, b) => a.x - b.x);
+    const d = pts.map((p, i) => (i ? 'L' : 'M') + sx(p.x).toFixed(1) + ' ' + sy(p.y).toFixed(1)).join(' ');
+    if (series.length === 1) {
+      const area = d + ` L${sx(pts[pts.length - 1].x).toFixed(1)} ${(H - m.b).toFixed(1)} L${sx(pts[0].x).toFixed(1)} ${(H - m.b).toFixed(1)} Z`;
+      const a = svgEl('path', {d: area, class: 'area'}); a.style.fill = s.color; svg.append(a);
+    }
+    const path = svgEl('path', {d, class: 'line'}); path.style.stroke = s.color; svg.append(path);
+    const last = pts[pts.length - 1];
+    const dot = svgEl('circle', {cx: sx(last.x), cy: sy(last.y), r: 4, class: 'enddot'}); dot.style.fill = s.color; svg.append(dot);
+  });
+  if (cfg.endLabels) {
+    // 终点标签：重叠时向下错开并画一条细引线，仍放不下的交给图例和悬停
+    const items = series
+      .map(s => { const last = s.points.reduce((a, b) => (b.x > a.x ? b : a)); return {last, x: sx(last.x), y: sy(last.y)}; })
+      .sort((a, b) => a.y - b.y);
+    let lastY = -Infinity;
+    const maxY = H - m.b - 4;
+    items.forEach(o => {
+      let ly = Math.max(o.y, lastY + 13);
+      if (ly > maxY) ly = maxY;
+      if (lastY !== -Infinity && ly - lastY < 13) return;
+      if (Math.abs(ly - o.y) > 1) svg.append(svgEl('line', {x1: o.x + 5, y1: o.y, x2: o.x + 8, y2: ly, class: 'leader'}));
+      svg.append(svgText(o.x + 10, ly + 4, cfg.yFmt(o.last.y, true), {class: 'endlabel'}));
+      lastY = ly;
+    });
+  }
+  // 悬停层
+  const hair = svgEl('line', {class: 'hair', y1: m.t, y2: H - m.b, x1: 0, x2: 0, visibility: 'hidden'});
+  svg.append(hair);
+  const dots = series.map(s => { const c = svgEl('circle', {r: 4.5, class: 'hoverdot', visibility: 'hidden'}); c.style.fill = s.color; svg.append(c); return c; });
+  const hit = svgEl('rect', {x: m.l, y: m.t, width: plotW, height: plotH, fill: 'transparent'});
+  svg.append(hit);
+  const tip = el('div', {class: 'tooltip', hidden: true});
+  let idx = -1;
+  const show = i => {
+    idx = i;
+    const x = xs[i];
+    hair.setAttribute('x1', sx(x)); hair.setAttribute('x2', sx(x)); hair.removeAttribute('visibility');
+    tip.replaceChildren(el('div', {class: 'tt-head'}, (cfg.xFmtLong || cfg.xFmt)(x)));
+    series.forEach((s, k) => {
+      const p = s.points.find(p => p.x === x);
+      if (!p) { dots[k].setAttribute('visibility', 'hidden'); tip.append(ttRow(s, '—')); return; }
+      dots[k].setAttribute('cx', sx(p.x)); dots[k].setAttribute('cy', sy(p.y)); dots[k].removeAttribute('visibility');
+      tip.append(ttRow(s, cfg.yFmt(p.y, true)));
+    });
+    tip.hidden = false;
+    const scale = (svg.getBoundingClientRect().width || W) / W;
+    const px = sx(x) * scale;
+    const tw = tip.offsetWidth || 160;
+    let left = px + 14;
+    if (left + tw > host.clientWidth - 2) left = px - tw - 14;
+    tip.style.left = Math.max(0, left) + 'px';
+    tip.style.top = (m.t * scale) + 'px';
+  };
+  const hide = () => { idx = -1; hair.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); tip.hidden = true; };
+  hit.addEventListener('pointermove', e => {
+    const r = svg.getBoundingClientRect();
+    const px = (e.clientX - r.left) * (W / r.width);
+    let best = 0, bd = Infinity;
+    xs.forEach((x, i) => { const d = Math.abs(sx(x) - px); if (d < bd) { bd = d; best = i; } });
+    show(best);
+  });
+  hit.addEventListener('pointerleave', hide);
+  svg.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') { show(Math.max(0, (idx < 0 ? xs.length : idx) - 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowRight') { show(Math.min(xs.length - 1, (idx < 0 ? -1 : idx) + 1)); e.preventDefault(); }
+    else if (e.key === 'Escape') hide();
+  });
+  svg.addEventListener('blur', hide);
+  host.append(svg, tip);
+}
+
+function chartTable(xs, series, xFmt, yFmt) {
+  const thead = el('thead', null, el('tr', null, el('th', null, '日期'), ...series.map(s => el('th', {class: 'num'}, s.name))));
+  const tbody = el('tbody');
+  xs.slice().sort((a, b) => b - a).forEach(x => {
+    tbody.append(el('tr', null, el('td', null, xFmt(x)), ...series.map(s => {
+      const p = s.points.find(p => p.x === x);
+      return el('td', {class: 'num'}, p ? yFmt(p.y, true) : '—');
+    })));
+  });
+  return el('div', {class: 'tablewrap'}, el('table', null, thead, tbody));
+}
+
+// 容器宽度变化时重画
+const chartRenderers = new Map();
+const ro = new ResizeObserver(entries => {
+  for (const en of entries) {
+    const fn = chartRenderers.get(en.target);
+    const w = Math.floor(en.contentRect.width);
+    if (fn && w > 0 && en.target.dataset.w !== String(w)) { en.target.dataset.w = String(w); fn(); }
+  }
+});
+function registerChart(host, fn) { chartRenderers.set(host, fn); ro.observe(host); fn(); }
+
+/* ======================= 走势 ======================= */
+function renderTrendTabs() {
+  const tabs = $('trend-tabs');
+  tabs.replaceChildren();
+  for (const c of CURRENCIES) {
+    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.name);
+    b.addEventListener('click', () => {
+      state.trendCode = c.code; store.set('trend_code', c.code);
+      tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+      renderTrend();
+    });
+    tabs.append(b);
+  }
+}
+function trendSeries() {
+  const c = CUR_BY[state.trendCode];
+  const toPts = s => (s || []).map(p => ({x: parseISO(p.d), y: p.v}));
+  return [
+    {name: '中间价', color: 'var(--s1)', points: toPts(state.fx && state.fx.cfets[c.code])},
+    {name: '国际参考', color: 'var(--s2)', points: toPts(state.fx && state.fx.blend[c.code])},
+  ];
+}
+function renderTrend() {
+  const c = CUR_BY[state.trendCode];
+  $('trend-title').textContent = `${c.name} / 人民币` + (c.unit > 1 ? `（${c.unit} ${c.code}）` : '');
+  const host = $('trend-chart');
+  const draw = () => lineChart(host, {
+    series: trendSeries(),
+    xFmt: x => shortDate(fromUTC(x)),
+    xFmtLong: x => { const s = fromUTC(x); return `${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
+    yFmt: (v, precise) => fmt(v, precise ? 4 : (v >= 100 ? 1 : 3)),
+    endLabels: true,
+    ariaLabel: `${c.name}兑人民币 30 日走势`,
+  });
+  registerChart(host, draw);
+  const tbl = $('trend-table');
+  if (!tbl.hidden) renderTrendTable();
+}
+function renderTrendTable() {
+  const s = trendSeries().filter(x => x.points.length);
+  const xs = [...new Set(s.flatMap(x => x.points.map(p => p.x)))];
+  $('trend-table').replaceChildren(s.length ? chartTable(xs, s, x => fromUTC(x), (v) => fmt(v, 4)) : el('p', {class: 'empty'}, '暂无数据'));
+}
+$('trend-table-btn').addEventListener('click', e => {
+  const tbl = $('trend-table');
+  tbl.hidden = !tbl.hidden;
+  e.currentTarget.setAttribute('aria-expanded', String(!tbl.hidden));
+  if (!tbl.hidden) renderTrendTable();
+});
+
+/* ======================= 换算 ======================= */
+function rateCNY(code, src) {
+  if (code === 'CNY') return 1;
+  const s = state.fx && state.fx[src] && state.fx[src][code];
+  const l = latest(s);
+  return l ? l.v / CUR_BY[code].unit : null;
+}
+function fillCurrencySelects() {
+  const opts = () => [el('option', {value: 'CNY'}, '人民币 CNY'), ...CURRENCIES.map(c => el('option', {value: c.code}, `${c.name} ${c.code}`))];
+  $('from').replaceChildren(...opts());
+  $('to').replaceChildren(...opts());
+  $('from').value = store.get('conv_from', 'USD');
+  $('to').value = store.get('conv_to', 'CNY');
+}
+function renderConvert() {
+  const amt = parseFloat($('amount').value);
+  const f = $('from').value, t = $('to').value;
+  store.set('conv_from', f); store.set('conv_to', t);
+  const out = $('conv-result'), sub = $('conv-sub');
+  const rf = rateCNY(f, 'blend'), rt = rateCNY(t, 'blend');
+  if (!isFinite(amt) || rf == null || rt == null) {
+    out.textContent = '—';
+    sub.textContent = rf == null || rt == null ? '这对币种暂无参考汇率' : '';
+    return;
+  }
+  const v = amt * rf / rt;
+  out.replaceChildren(fmt(v, v >= 1000 ? 2 : 4), el('small', null, t));
+  const uf = (CUR_BY[f] && CUR_BY[f].unit) || 1;
+  const lines = [`${uf} ${f} = ${fmt(uf * rf / rt, 4)} ${t}（国际参考）`];
+  const cf = rateCNY(f, 'cfets'), ct = rateCNY(t, 'cfets');
+  if (cf != null && ct != null) lines.push(`按中间价 ${fmt(amt * cf / ct, v >= 1000 ? 2 : 4)} ${t}`);
+  sub.textContent = lines.join(' · ');
+}
+$('convert-form').addEventListener('submit', e => e.preventDefault());
+['amount', 'from', 'to'].forEach(id => $(id).addEventListener('input', renderConvert));
+$('swap').addEventListener('click', () => { const a = $('from').value; $('from').value = $('to').value; $('to').value = a; renderConvert(); });
+
+/* ======================= 牌价入口 ======================= */
+function renderLinks() {
+  const links = store.get('links_v1', DEFAULT_LINKS);
+  const grid = $('link-grid');
+  grid.replaceChildren();
+  links.forEach((l, i) => {
+    const a = el('a', {class: 'link-card', href: l.url, target: '_blank', rel: 'noopener'},
+      el('span', {class: 't'}, l.name),
+      el('span', {class: 'u'}, l.url.replace(/^https?:\/\//, '')));
+    const x = el('button', {class: 'x', type: 'button', title: '删除', 'aria-label': '删除 ' + l.name}, '×');
+    x.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); links.splice(i, 1); store.set('links_v1', links); renderLinks(); });
+    a.append(x);
+    grid.append(a);
+  });
+  if (!links.length) grid.append(el('p', {class: 'empty'}, '还没有链接，下面添加一个'));
+}
+$('link-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('link-name').value.trim(), url = $('link-url').value.trim();
+  if (!name || !/^https?:\/\//i.test(url)) return;
+  const links = store.get('links_v1', DEFAULT_LINKS);
+  links.push({name, url}); store.set('links_v1', links);
+  $('link-name').value = ''; $('link-url').value = '';
+  renderLinks();
+});
+$('link-reset').addEventListener('click', () => { store.del('links_v1'); renderLinks(); });
+
+/* ======================= 存款利率 ======================= */
+(function renderDeposit() {
+  $('deposit-note').textContent = `核对于 ${DEPOSIT.checked}`;
+  const grid = $('deposit-grid');
+  grid.replaceChildren(...DEPOSIT.rows.map(([k, v]) => el('div', {class: 'rate'}, el('div', {class: 'k'}, k), el('div', {class: 'v'}, fmt(v, 2), el('small', null, ' %')))));
+})();
+
+/* ======================= 手续费 ======================= */
+function renderFees() {
+  const rows = store.get('fees_v1', DEFAULT_FEES);
+  const body = $('fees-body');
+  body.replaceChildren();
+  rows.forEach((r, i) => {
+    const x = el('button', {class: 'btn btn-ghost btn-sm', type: 'button', 'aria-label': '删除'}, '删除');
+    x.addEventListener('click', () => { rows.splice(i, 1); store.set('fees_v1', rows); renderFees(); });
+    body.append(el('tr', null, el('td', {class: 'name'}, r.item), el('td', null, r.bank), el('td', null, r.cost), el('td', {class: 'dim'}, r.note || ''), el('td', null, x)));
+  });
+  if (!rows.length) body.append(el('tr', null, el('td', {colspan: '5', class: 'empty'}, '还没有记录')));
+}
+$('fee-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const r = {item: $('fee-item').value.trim(), bank: $('fee-bank').value.trim(), cost: $('fee-cost').value.trim(), note: $('fee-note').value.trim()};
+  if (!r.item || !r.bank || !r.cost) return;
+  const rows = store.get('fees_v1', DEFAULT_FEES);
+  rows.push(r); store.set('fees_v1', rows);
+  ['fee-item', 'fee-bank', 'fee-cost', 'fee-note'].forEach(id => { $(id).value = ''; });
+  renderFees();
+});
+
+/* ======================= 各国数据 ======================= */
+async function loadCountries() {
+  const cached = store.get('wb_countries_v1', null);
+  if (cached && Date.now() - cached.at < 30 * 864e5) { state.countries = cached.map; return; }
+  const data = await fetchJSON(`${WB}/zh/country?format=json&per_page=400`);
+  const map = {};
+  for (const c of (data && data[1]) || []) {
+    if (!c || !c.id) continue;
+    map[c.id] = {n: c.name || '', a: !c.region || c.region.id === 'NA' ? 1 : 0};
+  }
+  state.countries = map;
+  store.set('wb_countries_v1', {at: Date.now(), map});
+}
+async function loadIndicator(id) {
+  if (state.indCache[id]) return state.indCache[id];
+  const key = 'wb_ind_' + id;
+  const cached = store.get(key, null);
+  if (cached && Date.now() - cached.at < 864e5) { state.indCache[id] = cached.rows; return cached.rows; }
+  const data = await fetchJSON(`${WB}/country/all/indicator/${id}?format=json&mrnev=1&per_page=400`);
+  const rows = [];
+  for (const r of (data && data[1]) || []) {
+    if (!r || r.value == null || !r.countryiso3code) continue;
+    rows.push({id: r.countryiso3code, en: (r.country && r.country.value) || r.countryiso3code, date: r.date, value: r.value});
+  }
+  state.indCache[id] = rows;
+  store.set(key, {at: Date.now(), rows});
+  return rows;
+}
+let statsExpanded = false;
+async function renderStats() {
+  const sel = $('indicator');
+  const ind = INDICATORS.find(x => x.id === sel.value) || INDICATORS[0];
+  const status = $('stats-status'), body = $('stats-body');
+  $('value-head').textContent = ind.name;
+  setStatus(status, '正在读取…');
+  try {
+    if (!state.countries) { try { await loadCountries(); } catch (e) { /* 名称退回英文 */ } }
+    const rows = await loadIndicator(ind.id);
+    const cm = state.countries || {};
+    const q = $('country-search').value.trim().toLowerCase();
+    let list = rows
+      .filter(r => !(cm[r.id] && cm[r.id].a))
+      .map(r => ({...r, name: (cm[r.id] && cm[r.id].n) || r.en}))
+      .filter(r => !q || r.name.toLowerCase().includes(q) || r.en.toLowerCase().includes(q) || r.id.toLowerCase().includes(q));
+    list.sort((a, b) => b.value - a.value);
+    body.replaceChildren();
+    const shown = statsExpanded || q ? list : list.slice(0, 30);
+    shown.forEach((r, i) => body.append(el('tr', null,
+      el('td', {class: 'num dim'}, String(i + 1)),
+      el('td', {class: 'name'}, r.name, el('span', {class: 'code'}, r.id)),
+      el('td', {class: 'num'}, fmtIndicator(r.value, ind)),
+      el('td', {class: 'num dim'}, r.date))));
+    if (!shown.length) body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '没有匹配的国家')));
+    const more = $('stats-more');
+    more.hidden = statsExpanded || !!q || list.length <= 30;
+    more.textContent = `显示全部 ${list.length} 个`;
+    const years = [...new Set(list.map(r => r.date))].sort();
+    setStatus(status, `${list.length} 个国家和地区` + (years.length ? ` · 数据年份 ${years[0]}${years.length > 1 ? '–' + years[years.length - 1] : ''}` : '') + (state.countries ? '' : ' · 名称暂为英文'));
+  } catch (e) {
+    body.replaceChildren(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '世界银行接口读取失败：' + errorHint(e))));
+    setStatus(status, '读取失败', true);
+  }
+}
+(function initStats() {
+  const sel = $('indicator');
+  sel.replaceChildren(...INDICATORS.map(i => el('option', {value: i.id}, i.name)));
+  sel.value = store.get('indicator', INDICATORS[0].id);
+  sel.addEventListener('change', () => { statsExpanded = false; store.set('indicator', sel.value); renderStats(); });
+  let t;
+  $('country-search').addEventListener('input', () => { clearTimeout(t); t = setTimeout(renderStats, 150); });
+  $('stats-more').addEventListener('click', () => { statsExpanded = true; renderStats(); });
+})();
+
+async function renderGDP() {
+  const host = $('gdp-chart');
+  const legend = $('gdp-legend');
+  legend.replaceChildren(...GDP_COUNTRIES.map(c => { const k = el('i', {class: 'key'}); k.style.borderColor = c.color; return el('span', null, k, c.name); }));
+  const btn = el('button', {class: 'btn btn-ghost btn-sm', type: 'button', 'aria-expanded': 'false'}, '表格');
+  legend.append(btn);
+  try {
+    const key = 'wb_gdp_trend_v1';
+    let rows = null;
+    const cached = store.get(key, null);
+    if (cached && Date.now() - cached.at < 7 * 864e5) rows = cached.rows;
+    if (!rows) {
+      const year = new Date().getFullYear();
+      const ids = GDP_COUNTRIES.map(c => c.id).join(';');
+      const data = await fetchJSON(`${WB}/country/${ids}/indicator/NY.GDP.MKTP.CD?format=json&date=1990:${year}&per_page=400`);
+      rows = ((data && data[1]) || []).filter(r => r && r.value != null && r.countryiso3code).map(r => ({id: r.countryiso3code, year: +r.date, value: r.value}));
+      store.set(key, {at: Date.now(), rows});
+    }
+    const series = GDP_COUNTRIES.map(c => ({name: c.name, color: c.color, points: rows.filter(r => r.id === c.id).map(r => ({x: r.year, y: r.value})).sort((a, b) => a.x - b.x)}));
+    const yFmt = (v, precise) => fmt(v / 1e12, precise ? 2 : 0) + ' 万亿';
+    const draw = () => lineChart(host, {series, xFmt: x => String(x), xFmtLong: x => `${x} 年`, yFmt, zeroBase: true, endLabels: true, height: 300, ariaLabel: '美中日德英 GDP 走势'});
+    registerChart(host, draw);
+    const tbl = $('gdp-table');
+    btn.addEventListener('click', () => {
+      tbl.hidden = !tbl.hidden; btn.setAttribute('aria-expanded', String(!tbl.hidden));
+      if (!tbl.hidden) {
+        const xs = [...new Set(series.flatMap(s => s.points.map(p => p.x)))];
+        tbl.replaceChildren(chartTable(xs, series, x => `${x} 年`, yFmt));
+      }
+    });
+  } catch (e) {
+    host.replaceChildren(el('p', {class: 'empty'}, '世界银行接口读取失败：' + errorHint(e)));
+  }
+}
+
+/* ======================= 启动 ======================= */
+renderTrendTabs();
+fillCurrencySelects();
+renderLinks();
+renderFees();
+if (state.fx) { renderRates(); renderTrend(); renderConvert(); } else { renderTrend(); }
+$('refresh').addEventListener('click', () => {
+  const id = $('indicator').value;
+  delete state.indCache[id]; store.del('wb_ind_' + id);
+  loadFX(); loadCardRates(); renderStats();
+});
+loadFX();
+loadCardRates();
+renderStats();
+renderGDP();
+</script>
+</body>
+</html>

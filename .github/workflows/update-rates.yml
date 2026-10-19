@@ -1,0 +1,49 @@
+name: 更新刷卡汇率
+
+on:
+  schedule:
+    # 北京时间 10:40 与 18:10 各跑一次（cron 用的是 UTC）
+    - cron: "40 2 * * *"
+    - cron: "10 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-rates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装依赖
+        run: pip install --quiet requests beautifulsoup4
+
+      - name: 抓取银联、万事达、中国银行
+        id: fetch
+        continue-on-error: true
+        run: python scripts/fetch_rates.py
+
+      - name: 提交结果
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/card_rates.json
+          if git diff --cached --quiet; then
+            echo "数据没有变化，不用提交"
+          else
+            git commit -m "更新刷卡汇率 $(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M')"
+            git push
+          fi
+
+      - name: 三个来源全部失败时标红
+        if: steps.fetch.outcome == 'failure'
+        run: exit 1
