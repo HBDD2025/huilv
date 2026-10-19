@@ -548,7 +548,149 @@ def fetch_cbhb_ipcn():
 
 # ================================================================ 香港银行（1 外币兑港元）
 # 每个抓取函数返回 {"date", "rates": {CODE: {tt_buy, tt_sell, note_buy, note_sell, time}}}
-HK_FETCHERS = {}
+# tt_buy / note_buy = 银行买入（你把外币换成港元时拿到的价）；tt_sell / note_sell = 银行卖出（你买外币付的价）
+HK_NAMES = {
+    "人民幣": "CNY", "人民币": "CNY", "人民幣(離岸)": "CNY", "美元": "USD", "歐元": "EUR", "欧元": "EUR", "英鎊": "GBP", "英镑": "GBP",
+    "日圓": "JPY", "日元": "JPY", "澳門元": "MOP", "澳门元": "MOP", "澳門幣": "MOP", "新加坡元": "SGD", "新加坡幣": "SGD", "星元": "SGD",
+    "澳元": "AUD", "澳洲元": "AUD", "紐元": "NZD", "新西蘭元": "NZD", "紐西蘭元": "NZD", "加元": "CAD", "加拿大元": "CAD",
+    "瑞士法郎": "CHF", "瑞郎": "CHF", "韓圜": "KRW", "韓元": "KRW", "泰銖": "THB", "泰铢": "THB", "馬來西亞令吉": "MYR", "令吉": "MYR",
+    "印尼盾": "IDR", "印尼盧比": "IDR", "菲律賓披索": "PHP", "菲律賓比索": "PHP", "丹麥克朗": "DKK", "挪威克朗": "NOK", "瑞典克朗": "SEK",
+    "南非蘭特": "ZAR", "南非幣": "ZAR", "台幣": "TWD", "新台幣": "TWD",
+}
+
+
+def hk_code(text):
+    s = str(text or "").strip()
+    m = re.search(r"\b([A-Z]{3})\b", s)
+    if m and m.group(1) in HK_CODES:
+        return m.group(1)
+    key = re.sub(r"\s+", "", s)
+    for name, code in HK_NAMES.items():
+        if key.startswith(name):
+            return code
+    return None
+
+
+def fetch_cmbwlb():
+    """招商永隆：电汇与现钞各一张服务端渲染的表。报价为 1 外币兑港元；「我要賣出」= 银行买入，「我要買入」= 银行卖出。"""
+    rates, stamp = {}, ""
+    tt = get("https://www.cmbwinglungbank.com/ibanking/CnCoFiiTtrateDsp.jsp")
+    tt.encoding = tt.apparent_encoding or "utf-8"
+    m = re.search(r"更新時間[:：]\s*([\d/\-]+\s+[\d:]+)", tt.text)
+    stamp = m.group(1).replace("/", "-") if m else ""
+    for tr in BeautifulSoup(tt.text, "html.parser").find_all("tr"):
+        cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+        if len(cells) < 3:
+            continue
+        code = hk_code(cells[0])
+        if not code or code == "HKD":
+            continue
+        rates.setdefault(code, {"time": stamp})
+        rates[code]["tt_buy"], rates[code]["tt_sell"] = num(cells[1]), num(cells[2])
+    try:
+        nt = get("https://www.cmbwinglungbank.com/ibanking/CnCoFiiNotratDsp.jsp")
+        nt.encoding = nt.apparent_encoding or "utf-8"
+        for tr in BeautifulSoup(nt.text, "html.parser").find_all("tr"):
+            cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+            if len(cells) < 3:
+                continue
+            code = hk_code(cells[0])
+            if not code or code == "HKD":
+                continue
+            rates.setdefault(code, {"time": stamp})
+            rates[code]["note_buy"], rates[code]["note_sell"] = num(cells[1]), num(cells[2])
+    except Exception as exc:  # noqa: BLE001
+        warn(f"招商永隆现钞表失败：{str(exc)[:100]}")
+    rates = {k: v for k, v in rates.items() if any(v.get(x) is not None for x in ("tt_buy", "tt_sell", "note_buy", "note_sell"))}
+    if not rates:
+        raise RuntimeError("没有解析到牌价")
+    return {"date": stamp, "rates": rates}
+
+
+def make_hkrates(slug):
+    """hkrates.com 各银行页：表头 貨幣｜銀行買入｜銀行賣出｜更新時間；通常第一张是电汇，第二张是现钞；1 外币兑港元。"""
+    def fetch():
+        resp = get(f"https://hkrates.com/bankrate/{slug}.html")
+        resp.encoding = resp.apparent_encoding or "utf-8"
+        soup = BeautifulSoup(resp.text, "html.parser")
+        rates, stamp = {}, ""
+        kinds = []
+        for table in soup.find_all("table"):
+            heads = [c.get_text(" ", strip=True) for c in table.find_all("th")]
+            if not any("買入" in h or "买入" in h for h in heads):
+                continue
+            ctx = (table.find_previous(["h1", "h2", "h3", "h4", "caption"]) or table).get_text(" ", strip=True)
+            kind = "note" if ("現鈔" in ctx or "现钞" in ctx or "鈔" in " ".join(heads)) else ("tt" if not kinds or "tt" not in kinds else "note")
+            kinds.append(kind)
+            for tr in table.find_all("tr"):
+                cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+                if len(cells) < 3:
+                    continue
+                code = hk_code(cells[0])
+                if not code or code == "HKD":
+                    continue
+                buy, sell = num(cells[1]), num(cells[2])
+                if buy is None and sell is None:
+                    continue
+                t = cells[3] if len(cells) > 3 and re.match(r"\d{4}-\d\d-\d\d", cells[3]) else ""
+                stamp = max(stamp, t)
+                rates.setdefault(code, {})
+                rates[code][f"{kind}_buy"], rates[code][f"{kind}_sell"] = buy, sell
+                if t:
+                    rates[code]["time"] = t
+        if not rates:
+            raise RuntimeError("页面里没有找到牌价表（当日可能无数据）")
+        return {"date": stamp, "rates": rates}
+    return fetch
+
+
+def fetch_bochk():
+    """中银香港：两个无需登录的 .action 接口直接返回 HTML 表格，列为 貨幣｜客戶賣出｜客戶買入（客户卖出 = 银行买入）。
+    人民币取「離岸」一行（香港兑换的是离岸人民币），1 外币兑港元。"""
+    rates, stamp = {}, ""
+
+    def parse(url, kind):
+        nonlocal stamp
+        resp = get(url)
+        resp.encoding = resp.apparent_encoding or "utf-8"
+        m = re.search(r"資料更新於香港時間[：:]\s*([\d/\-]+\s+[\d:]+)", resp.text)
+        if m:
+            stamp = max(stamp, m.group(1).replace("/", "-"))
+        for tr in BeautifulSoup(resp.text, "html.parser").find_all("tr"):
+            cells = [c.get_text(" ", strip=True) for c in tr.find_all("td")]
+            if len(cells) < 3 or "在岸" in cells[0]:
+                continue
+            code = hk_code(cells[0])
+            if not code or code == "HKD":
+                continue
+            buy, sell = num(cells[1]), num(cells[2])
+            if buy is None and sell is None:
+                continue
+            rates.setdefault(code, {})
+            rates[code][f"{kind}_buy"], rates[code][f"{kind}_sell"] = buy, sell
+
+    parse("https://www.bochk.com/whk/rates/exchangeRatesHKD/exchangeRatesHKD-input.action?lang=hk", "tt")
+    try:
+        parse("https://www.bochk.com/whk/rates/exchangeRatesForCurrency/exchangeRatesForCurrency-input.action?lang=hk", "note")
+    except Exception as exc:  # noqa: BLE001
+        warn(f"中银香港现钞表失败：{str(exc)[:100]}")
+    if not rates:
+        raise RuntimeError("没有解析到牌价")
+    for r in rates.values():
+        r["time"] = stamp
+    return {"date": stamp, "rates": rates}
+
+
+HK_FETCHERS = {
+    # key: (显示名, 来源, 函数) —— 顺序即页面默认顺序；建行亚洲、大象（原天星）没有可抓来源，未列入
+    "hsbc": ("汇丰", "hkrates", make_hkrates("hk_hsbc")),
+    "hangseng": ("恒生", "hkrates", make_hkrates("hk_hangseng")),
+    "bochk": ("中银香港", "官网", fetch_bochk),
+    "icbcasia": ("工银亚洲", "hkrates", make_hkrates("hk_icbc")),
+    "cncbi": ("信银国际", "hkrates", make_hkrates("hk_cncb")),
+    "bea": ("东亚", "hkrates", make_hkrates("hk_bea")),
+    "cmbwlb": ("招商永隆", "官网", fetch_cmbwlb),
+}
 
 # ================================================================ 汇总
 SOURCES = [

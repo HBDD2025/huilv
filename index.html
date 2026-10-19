@@ -127,6 +127,8 @@ td.worst{color:var(--up)}
 .tabs button{border:1px solid var(--line-2); background:var(--surface); border-radius:999px; padding:1px 9px; cursor:pointer; font-size:12px; color:var(--fg-2)}
 .tabs button:hover{background:var(--surface-2)}
 .tabs button[aria-selected="true"]{background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.tabs.ranges{margin-top:-2px}
+.tabs.ranges button{border-radius:var(--radius); padding:1px 10px}
 
 /* 图表 */
 .legend{display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px; font-size:12px; color:var(--fg-2); margin-bottom:4px}
@@ -163,6 +165,9 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .quick-title{font-weight:700}
 .quick-head label{font-size:12px; color:var(--muted)}
 .quick-head input{width:90px; padding:2px 6px}
+.verdict{margin:0 0 6px; line-height:1.5}
+.verdict b{color:var(--down)}
+.verdict .vs{color:var(--muted)}
 .quick-table td.way{font-weight:600}
 .quick-table td .who{color:var(--muted); font-weight:400; margin-left:4px; font-size:11px}
 tr.best td{color:var(--down)}
@@ -250,7 +255,7 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="trend">
   <div class="band">
-    <h2>30 日走势</h2>
+    <h2 id="trend-h2">汇率走势</h2>
     <div class="legend" style="margin:0">
       <span><i class="key" style="border-color:#9ec5f4"></i>中间价</span>
       <span><i class="key" style="border-color:#ffb28f"></i>国际参考</span>
@@ -259,6 +264,7 @@ footer p{margin:3px 0; max-width:90ch}
   </div>
   <div class="body">
     <div class="tabs" id="trend-tabs" role="tablist"></div>
+    <div class="tabs ranges" id="range-tabs" role="tablist"></div>
     <div class="chart-host" id="trend-chart"></div>
     <div class="chart-table" id="trend-table" hidden></div>
     <div class="quick" id="quick">
@@ -267,6 +273,7 @@ footer p{margin:3px 0; max-width:90ch}
         <span class="quick-title">怎么付最省</span>
         <label>金额 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span></label>
       </div>
+      <div class="verdict" id="quick-verdict"></div>
       <div class="tablewrap">
         <table class="quick-table">
           <thead><tr><th>方式</th><th class="num">汇率</th><th class="num">折合人民币</th><th class="num">比中间价</th></tr></thead>
@@ -604,6 +611,8 @@ const state = {
   fx: store.get('fx_cache_v2', null),   // {fetchedAt, blend:{USD:[{d,v}]}, cfets:{...}}
   data: null,                            // data/rates.json
   trendCode: store.get('trend_code', 'USD'),
+  range: store.get('trend_range', 30),
+  ranges: {},                            // 长周期序列缓存：'USD:365' → {blend, cfets}
   countries: null,
   indCache: {},
   sort: {cn: store.get('sort_cn', null), hk: store.get('sort_hk', null)},
@@ -826,6 +835,7 @@ const ro = new ResizeObserver(entries => {
 function registerChart(host, fn) { chartRenderers.set(host, fn); ro.observe(host); fn(); }
 
 /* ======================= 走势 ======================= */
+const RANGES = [[30, '月'], [90, '季度'], [180, '半年'], [365, '年']];
 function renderTrendTabs() {
   const tabs = $('trend-tabs');
   tabs.replaceChildren();
@@ -838,31 +848,68 @@ function renderTrendTabs() {
     });
     tabs.append(b);
   }
+  const rt = $('range-tabs');
+  rt.replaceChildren();
+  for (const [days, label] of RANGES) {
+    const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(days === state.range)}, label);
+    b.addEventListener('click', () => {
+      state.range = days; store.set('trend_range', days);
+      rt.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+      renderTrend();
+    });
+    rt.append(b);
+  }
 }
-function trendSeries() {
-  const c = CUR_BY[state.trendCode];
+// 当前币种 + 周期的两条序列；30 日直接用总览数据，长周期按币种单独取并缓存
+async function rangeSeries(code, days) {
+  if (days <= 30) return {blend: (state.fx && state.fx.blend[code]) || [], cfets: (state.fx && state.fx.cfets[code]) || []};
+  const key = `${code}:${days}`;
+  if (state.ranges[key]) return state.ranges[key];
+  const from = isoDate(addDays(new Date(), -days));
+  const [b, c] = await Promise.allSettled([
+    fetchJSON(`${FR}/v2/rates?base=CNY&quotes=${code}&from=${from}`),
+    fetchJSON(`${FR}/v2/providers/cfets/rates?base=CNY&quotes=${code}&from=${from}`),
+  ]);
+  const out = {blend: b.status === 'fulfilled' ? (seriesFromRows(b.value)[code] || []) : [], cfets: c.status === 'fulfilled' ? (seriesFromRows(c.value)[code] || []) : []};
+  if (!out.blend.length && !out.cfets.length) throw new Error(errorHint((b.reason || c.reason)));
+  state.ranges[key] = out;
+  return out;
+}
+let trendToken = 0;
+function trendSeriesFrom(data) {
   const toPts = s => (s || []).map(p => ({x: parseISO(p.d), y: p.v}));
   return [
-    {name: '中间价', color: 'var(--s1)', points: toPts(state.fx && state.fx.cfets[c.code])},
-    {name: '国际参考', color: 'var(--s2)', points: toPts(state.fx && state.fx.blend[c.code])},
+    {name: '中间价', color: 'var(--s1)', points: toPts(data.cfets)},
+    {name: '国际参考', color: 'var(--s2)', points: toPts(data.blend)},
   ];
 }
-function renderTrend() {
+let trendData = {blend: [], cfets: []};
+async function renderTrend() {
   const c = CUR_BY[state.trendCode];
+  const days = state.range;
+  const label = RANGES.find(r => r[0] === days)[1];
+  $('trend-h2').textContent = `汇率走势 · ${c.name}（${unitLabel(c)}）· 近${days === 30 ? '一个月' : days === 90 ? '一季度' : days === 180 ? '半年' : '一年'}`;
   const host = $('trend-chart');
+  const token = ++trendToken;
+  let data;
+  try { data = await rangeSeries(c.code, days); }
+  catch (e) { if (token !== trendToken) return; host.replaceChildren(el('p', {class: 'empty'}, '读取走势失败：' + e.message)); return; }
+  if (token !== trendToken) return;
+  trendData = data;
+  const long = days >= 180;
   registerChart(host, () => lineChart(host, {
-    series: trendSeries(),
-    xFmt: x => shortDate(fromUTC(x)),
-    xFmtLong: x => { const s = fromUTC(x); return `${c.name}（${unitLabel(c)}）${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
+    series: trendSeriesFrom(trendData),
+    xFmt: x => long ? fromUTC(x).slice(0, 7).replace('-', '年') + '月' : shortDate(fromUTC(x)),
+    xFmtLong: x => { const s = fromUTC(x); return `${s} 星期${WEEK[new Date(x).getUTCDay()]}`; },
     yFmt: (v, precise) => fmt(v, precise ? dec(v) : Math.max(0, dec(v) - 1)),
     endLabels: true,
-    ariaLabel: `${c.name}兑人民币 30 日走势`,
+    ariaLabel: `${c.name}兑人民币近${label}走势`,
   }));
   if (!$('trend-table').hidden) renderTrendTable();
   renderQuick();
 }
 function renderTrendTable() {
-  const s = trendSeries().filter(x => x.points.length);
+  const s = trendSeriesFrom(trendData).filter(x => x.points.length);
   const xs = [...new Set(s.flatMap(x => x.points.map(p => p.x)))];
   $('trend-table').replaceChildren(s.length ? chartTable(xs, s, x => fromUTC(x), v => fmt(v, dec(v))) : el('p', {class: 'empty'}, '暂无数据'));
 }
@@ -931,8 +978,10 @@ function renderQuick() {
   const c = CUR_BY[state.trendCode];
   const statsEl = $('quick-stats'), body = $('quick-body');
   $('quick-unit').textContent = c.code;
-  // 30 日摘要：优先用中间价，没有就用国际参考
-  const series = (state.fx && (state.fx.cfets[c.code] && state.fx.cfets[c.code].length ? state.fx.cfets[c.code] : state.fx.blend[c.code])) || [];
+  // 周期摘要：优先用中间价，没有就用国际参考
+  const usingCfets = trendData.cfets && trendData.cfets.length > 0;
+  const series = usingCfets ? trendData.cfets : (trendData.blend || []);
+  const days = state.range;
   statsEl.replaceChildren();
   if (series.length >= 2) {
     const vs = series.map(p => p.v);
@@ -941,15 +990,15 @@ function renderQuick() {
     const last = series[series.length - 1];
     const pos = hi.v === lo.v ? 0.5 : (last.v - lo.v) / (hi.v - lo.v);
     const label = pos <= 0.25 ? '偏低，换外币相对划算' : pos >= 0.75 ? '偏高，不急的话等等' : '居中';
-    const bar = el('span', {class: 'range'}, el('span', null, '30 日区间'), el('span', {class: 'bar'}, (() => { const i = el('i'); i.style.left = (pos * 100).toFixed(1) + '%'; return i; })()), el('span', null, `${Math.round(pos * 100)}%，${label}`));
+    const bar = el('span', {class: 'range'}, el('span', null, `${days} 日区间`), el('span', {class: 'bar'}, (() => { const i = el('i'); i.style.left = (pos * 100).toFixed(1) + '%'; return i; })()), el('span', null, `${Math.round(pos * 100)}%，${label}`));
     statsEl.append(
-      el('span', null, `今日 ${series === state.fx.cfets[c.code] ? '中间价' : '参考'} `, el('b', null, fmt(last.v, dec(last.v)))),
-      el('span', null, '最高 ', el('b', null, fmt(hi.v, dec(hi.v))), ` ${shortDate(hi.d)}`),
-      el('span', null, '最低 ', el('b', null, fmt(lo.v, dec(lo.v))), ` ${shortDate(lo.d)}`),
+      el('span', null, `今日${usingCfets ? '中间价' : '参考'} `, el('b', null, fmt(last.v, dec(last.v)))),
+      el('span', null, '最高 ', el('b', null, fmt(hi.v, dec(hi.v))), ` ${days >= 180 ? hi.d : shortDate(hi.d)}`),
+      el('span', null, '最低 ', el('b', null, fmt(lo.v, dec(lo.v))), ` ${days >= 180 ? lo.d : shortDate(lo.d)}`),
       el('span', null, '均值 ', el('b', null, fmt(avg, dec(avg)))),
       bar);
   } else {
-    statsEl.append(el('span', {class: 'dim'}, '暂无 30 日数据'));
+    statsEl.append(el('span', {class: 'dim'}, '暂无走势数据'));
   }
   // 怎么付最省
   body.replaceChildren();
@@ -973,6 +1022,20 @@ function renderQuick() {
   if (!rows.length) { body.append(el('tr', null, el('td', {colspan: '4', class: 'empty'}, '这个币种暂无可比价格'))); return; }
   const cmp = rows.filter(r => !r.isRef);
   const minRate = cmp.length ? Math.min(...cmp.map(r => r.rate)) : null;
+  // 结论行：刷卡付人民币用哪张卡最省；换汇去哪家最省
+  const verdict = $('quick-verdict'); verdict.replaceChildren();
+  const cards = rows.filter(r => r.way.endsWith(' 刷卡'));
+  if (cards.length) {
+    const lo = cards.reduce((a, b) => (b.rate < a.rate ? b : a)), hi = cards.reduce((a, b) => (b.rate > a.rate ? b : a));
+    const line = el('div', null, '刷卡付人民币：', el('b', null, lo.way.replace(' 刷卡', '')), ` 汇率最低 ${fmt(lo.rate * c.unit, dec(lo.rate * c.unit))}，${fmt(amt, 0)} ${c.code} = ${fmt(amt * lo.rate, 2)} 元`);
+    if (cards.length > 1 && hi !== lo) line.append(el('span', {class: 'vs'}, `；${hi.way.replace(' 刷卡', '')} 最高，多付 ${fmt(amt * (hi.rate - lo.rate), 2)} 元`));
+    verdict.append(line);
+  }
+  const bank = rows.filter(r => r.who);
+  if (bank.length) {
+    const lo = bank.reduce((a, b) => (b.rate < a.rate ? b : a));
+    verdict.append(el('div', null, '换汇：', el('b', null, lo.who), ` ${lo.way.replace('银行', '').replace('最低', '')}最低 ${fmt(lo.rate * c.unit, dec(lo.rate * c.unit))}，${fmt(amt, 0)} ${c.code} = ${fmt(amt * lo.rate, 2)} 元`));
+  }
   for (const r of rows) {
     const tr = el('tr', {class: !r.isRef && r.rate === minRate ? 'best' : null},
       el('td', {class: 'way'}, r.way, r.who ? el('span', {class: 'who'}, r.who) : null),
