@@ -9,11 +9,13 @@ import datetime as dt
 import json
 import pathlib
 import re
+import ssl
 import sys
 import time
 import xml.etree.ElementTree as ET
 
 import requests
+import requests.adapters
 from bs4 import BeautifulSoup
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -98,8 +100,28 @@ def scale(rates, usd_key="hui_sell", hint=None):
     return out
 
 
+class LegacyTLSAdapter(requests.adapters.HTTPAdapter):
+    """部分银行服务器还要求 TLS 旧式重协商，OpenSSL 3 默认拒绝；这里放开那一项，证书校验照常。"""
+    def init_poolmanager(self, *args, **kwargs):
+        ctx = ssl.create_default_context()
+        ctx.options |= getattr(ssl, "OP_LEGACY_SERVER_CONNECT", 0x4)
+        try:
+            ctx.set_ciphers("DEFAULT:@SECLEVEL=1")
+        except ssl.SSLError:
+            pass
+        kwargs["ssl_context"] = ctx
+        return super().init_poolmanager(*args, **kwargs)
+
+
+def legacy_session():
+    s = requests.Session()
+    s.headers.update(HEADERS)
+    s.mount("https://", LegacyTLSAdapter())
+    return s
+
+
 def get(url, session=None, insecure_fallback=False, **kw):
-    """GET 并检查状态码。insecure_fallback=True 时，证书校验失败就跳过校验再试一次（只用于读公开牌价）。"""
+    """GET 并检查状态码。insecure_fallback=True 时，TLS 失败先换旧式 TLS 设置重试，再不行就跳过证书校验（只用于读公开牌价）。"""
     kw.setdefault("timeout", TIMEOUT)
     kw.setdefault("headers", HEADERS)
     client = session or requests
@@ -108,10 +130,14 @@ def get(url, session=None, insecure_fallback=False, **kw):
     except requests.exceptions.SSLError as exc:
         if not insecure_fallback:
             raise
-        import urllib3
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        log(f"  证书校验失败，跳过校验重试：{url}（{str(exc)[-120:]}）")
-        resp = client.get(url, verify=False, **kw)
+        log(f"  TLS 失败，改用旧式 TLS 设置重试：{url}（{str(exc)[-100:]}）")
+        try:
+            resp = legacy_session().get(url, **kw)
+        except requests.exceptions.SSLError:
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            log("  仍然失败，跳过证书校验再试一次")
+            resp = legacy_session().get(url, verify=False, **kw)
     resp.raise_for_status()
     return resp
 
@@ -235,9 +261,11 @@ def fetch_jcb():
         mids = {}
         for tr in soup.find_all("tr"):
             cells = [c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])]
-            code = next((c.strip() for c in cells if re.fullmatch(r"[A-Z]{3}", c.strip())), None)
-            if not code:
+            # 行的样子：USD ｜ = ｜ Buy ｜ Mid ｜ Sell ｜ CNY，报价币种在最后一个三字母格
+            found = [c.strip() for c in cells if re.fullmatch(r"[A-Z]{3}", c.strip())]
+            if not found or (len(found) == 1 and found[0] == "USD"):
                 continue
+            code = found[-1]
             nums = [num(c) for c in cells if num(c) is not None]
             if len(nums) >= 3:
                 mids[code] = nums[1]  # Buy / Mid / Sell
