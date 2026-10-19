@@ -5,8 +5,8 @@
 ## 结构
 
 - `index.html` — 页面本身。中间价、各国央行参考汇率来自 Frankfurter，各国数据来自世界银行，都是打开页面时由浏览器直接请求。
-- `data/card_rates.json` — 银联、万事达、中国银行牌价，由定时任务抓取后写入，页面读这个文件。
-- `scripts/fetch_rates.py` — 抓取脚本，三个来源互相独立，失败的保留上次结果并标记过期。
+- `data/rates.json` — 银联、JCB、内地与香港银行牌价，由定时任务抓取后写入，页面读这个文件。
+- `scripts/fetch_rates.py` — 抓取脚本，各来源互相独立，失败的保留上次结果并标记过期。
 - `.github/workflows/update-rates.yml` — 定时任务，北京时间每天 10:40 和 18:10 各跑一次，也可以在 Actions 页面手动点 Run workflow。
 
 ## 常改的地方
