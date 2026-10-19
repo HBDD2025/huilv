@@ -278,6 +278,7 @@ footer p{margin:3px 0; max-width:90ch}
   <div class="band">
     <h2 id="trend-h2">汇率走势</h2>
     <div class="legend" style="margin:0">
+      <select id="trend-cur" aria-label="走势币种"></select>
       <span><i class="key" style="border-color:#9ec5f4"></i>中间价</span>
       <span><i class="key" style="border-color:#ffb28f"></i>国际参考</span>
       <button class="btn-sm" id="trend-table-btn" type="button" aria-expanded="false">表格</button>
@@ -432,7 +433,12 @@ footer p{margin:3px 0; max-width:90ch}
       <div style="margin-top:6px"><button class="btn btn-ghost btn-sm" id="stats-more" type="button" hidden>显示全部</button></div>
     </div>
     <div style="min-width:0">
-      <div class="legend" id="gdp-legend"><span style="font-weight:600;color:var(--fg)">美中日德英 GDP（现价美元）</span></div>
+      <div class="controls">
+        <select id="gdp-ind" aria-label="走势指标"></select>
+        <input type="text" id="gdp-add" list="gdp-countries" placeholder="输入国家名添加（最多 5 个）" aria-label="添加国家">
+        <datalist id="gdp-countries"></datalist>
+      </div>
+      <div class="legend" id="gdp-legend"></div>
       <div class="chart-host" id="gdp-chart"><p class="empty">正在读取…</p></div>
       <div class="chart-table" id="gdp-table" hidden></div>
     </div>
@@ -525,10 +531,6 @@ const INDICATORS = [
   {id:'SP.POP.GROW',       name:'人口年增长率',              fmt:'pct'},
   {id:'AG.SRF.TOTL.K2',    name:'国土面积（平方公里）',       fmt:'area'},
   {id:'AG.LND.TOTL.K2',    name:'土地面积（平方公里）',       fmt:'area'},
-];
-const GDP_COUNTRIES = [
-  {id:'USA', name:'美国', color:'var(--s1)'}, {id:'CHN', name:'中国', color:'var(--s2)'}, {id:'JPN', name:'日本', color:'var(--s3)'},
-  {id:'DEU', name:'德国', color:'var(--s4)'}, {id:'GBR', name:'英国', color:'var(--s5)'},
 ];
 
 /* ======================= 工具 ======================= */
@@ -839,18 +841,30 @@ function registerChart(host, fn) { chartRenderers.set(host, fn); ro.observe(host
 
 /* ======================= 走势 ======================= */
 const RANGES = [[30, '月'], [90, '季度'], [180, '半年'], [365, '年']];
+// 全页统一的货币选择：顶部按钮、走势标题带的下拉、内地/香港银行表的币种一起变
+function setCurrency(code) {
+  if (!CUR_BY[code] && code !== 'CNY') return;
+  state.trendCode = code; store.set('trend_code', code);
+  $('trend-tabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x.id === 'tab-' + code)));
+  const sel = $('trend-cur'); if (sel.value !== code) sel.value = code;
+  for (const kind of ['cn', 'hk']) {
+    const bs = $(BANK_CFG[kind].sel);
+    if (bs.options.length && [...bs.options].some(o => o.value === code) && bs.value !== code) { bs.value = code; renderBankTable(kind); }
+  }
+  renderTrend();
+}
 function renderTrendTabs() {
   const tabs = $('trend-tabs');
   tabs.replaceChildren();
+  const sel = $('trend-cur'); sel.replaceChildren();
   for (const c of [...CURRENCIES, CNY_TAB]) {
     const b = el('button', {type: 'button', role: 'tab', 'aria-selected': String(c.code === state.trendCode), id: 'tab-' + c.code}, c.name);
-    b.addEventListener('click', () => {
-      state.trendCode = c.code; store.set('trend_code', c.code);
-      tabs.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
-      renderTrend();
-    });
+    b.addEventListener('click', () => setCurrency(c.code));
     tabs.append(b);
+    sel.append(el('option', {value: c.code}, `${c.name} ${c.code}`));
   }
+  sel.value = state.trendCode;
+  sel.addEventListener('change', () => setCurrency(sel.value));
   const rt = $('range-tabs');
   rt.replaceChildren();
   for (const [days, label] of RANGES) {
@@ -1238,11 +1252,12 @@ $('fee-form').addEventListener('submit', e => {
 /* ======================= 各国数据 ======================= */
 async function loadCountries() {
   const cached = store.get('wb_countries_v1', null);
-  if (cached && Date.now() - cached.at < 30 * 864e5) { state.countries = cached.map; return; }
+  if (cached && Date.now() - cached.at < 30 * 864e5) { state.countries = cached.map; fillCountryDatalist(); return; }
   const data = await fetchJSON(`${WB}/zh/country?format=json&per_page=400`);
   const map = {};
   for (const c of (data && data[1]) || []) { if (!c || !c.id) continue; map[c.id] = {n: c.name || '', a: !c.region || c.region.id === 'NA' ? 1 : 0}; }
   state.countries = map; store.set('wb_countries_v1', {at: Date.now(), map});
+  fillCountryDatalist();
 }
 async function loadIndicator(id) {
   if (state.indCache[id]) return state.indCache[id];
@@ -1289,32 +1304,88 @@ async function renderStats() {
   let t; $('country-search').addEventListener('input', () => { clearTimeout(t); t = setTimeout(renderStats, 150); });
   $('stats-more').addEventListener('click', () => { statsExpanded = true; renderStats(); });
 })();
-async function renderGDP() {
-  const host = $('gdp-chart'), legend = $('gdp-legend');
-  legend.append(...GDP_COUNTRIES.map(c => { const k = el('i', {class: 'key'}); k.style.borderColor = c.color; return el('span', null, k, c.name); }));
-  const btn = el('button', {class: 'btn btn-ghost btn-sm', type: 'button', 'aria-expanded': 'false'}, '表格');
+/* ---- 各国数据走势：指标与国家都可选，国家最多 5 个 ---- */
+const SERIES_COLORS = ['var(--s1)', 'var(--s2)', 'var(--s3)', 'var(--s4)', 'var(--s5)'];
+const gdpState = {ind: store.get('gdp_ind', 'NY.GDP.MKTP.CD'), countries: store.get('gdp_countries', ['USA', 'CHN', 'JPN', 'DEU', 'GBR']), cache: {}};
+const COUNTRY_FALLBACK = {USA: '美国', CHN: '中国', JPN: '日本', DEU: '德国', GBR: '英国', HKG: '中国香港', SGP: '新加坡', KOR: '韩国', IND: '印度', FRA: '法国'};
+function countryName(id) { const c = state.countries && state.countries[id]; return (c && c.n) || COUNTRY_FALLBACK[id] || id; }
+// 按指标和数据量级选单位
+function indicatorFmt(ind, maxAbs) {
+  const f = (div, unit, d0, d1) => (v, precise) => fmt(v / div, precise ? d1 : d0) + unit;
+  switch (ind.fmt) {
+    case 'money': return maxAbs >= 1e12 ? f(1e12, ' 万亿', 0, 2) : maxAbs >= 1e8 ? f(1e8, ' 亿', 0, 1) : f(1, '', 0, 0);
+    case 'count': return maxAbs >= 1e8 ? f(1e8, ' 亿', 1, 2) : f(1e4, ' 万', 0, 1);
+    case 'plain': return maxAbs >= 1e4 ? f(1e4, ' 万', 0, 2) : f(1, '', 0, 0);
+    case 'pct': return (v, precise) => fmt(v, precise ? 2 : 0) + '%';
+    case 'rate': return (v, precise) => fmt(v, precise ? 2 : 1);
+    case 'area': return f(1e4, ' 万km²', 0, 1);
+    default: return (v, precise) => fmt(v, precise ? 2 : 0);
+  }
+}
+async function loadIndicatorSeries(indId, ids) {
+  const key = indId + '|' + ids.join(';');
+  if (gdpState.cache[key]) return gdpState.cache[key];
+  const sk = 'wb_series_' + key;
+  const cached = store.get(sk, null);
+  if (cached && Date.now() - cached.at < 7 * 864e5) { gdpState.cache[key] = cached.rows; return cached.rows; }
+  const year = new Date().getFullYear();
+  const data = await fetchJSON(`${WB}/country/${ids.join(';')}/indicator/${indId}?format=json&date=1990:${year}&per_page=2000`);
+  const rows = ((data && data[1]) || []).filter(r => r && r.value != null && r.countryiso3code).map(r => ({id: r.countryiso3code, year: +r.date, value: r.value}));
+  gdpState.cache[key] = rows; store.set(sk, {at: Date.now(), rows});
+  return rows;
+}
+function renderGDPLegend() {
+  const legend = $('gdp-legend'); legend.replaceChildren();
+  gdpState.countries.forEach((id, i) => {
+    const k = el('i', {class: 'key'}); k.style.borderColor = SERIES_COLORS[i];
+    const x = el('button', {class: 'x', type: 'button', title: '移除', 'aria-label': '移除 ' + countryName(id)}, '×');
+    x.style.cssText = 'border:0;background:transparent;color:var(--muted);cursor:pointer;padding:0 2px;margin-left:2px;font-size:13px;line-height:1';
+    x.addEventListener('click', () => { gdpState.countries = gdpState.countries.filter(c => c !== id); store.set('gdp_countries', gdpState.countries); renderGDP(); });
+    legend.append(el('span', null, k, countryName(id), x));
+  });
+  const btn = el('button', {class: 'btn btn-ghost btn-sm', type: 'button', 'aria-expanded': String(!$('gdp-table').hidden)}, '表格');
+  btn.addEventListener('click', () => { const tbl = $('gdp-table'); tbl.hidden = !tbl.hidden; btn.setAttribute('aria-expanded', String(!tbl.hidden)); renderGDP(); });
   legend.append(btn);
+}
+async function renderGDP() {
+  const host = $('gdp-chart');
+  const ind = INDICATORS.find(x => x.id === gdpState.ind) || INDICATORS[0];
+  renderGDPLegend();
+  if (!gdpState.countries.length) { host.replaceChildren(el('p', {class: 'empty'}, '在上面的输入框里加一个国家')); return; }
   try {
-    const key = 'wb_gdp_trend_v1';
-    let rows = null; const cached = store.get(key, null);
-    if (cached && Date.now() - cached.at < 7 * 864e5) rows = cached.rows;
-    if (!rows) {
-      const year = new Date().getFullYear(); const ids = GDP_COUNTRIES.map(c => c.id).join(';');
-      const data = await fetchJSON(`${WB}/country/${ids}/indicator/NY.GDP.MKTP.CD?format=json&date=1990:${year}&per_page=400`);
-      rows = ((data && data[1]) || []).filter(r => r && r.value != null && r.countryiso3code).map(r => ({id: r.countryiso3code, year: +r.date, value: r.value}));
-      store.set(key, {at: Date.now(), rows});
-    }
-    const series = GDP_COUNTRIES.map(c => ({name: c.name, color: c.color, points: rows.filter(r => r.id === c.id).map(r => ({x: r.year, y: r.value})).sort((a, b) => a.x - b.x)}));
-    const yFmt = (v, precise) => fmt(v / 1e12, precise ? 2 : 0) + ' 万亿';
-    registerChart(host, () => lineChart(host, {series, xFmt: x => String(x), xFmtLong: x => `${x} 年`, yFmt, zeroBase: true, endLabels: true, height: 300, ariaLabel: '美中日德英 GDP 走势'}));
+    const rows = await loadIndicatorSeries(ind.id, gdpState.countries);
+    const series = gdpState.countries.map((id, i) => ({name: countryName(id), color: SERIES_COLORS[i], points: rows.filter(r => r.id === id).map(r => ({x: r.year, y: r.value})).sort((a, b) => a.x - b.x)}));
+    const maxAbs = Math.max(0, ...rows.map(r => Math.abs(r.value)));
+    const yFmt = indicatorFmt(ind, maxAbs);
+    const zeroBase = ind.fmt !== 'pct' && ind.fmt !== 'rate';
+    registerChart(host, () => lineChart(host, {series, xFmt: x => String(x), xFmtLong: x => `${x} 年`, yFmt, zeroBase, endLabels: true, height: 300, ariaLabel: `${ind.name} 走势`}));
     const tbl = $('gdp-table');
-    btn.addEventListener('click', () => {
-      tbl.hidden = !tbl.hidden; btn.setAttribute('aria-expanded', String(!tbl.hidden));
-      if (!tbl.hidden) { const xs = [...new Set(series.flatMap(s => s.points.map(p => p.x)))]; tbl.replaceChildren(chartTable(xs, series, x => `${x} 年`, yFmt)); }
-    });
+    if (!tbl.hidden) { const xs = [...new Set(series.flatMap(s => s.points.map(p => p.x)))]; tbl.replaceChildren(chartTable(xs, series, x => `${x} 年`, yFmt)); }
   } catch (e) {
     host.replaceChildren(el('p', {class: 'empty'}, '世界银行接口读取失败：' + errorHint(e)));
   }
+}
+(function initGDP() {
+  const sel = $('gdp-ind');
+  sel.replaceChildren(...INDICATORS.map(i => el('option', {value: i.id}, i.name)));
+  sel.value = gdpState.ind;
+  sel.addEventListener('change', () => { gdpState.ind = sel.value; store.set('gdp_ind', sel.value); renderGDP(); });
+  const input = $('gdp-add');
+  input.addEventListener('change', () => {
+    const q = input.value.trim(); if (!q) return;
+    const cm = state.countries || {};
+    let id = Object.keys(cm).find(k => !cm[k].a && (cm[k].n === q || k === q.toUpperCase()));
+    if (!id) id = Object.keys(cm).find(k => !cm[k].a && cm[k].n && cm[k].n.includes(q));
+    if (!id) { input.value = ''; input.placeholder = '没找到这个国家，换个写法试试'; return; }
+    if (gdpState.countries.includes(id)) { input.value = ''; return; }
+    if (gdpState.countries.length >= 5) { input.value = ''; input.placeholder = '最多 5 个，先移除一个'; return; }
+    gdpState.countries.push(id); store.set('gdp_countries', gdpState.countries); input.value = ''; input.placeholder = '输入国家名添加（最多 5 个）';
+    renderGDP();
+  });
+})();
+function fillCountryDatalist() {
+  const dl = $('gdp-countries'); if (!state.countries || dl.options.length) return;
+  dl.replaceChildren(...Object.keys(state.countries).filter(k => !state.countries[k].a && state.countries[k].n).map(k => el('option', {value: state.countries[k].n})));
 }
 
 /* ======================= 导航 ======================= */
@@ -1342,8 +1413,7 @@ $('refresh').addEventListener('click', () => {
 });
 loadFX();
 loadData();
-renderStats();
-renderGDP();
+renderStats().then(() => { fillCountryDatalist(); renderGDP(); });
 </script>
 </body>
 </html>
