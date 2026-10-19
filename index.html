@@ -99,6 +99,8 @@ section.tint-2{background:var(--tint-2)}
 .band .amt input,.band select{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
 .band .amt input{width:86px}
 .band .amt #quick-unit{font-family:var(--font-num); font-weight:600}
+.band .amt .cny{margin-left:12px; font-family:var(--font-num); font-variant-numeric:tabular-nums; font-weight:700; font-size:13.5px; color:#ffe08a; white-space:nowrap}
+.band .amt .cny small{font-weight:500; font-size:11px; color:var(--band-ink); opacity:.8; margin-left:4px}
 .band select option{color:#182230; background:#fff}
 .band .legend{color:var(--band-ink)}
 .body{padding:6px 8px 0}
@@ -258,7 +260,7 @@ footer p{margin:3px 0; max-width:90ch}
 <section id="quick-sec">
   <div class="band">
     <h2>刷哪张卡最省</h2>
-    <label class="amt">当地消费 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span></label>
+    <label class="amt">当地消费 <input type="number" id="quick-amount" inputmode="decimal" min="0" step="any" value="1000"> <span id="quick-unit"></span><span class="cny" id="quick-cny"></span></label>
   </div>
   <div class="body">
     <div class="tabs" id="trend-tabs" role="tablist"></div>
@@ -1025,9 +1027,16 @@ function renderQuick() {
   // 三类卡的扣款
   groupsEl.replaceChildren(); verdict.replaceChildren();
   const amt = parseFloat($('quick-amount').value);
-  if (!isFinite(amt) || amt <= 0) { groupsEl.append(el('p', {class: 'empty'}, '填一个金额')); return; }
   const cards = (state.data && state.data.cards) || {};
   const cnyX = cnyPerUnit(X);            // 1 当地币 = ? 人民币（中间价），用于跨卡比较
+  // 标题带上的「≈ CNY」：按 UnionPay 汇率换算，没有 UnionPay 报价时退回中间价
+  const cnyEl = $('quick-cny'); cnyEl.replaceChildren();
+  if (isFinite(amt) && amt > 0 && X !== 'CNY') {
+    const up = cards.CNY && cards.CNY[X] && cards.CNY[X].unionpay;
+    if (up != null) cnyEl.append(`≈ CNY ${fmt(amt * up, 2)}`);
+    else if (cnyX != null) cnyEl.append(`≈ CNY ${fmt(amt * cnyX, 2)}`, el('small', null, '中间价'));
+  }
+  if (!isFinite(amt) || amt <= 0) { groupsEl.append(el('p', {class: 'empty'}, '填一个金额')); return; }
   const candidates = [];                 // {group, org, bill, cny}
   for (const g of CARD_GROUPS) {
     const box = el('div', {class: 'cardgroup'});
