@@ -194,7 +194,8 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .cardgroup .gh small{color:var(--muted); font-weight:500; font-size:11px}
 .cardgroup table{font-size:12px}
 .cardgroup td,.cardgroup th{padding:3px 4px}
-.cardgroup td.net{font-weight:600}
+.cardgroup td.net{font-weight:600; white-space:normal}
+.cardgroup .route{font-weight:400; font-size:10.5px; color:var(--muted); line-height:1.3}
 .cardgroup td.na{color:var(--muted); font-weight:400}
 .cardgroup tr.best td{color:var(--down)}
 .cardgroup tr.worst td{color:var(--up)}
@@ -1015,8 +1016,15 @@ function renderCards() {
 // 三类卡：账单币种与各自的卡组织
 const CARD_GROUPS = [
   {key: 'USD', name: '美元卡', bill: '美元', orgs: ['visa', 'mastercard', 'amex']},
-  {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
-  {key: 'JPY', name: '内地日元卡（JCB）', bill: '日元', orgs: ['jcb'], repay: true},   // 日元入账，再用人民币购汇日元还款
+  {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex'], routes: [
+    // 内地发卡的真实记账路径：via = 卡组织先换成的币种，bank = 第二步购汇用哪家银行的现汇卖出价
+    {org: 'unionpay',   label: 'UnionPay',     note: '人民币直接入账',                      via: 'CNY'},
+    {org: 'mastercard', label: 'Mastercard',   note: '人民币卡，人民币入账',                 via: 'CNY'},
+    {org: 'visa',       label: 'Visa',         note: '美元清算，记账日银行购汇入人民币（招行）', via: 'USD', bank: 'cmb'},
+    {org: 'jcb',        label: 'JCB（招行）',   note: '美元清算，记账日银行购汇入人民币',       via: 'USD', bank: 'cmb'},
+    {org: 'jcb',        label: 'JCB（工行）',   note: '日元入账，用人民币购汇日元还款',         via: 'JPY', bank: 'icbc'},
+    {org: 'amex',       label: 'Amex',         note: '',                                   via: null},
+  ]},
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   // 账单币种 = 卡的记账货币；卡组织按自己的汇率把当地货币一次换成它，表里的就是入账金额
 ];
@@ -1059,12 +1067,6 @@ function renderQuick() {
   const amt = parseFloat($('quick-amount').value);
   const cards = (state.data && state.data.cards) || {};
   const cnyX = cnyPerUnit(X);            // 1 当地币 = ? 人民币（中间价），用于跨卡比较
-  // 日元卡还款：用人民币在内地银行购汇日元，取各行现汇卖出价最低者
-  let jpyRepay = null;
-  for (const [key, name] of BANKS_CN) {
-    const r = state.data && state.data.banks_cn && state.data.banks_cn[key] && state.data.banks_cn[key].JPY;
-    if (r && r.hui_sell != null && (jpyRepay == null || r.hui_sell < jpyRepay.rate)) jpyRepay = {rate: r.hui_sell, who: name};
-  }
   // 标题带上的「≈ CNY」：按 UnionPay 汇率换算，没有 UnionPay 报价时退回中间价
   const cnyEl = $('quick-cny'); cnyEl.replaceChildren();
   if (isFinite(amt) && amt > 0 && X !== 'CNY') {
@@ -1076,20 +1078,55 @@ function renderQuick() {
   const candidates = [];                 // {group, org, bill, cny}
   for (const g of CARD_GROUPS) {
     const box = el('div', {class: 'cardgroup'});
-    // 折算到人民币：普通卡按中间价（只用于比较）；日元卡按还款购汇价（真实成本）
-    const cnyB = g.repay ? (jpyRepay && jpyRepay.rate) : cnyPerUnit(g.key);
-    const cnyHead = g.repay ? (jpyRepay ? `还款需元（${jpyRepay.who}购汇 ${fmt(jpyRepay.rate * 100, 4)}/100）` : '还款需元') : '折合元';
-    const sub = X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`;
-    box.append(el('div', {class: 'gh'}, el('span', {class: 'gname'}, g.name), el('small', null, g.repay ? sub + '，再用人民币购汇还款' : sub)));
+    const cnyB = cnyPerUnit(g.key);
+    const sub = X === g.key ? `${g.bill}记账，本币消费` : g.routes ? `各卡按自己的记账路径算到最终要还的人民币` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`;
+    box.append(el('div', {class: 'gh'}, el('span', {class: 'gname'}, g.name), el('small', null, sub)));
     if (X === g.key) {
-      const cny = cnyB;
-      box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}` + (g.repay && cny != null ? `，还款约需 ${fmt(amt * cny, 2)} 元` : '')));
-      if (cny != null) candidates.push({group: g, org: null, bill: amt, cny: amt * cny, same: true});
+      box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}`));
+      if (cnyB != null) candidates.push({group: g, org: null, bill: amt, cny: amt * cnyB, same: true});
       groupsEl.append(box);
       continue;
     }
     const table = el('table'), tbody = el('tbody');
-    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num', title: g.repay ? '入账日元 × 内地银行现汇卖出价最低者' : '按今天中间价折成人民币，只用于几类卡之间比较'}, cnyHead))), tbody);
+    if (g.routes) {
+      // 内地卡：每张卡按自己的记账路径算到最终要还的人民币
+      table.append(el('thead', null, el('tr', null, el('th', null, '卡 · 记账路径'), el('th', {class: 'num'}, '卡组织汇率'), el('th', {class: 'num'}, '入账'), el('th', {class: 'num'}, '还款人民币'))), tbody);
+      const banks = (state.data && state.data.banks_cn) || {};
+      const bankSell = (key, code) => { const r = banks[key] && banks[key][code]; return r && r.hui_sell != null ? {rate: r.hui_sell, who: (BANKS_CN.find(b => b[0] === key) || [null, key === 'cmb' ? '招行' : key])[1]} : null; };
+      const lowestSell = code => { let b = null; for (const [key, name] of BANKS_CN) { const r = banks[key] && banks[key][code]; if (r && r.hui_sell != null && (!b || r.hui_sell < b.rate)) b = {rate: r.hui_sell, who: name}; } return b; };
+      const rows = [];
+      for (const rt of g.routes) {
+        if (!rt.via) { rows.push({rt, cny: null}); continue; }
+        const same = rt.via === X;                           // 消费币就是入账币：卡组织不换汇
+        const orgRate = same ? 1 : (cards[rt.via] && cards[rt.via][X] && cards[rt.via][X][rt.org]);
+        if (orgRate == null) { rows.push({rt, cny: null}); continue; }
+        const billAmt = amt * orgRate;                      // 入账金额（via 币种）
+        let cny = billAmt, basis = '';
+        if (rt.via !== 'CNY') {
+          const bs = bankSell(rt.bank, rt.via) || lowestSell(rt.via);
+          if (!bs) { rows.push({rt, cny: null}); continue; }
+          const u = CUR_BY[rt.via] ? CUR_BY[rt.via].unit : 1;
+          cny = billAmt * bs.rate; basis = `${bs.who}${rt.via}卖出 ${fmt(bs.rate * u, 4)}${u > 1 ? '/' + u : ''}`;
+        }
+        rows.push({rt, orgRate, billAmt, cny, basis, same});
+      }
+      const have = rows.filter(r => r.cny != null);
+      const best = have.length ? have.reduce((a, b) => (b.cny < a.cny ? b : a)) : null, worstRow = have.length > 1 ? have.reduce((a, b) => (b.cny > a.cny ? b : a)) : null;
+      rows.sort((a, b) => (a.cny == null) - (b.cny == null) || (a.cny ?? 0) - (b.cny ?? 0));
+      for (const r of rows) {
+        const name = el('td', {class: 'net'}, r.rt.label, el('div', {class: 'route'}, r.rt.note + (r.basis ? ` · ${r.basis}` : '')));
+        if (r.cny == null) { tbody.append(el('tr', null, el('td', {class: 'net na'}, r.rt.label, r.rt.note ? el('div', {class: 'route'}, r.rt.note) : null), el('td', {class: 'num na', colspan: '3'}, r.rt.org === 'amex' ? '不公布汇率' : '暂无'))); continue; }
+        candidates.push({group: g, org: r.rt.org, label: r.rt.label, bill: r.cny, cny: r.cny});
+        tbody.append(el('tr', {class: r === best ? 'best' : r === worstRow ? 'worst' : null}, name,
+          el('td', {class: 'num'}, r.same ? el('span', {class: 'dim'}, '本币入账，不换汇') : `1 ${X} = ${fmt(r.orgRate * c.unit, dec(r.orgRate * c.unit))} ${r.rt.via}`),
+          el('td', {class: 'num'}, `${fmt(r.billAmt, 2)} ${r.rt.via}`),
+          el('td', {class: 'num'}, fmt(r.cny, 2))));
+      }
+      box.append(el('div', {class: 'tablewrap'}, table));
+      groupsEl.append(box);
+      continue;
+    }
+    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num', title: '按今天中间价折成人民币，只用于几类卡之间比较'}, '折合元'))), tbody);
     const row = (cards[g.key] && cards[g.key][X]) || {};
     const rows = g.orgs.map(org => ({org, rate: row[org] != null ? row[org] : null}));
     const have = rows.filter(r => r.rate != null);
@@ -1119,19 +1156,19 @@ function renderQuick() {
   const parts = [];
   for (const g of CARD_GROUPS) {
     const b = bestOf(g);
-    if (b) parts.push(el('span', null, `${g.name}用 `, el('b', null, ORG_NAME[b.org]), `（${fmt(b.bill, 2)} ${g.key}）`));
+    if (b) parts.push(el('span', null, `${g.name}用 `, el('b', null, b.label || ORG_NAME[b.org]), `（${fmt(b.bill, 2)} ${g.key}）`));
     else if (X === g.key) parts.push(el('span', null, `${g.name}本币不换汇`));
   }
   if (parts.length) { const line = el('div', null, `付 ${fmt(amt, 0)} ${X}：`); parts.forEach((p, i) => { if (i) line.append('，'); line.append(p); }); verdict.append(line); }
   const all = candidates.filter(x => x.cny != null).sort((a, b) => a.cny - b.cny);
   if (all.length > 1) {
-    const name = x => x.same ? `${x.group.name}本币` : `${x.group.name} ${ORG_NAME[x.org]}`;
+    const name = x => x.same ? `${x.group.name}本币` : `${x.group.name} ${x.label || ORG_NAME[x.org]}`;
     const top = all[0], second = all[1], last = all[all.length - 1];
     const line = el('div', {class: 'hl'}, '折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「折合元」按中间价折成人民币，只用于几类卡之间比较；日元卡的「还款需元」是入账日元按内地银行最低现汇卖出价购汇的真实成本。'));
+  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。内地卡按各自真实记账路径算到「还款人民币」；其它卡的「折合元」按中间价折成人民币，只用于几类卡之间比较。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
