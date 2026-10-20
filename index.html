@@ -342,24 +342,23 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="cn">
   <div class="band">
-    <h2>内地银行牌价</h2>
-    <label>币种 <select id="cn-cur" aria-label="内地银行币种"></select></label>
+    <h2>内地银行换汇</h2>
+    <label class="amt">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-dir" aria-label="换汇方向"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select></label>
   </div>
   <div class="body tablewrap">
     <table id="cn-table">
       <thead><tr>
         <th class="sortable" data-k="order">银行<span class="arrow"></span></th>
-        <th class="num sortable" data-k="hui_buy">现汇买入<span class="arrow"></span></th>
-        <th class="num sortable" data-k="chao_buy">现钞买入<span class="arrow"></span></th>
-        <th class="num sortable" data-k="hui_sell">现汇卖出<span class="arrow"></span></th>
-        <th class="num sortable" data-k="chao_sell">现钞卖出<span class="arrow"></span></th>
+        <th class="num sortable" data-k="rate" id="cn-rate-head">汇率<span class="arrow"></span></th>
+        <th class="num sortable" data-k="get" id="cn-get-head">可换到<span class="arrow"></span></th>
+        <th class="basis">依据牌价</th>
         <th>时间</th>
       </tr></thead>
-      <tbody id="cn-body"><tr><td colspan="6" class="empty">正在读取…</td></tr></tbody>
+      <tbody id="cn-body"><tr><td colspan="5" class="empty">正在读取…</td></tr></tbody>
     </table>
   </div>
   <p class="foot" id="cn-status"></p>
-  <p class="foot">1 外币 = 人民币（日元、韩元按 100，印尼盾、基普按 10000）。点表头按高低排序，再点一次反向，点「银行」恢复默认顺序。买入价越高、卖出价越低对你越划算，最优标绿、最差标红。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
+  <p class="foot">换到最多的标绿、最少的标红，点表头按高低排序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；港元与美元之间银行先换成人民币再换，这里按两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
 </section>
 
 <section id="hk" class="tint-2">
@@ -625,6 +624,7 @@ const state = {
   indCache: {},
   sort: {cn: store.get('sort_cn', null), hk: store.get('sort_hk', null)},
   hkDir: store.get('hk_dir', 'HKD>CNY'),
+  cnDir: store.get('cn_dir', 'CNY>USD'),
 };
 
 (function renderDateline() {
@@ -851,9 +851,9 @@ function setCurrency(code) {
   state.trendCode = code; store.set('trend_code', code);
   $('trend-tabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x.id === 'tab-' + code)));
   const sel = $('trend-cur'); if (sel.value !== code) sel.value = code;
-  for (const kind of ['cn']) {
-    const bs = $(BANK_CFG[kind].sel);
-    if (bs.options.length && [...bs.options].some(o => o.value === code) && bs.value !== code) { bs.value = code; renderBankTable(kind); }
+  if (code !== 'CNY') {
+    const d = 'CNY>' + code, bs = $('cn-dir');
+    if ([...bs.options].some(o => o.value === d) && state.cnDir !== d) { state.cnDir = d; bs.value = d; store.set('cn_dir', d); renderCN(); }
   }
   renderTrend();
 }
@@ -957,7 +957,7 @@ async function loadData() {
     for (const [id, n] of [['card-body', 7], ['cn-body', 6], ['hk-body', 5]]) $(id).replaceChildren(el('tr', null, el('td', {colspan: String(n), class: 'empty'}, msg)));
     return;
   }
-  renderCards(); renderBankTable('cn'); renderHK(); renderQuick();
+  renderCards(); renderCN(); renderHK(); renderQuick();
 }
 function sourceStatus(keys, labels) {
   const src = (state.data && state.data.sources) || {};
@@ -1113,105 +1113,81 @@ function renderQuick() {
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
-/* ---- 银行牌价表：按币种看各行，可排序 ---- */
-const BANK_CFG = {
-  cn: {banks: BANKS_CN, dataKey: 'banks_cn', cols: ['hui_buy', 'chao_buy', 'hui_sell', 'chao_sell'], defaultCur: 'USD', sel: 'cn-cur', body: 'cn-body', status: 'cn-status', table: 'cn-table', buyCols: ['hui_buy', 'chao_buy']},
-};
-function bankCurrencies(kind) {
-  const cfg = BANK_CFG[kind];
-  const tables = (state.data && state.data[cfg.dataKey]) || {};
-  const codes = new Set();
-  for (const [key] of cfg.banks) for (const code in (tables[key] || {})) codes.add(code);
-  const order = kind === 'hk' ? ['CNY', ...CURRENCIES.map(c => c.code)] : CURRENCIES.map(c => c.code);
-  const list = order.filter(c => codes.has(c));
-  for (const c of [...codes].sort()) if (!list.includes(c)) list.push(c);
-  return list;
+/* ---- 内地银行换汇：人民币与外币双向，港元与美元经人民币折算 ---- */
+const CN_NAME = Object.assign({CNY: '人民币'}, Object.fromEntries(CURRENCIES.map(c => [c.code, c.name])));
+const CN_CORE = ['CNY>USD', 'USD>CNY', 'CNY>HKD', 'HKD>CNY', 'USD>HKD', 'HKD>USD'];
+function cnRate(r, from, to, kind) {
+  const q = code => r[code] || {};
+  const buy = code => q(code)[kind + '_buy'], sell = code => q(code)[kind + '_sell'];   // 银行买入/卖出 1 外币 的人民币价
+  const kn = kind === 'hui' ? '现汇' : '现钞';
+  if (from === 'CNY') { const v = sell(to); return v ? {rate: 1 / v, basis: `${to} ${kn}卖出 ${fmt(v, dec(v))}`} : null; }
+  if (to === 'CNY') { const v = buy(from); return v ? {rate: v, basis: `${from} ${kn}买入 ${fmt(v, dec(v))}`} : null; }
+  const a = buy(from), b = sell(to);
+  return a && b ? {rate: a / b, basis: `${from} ${kn}买入 ${fmt(a, dec(a))} ÷ ${to} ${kn}卖出 ${fmt(b, dec(b))}`} : null;
 }
-function curName(code) { if (code === 'CNY') return '人民币'; const c = CUR_BY[code]; return c ? c.name : code; }
-function curUnit(code) { const c = CUR_BY[code]; return c ? c.unit : 1; }
-function fillBankSelect(kind) {
-  const cfg = BANK_CFG[kind], sel = $(cfg.sel);
-  const list = bankCurrencies(kind);
-  const prev = store.get('bankcur_' + kind, cfg.defaultCur);
-  sel.replaceChildren(...list.map(code => el('option', {value: code}, `${curName(code)} ${curUnit(code) > 1 ? curUnit(code) + ' ' : ''}${code}`)));
-  sel.value = list.includes(prev) ? prev : (list.includes(cfg.defaultCur) ? cfg.defaultCur : list[0] || '');
-}
-function renderBankTable(kind) {
+function renderBankTable() { renderCN(); }
+function renderCN() {
   if (!state.data) return;
-  const cfg = BANK_CFG[kind];
-  const tables = state.data[cfg.dataKey] || {};
-  const sel = $(cfg.sel);
-  if (!sel.options.length) fillBankSelect(kind);
-  const code = sel.value;
-  store.set('bankcur_' + kind, code);
-  const unit = curUnit(code);
-  const body = $(cfg.body); body.replaceChildren();
+  const [from, to] = state.cnDir.split('>');
+  const kind = $('cn-kind').value;
+  const amt = parseFloat($('cn-amt').value) || 0;
+  $('cn-rate-head').firstChild.textContent = `1 ${from} = ${to}`;
+  $('cn-get-head').firstChild.textContent = `换到 ${to}`;
+  const tables = state.data.banks_cn || {};
   const src = state.data.sources || {};
-  const rows = cfg.banks.map(([key, name], i) => {
-    const r = (tables[key] || {})[code] || null;
-    const vals = {}; for (const col of cfg.cols) vals[col] = r && r[col] != null ? r[col] * unit : null;
-    return {key, name, order: i, time: r && r.time, origin: src[key] && src[key].origin, stale: src[key] && src[key].stale, vals};
+  const body = $('cn-body'); body.replaceChildren();
+  const ORIGIN_NAME = {kylc: '快易理财网', ipcn: 'ip.cn'};
+  const rows = BANKS_CN.map(([key, name], i) => {
+    const r = tables[key] ? cnRate(tables[key], from, to, kind) : null;
+    const t = tables[key] && (tables[key][from === 'CNY' ? to : from] || {}).time;
+    return {key, name, order: i, rate: r && r.rate, get: r ? amt * r.rate : null, basis: r && r.basis, time: t, origin: src[key] && src[key].origin, stale: src[key] && src[key].stale};
   });
-  if (!rows.some(r => Object.values(r.vals).some(v => v != null))) {
-    body.append(el('tr', null, el('td', {colspan: '6', class: 'empty'}, code ? '这个币种还没有抓到数据。' : '定时任务还没抓到银行牌价。')));
+  const have = rows.filter(r => r.rate != null);
+  if (!have.length) {
+    body.append(el('tr', null, el('td', {colspan: '5', class: 'empty'}, tables && Object.keys(tables).length ? '这个方向暂无牌价（试试换成现汇）。' : '定时任务还没抓到银行牌价。')));
   } else {
-    const sort = state.sort[kind];
+    const sort = state.sort.cn;
     const sorted = rows.slice();
-    if (sort && sort.k !== 'order') {
-      sorted.sort((a, b) => {
-        const av = a.vals[sort.k], bv = b.vals[sort.k];
-        if (av == null && bv == null) return a.order - b.order;
-        if (av == null) return 1; if (bv == null) return -1;
-        return sort.dir === 'desc' ? bv - av : av - bv;
-      });
-    }
-    const best = {}, worst = {};
-    for (const col of cfg.cols) {
-      const vs = rows.map(r => r.vals[col]).filter(v => v != null);
-      if (vs.length < 2) continue;
-      const isBuy = cfg.buyCols.includes(col);
-      best[col] = isBuy ? Math.max(...vs) : Math.min(...vs);
-      worst[col] = isBuy ? Math.min(...vs) : Math.max(...vs);
-    }
+    if (sort && sort.k !== 'order') sorted.sort((a, b) => { const av = a.rate, bv = b.rate; if (av == null && bv == null) return a.order - b.order; if (av == null) return 1; if (bv == null) return -1; return sort.dir === 'desc' ? bv - av : av - bv; });
+    const best = Math.max(...have.map(r => r.rate)), worst = Math.min(...have.map(r => r.rate));
     for (const r of sorted) {
-      const ORIGIN_NAME = {kylc: '快易理财网', ipcn: 'ip.cn'};
       const tr = el('tr', null, el('td', {class: 'name'}, r.name, ORIGIN_NAME[r.origin] ? el('span', {class: 'srcmark', title: '来自' + ORIGIN_NAME[r.origin]}, '聚') : null));
-      for (const col of cfg.cols) {
-        const v = r.vals[col];
-        if (v == null) { tr.append(dimCell()); continue; }
-        const cls = 'num' + (v === best[col] ? ' best' : v === worst[col] ? ' worst' : '');
-        tr.append(el('td', {class: cls}, fmt(v, dec(v))));
-      }
-      tr.append(el('td', {class: 'dim'}, (r.time || '').replace(/^\d{4}-/, '') + (r.stale ? '（旧）' : '')));
+      if (r.rate == null) { tr.append(dimCell(), dimCell(), el('td', {class: 'basis'}, ''), el('td', {class: 'dim'}, '')); body.append(tr); continue; }
+      const cls = 'num' + (have.length > 1 && r.rate === best ? ' best' : have.length > 1 && r.rate === worst ? ' worst' : '');
+      tr.append(el('td', {class: cls}, fmt(r.rate, r.rate < 1 ? 5 : 4)), el('td', {class: cls}, fmt(r.get, 2)), el('td', {class: 'basis'}, r.basis), el('td', {class: 'dim'}, (r.time || '').replace(/^\d{4}-/, '') + (r.stale ? '（旧）' : '')));
       body.append(tr);
     }
   }
-  const table = $(cfg.table);
-  table.querySelectorAll('th.sortable').forEach(th => {
-    const a = th.querySelector('.arrow'); const s = state.sort[kind];
-    a.textContent = s && s.k === th.dataset.k && s.k !== 'order' ? (s.dir === 'desc' ? '▼' : '▲') : '';
-  });
-  const failed = cfg.banks.filter(([k]) => src[k] && !src[k].ok).map(([, n]) => n);
-  const missing = cfg.banks.filter(([k]) => !src[k]).map(([, n]) => n);
+  $('cn-table').querySelectorAll('th.sortable').forEach(th => { const a = th.querySelector('.arrow'); const so = state.sort.cn; a.textContent = so && so.k !== 'order' && (th.dataset.k === 'rate' || th.dataset.k === 'get') ? (so.dir === 'desc' ? '▼' : '▲') : ''; });
+  const failed = BANKS_CN.filter(([k]) => src[k] && !src[k].ok).map(([, n]) => n);
+  const missing = BANKS_CN.filter(([k]) => !src[k]).map(([, n]) => n);
   const parts = [];
   if (failed.length) parts.push('抓取失败（沿用旧值或无数据）：' + failed.join('、'));
   if (missing.length) parts.push('尚未接入：' + missing.join('、'));
   const g = generatedText(); if (g) parts.push(g);
-  setStatus($(cfg.status), parts.join(' · '), failed.length > 0);
+  setStatus($('cn-status'), parts.join(' · '), failed.length > 0);
 }
-for (const kind of ['cn']) {
-  const cfg = BANK_CFG[kind];
-  $(cfg.sel).addEventListener('change', () => renderBankTable(kind));
-  $(cfg.table).querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
-    const k = th.dataset.k; const cur = state.sort[kind];
-    if (k === 'order') state.sort[kind] = null;
-    else if (cur && cur.k === k) state.sort[kind] = {k, dir: cur.dir === 'desc' ? 'asc' : 'desc'};
-    else state.sort[kind] = {k, dir: 'desc'};
-    store.set('sort_' + kind, state.sort[kind]);
-    renderBankTable(kind);
+(function initCN() {
+  const sel = $('cn-dir');
+  const opt = d => { const [f, t] = d.split('>'); return el('option', {value: d}, `${f} ${CN_NAME[f]} → ${t} ${CN_NAME[t]}`); };
+  const g1 = el('optgroup', {label: '常用'}, ...CN_CORE.map(opt));
+  const others = CURRENCIES.filter(c => c.code !== 'USD' && c.code !== 'HKD').map(c => c.code);
+  const g2 = el('optgroup', {label: '人民币 → 其他外币'}, ...others.map(x => opt('CNY>' + x)));
+  const g3 = el('optgroup', {label: '其他外币 → 人民币'}, ...others.map(x => opt(x + '>CNY')));
+  sel.replaceChildren(g1, g2, g3);
+  sel.value = state.cnDir; if (!sel.value) { sel.value = 'CNY>USD'; state.cnDir = 'CNY>USD'; }
+  sel.addEventListener('change', () => { state.cnDir = sel.value; store.set('cn_dir', sel.value); renderCN(); });
+  $('cn-kind').value = store.get('cn_kind', 'hui');
+  $('cn-kind').addEventListener('change', () => { store.set('cn_kind', $('cn-kind').value); renderCN(); });
+  $('cn-amt').addEventListener('input', renderCN);
+  $('cn-table').querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+    const k = th.dataset.k === 'get' ? 'rate' : th.dataset.k; const cur = state.sort.cn;
+    if (k === 'order') state.sort.cn = null;
+    else if (cur && cur.k === k) state.sort.cn = {k, dir: cur.dir === 'desc' ? 'asc' : 'desc'};
+    else state.sort.cn = {k, dir: 'desc'};
+    store.set('sort_cn', state.sort.cn); renderCN();
   }));
-}
-
+})();
 
 /* ---- 香港银行换汇：CNY / USD / HKD 两两双向 ---- */
 const HK_NAME = {HKD: '港元', CNY: '人民币', USD: '美元'};
