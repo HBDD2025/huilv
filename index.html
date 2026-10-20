@@ -98,6 +98,9 @@ section.tint-2{background:var(--tint-2)}
 .band select,.band .amt input{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
 .band .amt{font-size:12px}
 .band .amt.full{flex-basis:100%; display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px}
+.band .swap{background:#ffffff; color:#2e5aa8; border:1px solid rgba(255,255,255,.6); border-radius:4px; padding:1px 7px; font-size:14px; font-weight:700; cursor:pointer; line-height:1.3}
+.band .swap:hover{background:#eaf0fa}
+.band .swap:disabled{opacity:.6; cursor:default}
 .band .sync{margin-left:auto; font-size:12px; display:inline-flex; align-items:center; gap:4px; cursor:pointer}
 .band .sync input{accent-color:#ffe08a}
 .band .amt select:disabled,.band .amt input:disabled{opacity:.6}
@@ -347,7 +350,7 @@ footer p{margin:3px 0; max-width:90ch}
 <section id="cn">
   <div class="band">
     <h2>内地银行换汇</h2>
-    <label class="amt full">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-from" aria-label="用什么币"></select> → 换 <select id="cn-to" aria-label="换成什么币"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select> <span class="note" id="cn-follow"></span></label>
+    <label class="amt full">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-from" aria-label="用什么币"></select> <button type="button" class="swap" id="cn-swap" title="对调币种" aria-label="对调币种">⇄</button> 换 <select id="cn-to" aria-label="换成什么币"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select> <span class="note" id="cn-follow"></span></label>
   </div>
   <div class="body tablewrap">
     <table id="cn-table">
@@ -362,13 +365,13 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="cn-status"></p>
-  <p class="foot">换到最多的标绿、最少的标红，点表头按高低排序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；两种外币之间按「先结汇成人民币、再购汇」两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
+  <p class="foot">默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；两种外币之间按「先结汇成人民币、再购汇」两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
 </section>
 
 <section id="hk" class="tint-2">
   <div class="band">
     <h2>香港银行换汇</h2>
-    <label class="amt full">我用 <input type="number" id="hk-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="hk-from" aria-label="用什么币"></select> → 换 <select id="hk-to" aria-label="换成什么币"></select> <label class="sync"><input type="checkbox" id="xc-sync" checked> 内地表同步</label></label>
+    <label class="amt full">我用 <input type="number" id="hk-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="hk-from" aria-label="用什么币"></select> <button type="button" class="swap" id="hk-swap" title="对调币种" aria-label="对调币种">⇄</button> 换 <select id="hk-to" aria-label="换成什么币"></select> <label class="sync"><input type="checkbox" id="xc-sync" checked> 内地表同步</label></label>
   </div>
   <div class="body tablewrap">
     <table id="hk-table">
@@ -383,7 +386,7 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="hk-status"></p>
-  <p class="foot">按各行电汇（TT）牌价计算，换到最多的标绿、最少的标红。港元与外币用银行直接牌价；两种外币之间按「先换成港元、再换」两步折算，实际以银行当时报价为准。勾选「内地表同步」后，这里改金额和币种，内地银行表跟着变。</p>
+  <p class="foot">按各行电汇（TT）牌价计算，默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。港元与外币用银行直接牌价；两种外币之间按「先换成港元、再换」两步折算，实际以银行当时报价为准。勾选「内地表同步」后，这里改金额和币种，内地银行表跟着变。</p>
 </section>
 
 <section id="fees" class="tint-1 span2">
@@ -626,7 +629,7 @@ const state = {
   ranges: {},                            // 长周期序列缓存：'USD:365' → {blend, cfets}
   countries: null,
   indCache: {},
-  sort: {cn: store.get('sort_cn', null), hk: store.get('sort_hk', null)},
+  sort: {cn: store.get('sort_cn_v2', {k: 'rate', dir: 'desc'}), hk: store.get('sort_hk_v2', {k: 'rate', dir: 'desc'})},
   xc: Object.assign({amt: 10000, hkFrom: 'HKD', hkTo: 'CNY', cnFrom: 'CNY', cnTo: 'USD', cnAmt: 10000, sync: true}, store.get('xc_v1', {})),
 };
 
@@ -1182,6 +1185,7 @@ function renderCN() {
   $('cn-from').replaceChildren(...opts()); $('cn-to').replaceChildren(...opts());
   $('cn-from').addEventListener('change', () => setXC('cn', {cnFrom: $('cn-from').value}));
   $('cn-to').addEventListener('change', () => setXC('cn', {cnTo: $('cn-to').value}));
+  $('cn-swap').addEventListener('click', () => setXC('cn', {cnFrom: state.xc.cnTo, cnTo: state.xc.cnFrom}));
   $('cn-amt').addEventListener('input', () => { state.xc.cnAmt = parseFloat($('cn-amt').value) || 0; saveXC(); renderCN(); });
   $('cn-kind').value = store.get('cn_kind', 'hui');
   $('cn-kind').addEventListener('change', () => { store.set('cn_kind', $('cn-kind').value); renderCN(); });
@@ -1190,7 +1194,7 @@ function renderCN() {
     if (k === 'order') state.sort.cn = null;
     else if (cur && cur.k === k) state.sort.cn = {k, dir: cur.dir === 'desc' ? 'asc' : 'desc'};
     else state.sort.cn = {k, dir: 'desc'};
-    store.set('sort_cn', state.sort.cn); renderCN();
+    store.set('sort_cn_v2', state.sort.cn); renderCN();
   }));
 })();
 
@@ -1250,7 +1254,7 @@ function applySync() {
   const on = state.xc.sync;
   if (on) { state.xc.cnFrom = state.xc.hkFrom; state.xc.cnTo = state.xc.hkTo; state.xc.cnAmt = state.xc.amt; }
   $('cn-from').value = state.xc.cnFrom; $('cn-to').value = state.xc.cnTo; $('cn-amt').value = state.xc.cnAmt;
-  for (const id of ['cn-from', 'cn-to', 'cn-amt']) $(id).disabled = on;
+  for (const id of ['cn-from', 'cn-to', 'cn-amt', 'cn-swap']) $(id).disabled = on;
   $('cn-follow').textContent = on ? '跟随香港表' : '';
   $('hk-from').value = state.xc.hkFrom; $('hk-to').value = state.xc.hkTo; $('hk-amt').value = state.xc.amt;
   saveXC();
@@ -1268,6 +1272,7 @@ function setXC(side, patch) {
   $('hk-from').replaceChildren(...opts()); $('hk-to').replaceChildren(...opts());
   $('hk-from').addEventListener('change', () => setXC('hk', {hkFrom: $('hk-from').value}));
   $('hk-to').addEventListener('change', () => setXC('hk', {hkTo: $('hk-to').value}));
+  $('hk-swap').addEventListener('click', () => setXC('hk', {hkFrom: state.xc.hkTo, hkTo: state.xc.hkFrom}));
   $('hk-amt').addEventListener('input', () => { state.xc.amt = parseFloat($('hk-amt').value) || 0; if (state.xc.sync) { state.xc.cnAmt = state.xc.amt; $('cn-amt').value = state.xc.cnAmt; renderCN(); } saveXC(); renderHK(); });
   $('xc-sync').checked = state.xc.sync !== false;
   $('xc-sync').addEventListener('change', () => { state.xc.sync = $('xc-sync').checked; applySync(); renderCN(); });
@@ -1276,7 +1281,7 @@ function setXC(side, patch) {
     if (k === 'order') state.sort.hk = null;
     else if (cur && cur.k === k) state.sort.hk = {k, dir: cur.dir === 'desc' ? 'asc' : 'desc'};
     else state.sort.hk = {k, dir: 'desc'};
-    store.set('sort_hk', state.sort.hk); renderHK();
+    store.set('sort_hk_v2', state.sort.hk); renderHK();
   }));
 })();
 
