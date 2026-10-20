@@ -194,8 +194,8 @@ svg.chart .leader{stroke:var(--line-2); stroke-width:1}
 .cardgroup .gh small{color:var(--muted); font-weight:500; font-size:11px}
 .cardgroup table{font-size:12px}
 .cardgroup td,.cardgroup th{padding:3px 4px}
-.cardgroup td.net{font-weight:600; white-space:normal}
-.cardgroup .route{font-weight:400; font-size:10.5px; color:var(--muted); line-height:1.3}
+.cardgroup td.net{font-weight:600}
+.cardgroup .info{color:var(--muted)}
 .cardgroup td.na{color:var(--muted); font-weight:400}
 .cardgroup tr.best td{color:var(--down)}
 .cardgroup tr.worst td{color:var(--up)}
@@ -239,6 +239,12 @@ tr.best td{color:var(--down)}
 .controls select{min-width:190px}
 .controls input{flex:1 1 150px}
 
+/* 圆圈 i：点一下弹出说明 */
+.info{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; border:1px solid currentColor; font-size:10px; font-weight:700; font-style:normal; line-height:1; cursor:pointer; vertical-align:middle; margin-left:5px; opacity:.75; user-select:none; background:transparent; color:inherit; padding:0}
+.info:hover{opacity:1}
+.band .info{color:var(--band-ink)}
+.popover{position:absolute; z-index:20; max-width:min(380px, calc(100vw - 32px)); background:var(--surface); color:var(--fg); border:1px solid var(--line-2); border-radius:var(--radius); box-shadow:0 6px 20px rgba(0,0,0,.16); padding:8px 10px; font-size:12px; line-height:1.5; font-weight:400}
+.popover p{margin:0 0 6px} .popover p:last-child{margin:0}
 footer{margin-top:14px; color:var(--muted); font-size:11.5px}
 footer p{margin:3px 0; max-width:90ch}
 @media (max-width:560px){
@@ -273,7 +279,7 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="quick-sec">
   <div class="band">
-    <h2>刷哪张卡最省</h2>
+    <h2>刷哪张卡最省<button type="button" class="info" data-note="quick" aria-label="说明">i</button></h2>
     <p class="note">先选当地货币，再填金额</p>
   </div>
   <div class="body">
@@ -306,7 +312,7 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="rates">
   <div class="band">
-    <h2>汇率总览</h2>
+    <h2>汇率总览<button type="button" class="info" data-note="rates" aria-label="说明">i</button></h2>
     <p class="note" id="rates-note">1 外币 = 人民币 · 红涨绿跌</p>
   </div>
   <div class="body tablewrap">
@@ -321,14 +327,13 @@ footer p{margin:3px 0; max-width:90ch}
       <tbody id="rates-body"><tr><td colspan="5" class="empty">正在读取汇率…</td></tr></tbody>
     </table>
   </div>
-  <p class="foot">币种按中行长城跨境通（莫奈卡）19 种免货币转换费币种，另加马来西亚元、印尼盾、老挝基普、越南盾。中间价：中国外汇交易中心每个交易日 9:15 公布。国际参考：Frankfurter 汇总各国央行参考汇率，含周末，接近离岸水平但不是 CNH。</p>
 </section>
 
 
 
 <section id="cards" class="tint-1 span2">
   <div class="band">
-    <h2>刷卡汇率（内地卡，人民币账单）</h2>
+    <h2>刷卡汇率（内地卡，人民币账单）<button type="button" class="info" data-note="cards" aria-label="说明">i</button></h2>
     <p class="note" id="card-note">1 外币 = 人民币，不含发卡行附加费</p>
   </div>
   <div class="body tablewrap">
@@ -346,12 +351,11 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="card-status"></p>
-  <p class="foot">UnionPay：卡组织当日结算汇率，官网。带 ≈ 的是近似值：Mastercard、Visa 官网拦截服务器访问，取快易理财网整理的「人民币→美元」价倒算；JCB 用官网美元中间价折算；三家都不含它们在这个方向上的价差。Amex 不公布汇率。四家里最低的标绿、最高的标红。</p>
 </section>
 
 <section id="cn">
   <div class="band">
-    <h2>内地银行换汇</h2>
+    <h2>内地银行换汇<button type="button" class="info" data-note="cn" aria-label="说明">i</button></h2>
     <label class="amt full">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-from" aria-label="用什么币"></select> <button type="button" class="swap" id="cn-swap" title="对调币种" aria-label="对调币种">⇄</button> 换 <select id="cn-to" aria-label="换成什么币"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select> <span class="note" id="cn-follow"></span></label>
   </div>
   <div class="body tablewrap">
@@ -367,12 +371,11 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="cn-status"></p>
-  <p class="foot">默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；两种外币之间按「先结汇成人民币、再购汇」两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
 </section>
 
 <section id="hk" class="tint-2">
   <div class="band">
-    <h2>香港银行换汇</h2>
+    <h2>香港银行换汇<button type="button" class="info" data-note="hk" aria-label="说明">i</button></h2>
     <label class="amt full">我用 <input type="number" id="hk-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="hk-from" aria-label="用什么币"></select> <button type="button" class="swap" id="hk-swap" title="对调币种" aria-label="对调币种">⇄</button> 换 <select id="hk-to" aria-label="换成什么币"></select> <label class="sync"><input type="checkbox" id="xc-sync" checked> 内地表同步</label></label>
   </div>
   <div class="body tablewrap">
@@ -388,7 +391,6 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="hk-status"></p>
-  <p class="foot">按各行电汇（TT）牌价计算，默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。港元与外币用银行直接牌价；两种外币之间按「先换成港元、再换」两步折算，实际以银行当时报价为准。勾选「内地表同步」后，这里改金额和币种，内地银行表跟着变。</p>
 </section>
 
 <section id="fees" class="tint-1 span2">
@@ -1112,8 +1114,8 @@ function renderQuick() {
       const best = have.length ? have.reduce((a, b) => (b.cny < a.cny ? b : a)) : null, worstRow = have.length > 1 ? have.reduce((a, b) => (b.cny > a.cny ? b : a)) : null;
       rows.sort((a, b) => (a.cny == null) - (b.cny == null) || (a.cny ?? 0) - (b.cny ?? 0));
       for (const r of rows) {
-        const name = el('td', {class: 'net'}, r.rt.label, el('div', {class: 'route'}, r.rt.note + (r.basis ? ` · ${r.basis}` : '')));
-        if (r.cny == null) { tbody.append(el('tr', null, el('td', {class: 'net na'}, r.rt.label, r.rt.note ? el('div', {class: 'route'}, r.rt.note) : null), el('td', {class: 'num na', colspan: '3'}, r.rt.org === 'amex' ? '不公布汇率' : (r.why || '暂无')))); continue; }
+        const name = el('td', {class: 'net'}, r.rt.label, infoBtn(r.rt.note + (r.basis ? `。第二步：${r.basis}` : '')));
+        if (r.cny == null) { tbody.append(el('tr', null, el('td', {class: 'net na'}, r.rt.label, r.rt.note ? infoBtn(r.rt.note) : null), el('td', {class: 'num na', colspan: '3'}, r.rt.org === 'amex' ? '不公布汇率' : (r.why || '暂无')))); continue; }
         candidates.push({group: g, org: r.rt.org, label: r.rt.label, bill: r.cny, cny: r.cny});
         tbody.append(el('tr', {class: r === best ? 'best' : r === worstRow ? 'worst' : null}, name,
           el('td', {class: 'num'}, r.same ? el('span', {class: 'dim'}, '本币入账，不换汇') : `1 ${X} = ${fmt(r.orgRate * c.unit, dec(r.orgRate * c.unit))} ${r.rt.via}`),
@@ -1166,7 +1168,6 @@ function renderQuick() {
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。内地卡按各自真实记账路径算到「还款人民币」，第二步购汇只能在发卡行，用的是发卡行自己的现汇卖出价；其它卡的「折合元」按中间价折成人民币，只用于几类卡之间比较。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
@@ -1512,6 +1513,30 @@ function fillCountryDatalist() {
   const dl = $('gdp-countries'); if (!state.countries || dl.options.length) return;
   dl.replaceChildren(...Object.keys(state.countries).filter(k => !state.countries[k].a && state.countries[k].n).map(k => el('option', {value: state.countries[k].n})));
 }
+
+/* ======================= 说明弹框（圆圈 i） ======================= */
+const NOTES = {"rates": "币种按中行长城跨境通（莫奈卡）19 种免货币转换费币种，另加马来西亚元、印尼盾、老挝基普、越南盾。中间价：中国外汇交易中心每个交易日 9:15 公布。国际参考：Frankfurter 汇总各国央行参考汇率，含周末，接近离岸水平但不是 CNH。", "cards": "UnionPay：卡组织当日结算汇率，官网。带 ≈ 的是近似值：Mastercard、Visa 官网拦截服务器访问，取快易理财网整理的「人民币→美元」价倒算；JCB 用官网美元中间价折算；三家都不含它们在这个方向上的价差。Amex 不公布汇率。四家里最低的标绿、最高的标红。", "cn": "默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；两种外币之间按「先结汇成人民币、再购汇」两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。", "hk": "按各行电汇（TT）牌价计算，默认按能换到的多少从高到低排，最划算的绿字、最贵的红字；点「银行」恢复固定顺序。港元与外币用银行直接牌价；两种外币之间按「先换成港元、再换」两步折算，实际以银行当时报价为准。勾选「内地表同步」后，这里改金额和币种，内地银行表跟着变。", "quick": "入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。内地卡按各自真实记账路径算到「还款人民币」，第二步购汇只能在发卡行，用的是发卡行自己的现汇卖出价；其它卡的「折合元」按中间价折成人民币，只用于几类卡之间比较。"};
+function infoBtn(text) { const b = el('button', {type: 'button', class: 'info', 'aria-label': '说明'}, 'i'); b.dataset.text = text; return b; }
+let popover = null;
+function closePopover() { if (popover) { popover.remove(); popover = null; } }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.info');
+  if (!b) { if (popover && !e.target.closest('.popover')) closePopover(); return; }
+  e.preventDefault();
+  if (popover && popover.anchor === b) { closePopover(); return; }
+  closePopover();
+  const text = b.dataset.text || NOTES[b.dataset.note] || '';
+  popover = el('div', {class: 'popover', role: 'tooltip'});
+  text.split(/(?<=。)/).filter(Boolean).forEach(t => popover.append(el('p', null, t)));
+  popover.anchor = b;
+  document.body.append(popover);
+  const r = b.getBoundingClientRect(), pw = popover.offsetWidth;
+  let left = r.left + window.scrollX - 6;
+  if (left + pw > window.scrollX + document.documentElement.clientWidth - 12) left = window.scrollX + document.documentElement.clientWidth - pw - 12;
+  popover.style.left = Math.max(window.scrollX + 8, left) + 'px';
+  popover.style.top = (r.bottom + window.scrollY + 6) + 'px';
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopover(); });
 
 /* ======================= 导航 ======================= */
 // 导航只滚动页面，不改网址（否则收藏的网址带着 #xxx，再打开就定位到中间、看不到页头）
