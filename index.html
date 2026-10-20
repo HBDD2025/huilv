@@ -1016,6 +1016,7 @@ function renderCards() {
 const CARD_GROUPS = [
   {key: 'USD', name: '美元卡', bill: '美元', orgs: ['visa', 'mastercard', 'amex']},
   {key: 'CNY', name: '内地卡', bill: '人民币', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
+  {key: 'JPY', name: '内地日元卡（JCB）', bill: '日元', orgs: ['jcb'], repay: true},   // 日元入账，再用人民币购汇日元还款
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
   // 账单币种 = 卡的记账货币；卡组织按自己的汇率把当地货币一次换成它，表里的就是入账金额
 ];
@@ -1058,6 +1059,12 @@ function renderQuick() {
   const amt = parseFloat($('quick-amount').value);
   const cards = (state.data && state.data.cards) || {};
   const cnyX = cnyPerUnit(X);            // 1 当地币 = ? 人民币（中间价），用于跨卡比较
+  // 日元卡还款：用人民币在内地银行购汇日元，取各行现汇卖出价最低者
+  let jpyRepay = null;
+  for (const [key, name] of BANKS_CN) {
+    const r = state.data && state.data.banks_cn && state.data.banks_cn[key] && state.data.banks_cn[key].JPY;
+    if (r && r.hui_sell != null && (jpyRepay == null || r.hui_sell < jpyRepay.rate)) jpyRepay = {rate: r.hui_sell, who: name};
+  }
   // 标题带上的「≈ CNY」：按 UnionPay 汇率换算，没有 UnionPay 报价时退回中间价
   const cnyEl = $('quick-cny'); cnyEl.replaceChildren();
   if (isFinite(amt) && amt > 0 && X !== 'CNY') {
@@ -1069,18 +1076,21 @@ function renderQuick() {
   const candidates = [];                 // {group, org, bill, cny}
   for (const g of CARD_GROUPS) {
     const box = el('div', {class: 'cardgroup'});
-    box.append(el('div', {class: 'gh'}, el('span', {class: 'gname'}, g.name), el('small', null, X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`)));
+    // 折算到人民币：普通卡按中间价（只用于比较）；日元卡按还款购汇价（真实成本）
+    const cnyB = g.repay ? (jpyRepay && jpyRepay.rate) : cnyPerUnit(g.key);
+    const cnyHead = g.repay ? (jpyRepay ? `还款需元（${jpyRepay.who}购汇 ${fmt(jpyRepay.rate * 100, 4)}/100）` : '还款需元') : '折合元';
+    const sub = X === g.key ? `${g.bill}记账，本币消费` : `${g.bill}记账：卡组织把 ${X} 一次换成${g.bill}入账`;
+    box.append(el('div', {class: 'gh'}, el('span', {class: 'gname'}, g.name), el('small', null, g.repay ? sub + '，再用人民币购汇还款' : sub)));
     if (X === g.key) {
-      box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}`));
-      const cny = cnyPerUnit(g.key);
+      const cny = cnyB;
+      box.append(el('div', {class: 'same'}, `不需要换汇，入账 ${fmt(amt, 2)} ${g.key}` + (g.repay && cny != null ? `，还款约需 ${fmt(amt * cny, 2)} 元` : '')));
       if (cny != null) candidates.push({group: g, org: null, bill: amt, cny: amt * cny, same: true});
       groupsEl.append(box);
       continue;
     }
     const table = el('table'), tbody = el('tbody');
-    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num', title: '按今天中间价折成人民币，只用于三类卡之间比较'}, '折合元'))), tbody);
+    table.append(el('thead', null, el('tr', null, el('th', null, '卡'), el('th', {class: 'num'}, `卡组织汇率 1 ${X} = ${g.key}`), el('th', {class: 'num'}, `入账${g.bill}`), el('th', {class: 'num', title: g.repay ? '入账日元 × 内地银行现汇卖出价最低者' : '按今天中间价折成人民币，只用于几类卡之间比较'}, cnyHead))), tbody);
     const row = (cards[g.key] && cards[g.key][X]) || {};
-    const cnyB = cnyPerUnit(g.key);
     const rows = g.orgs.map(org => ({org, rate: row[org] != null ? row[org] : null}));
     const have = rows.filter(r => r.rate != null);
     const best = have.length ? have.reduce((a, b) => (b.rate < a.rate ? b : a)) : null;
@@ -1117,11 +1127,11 @@ function renderQuick() {
   if (all.length > 1) {
     const name = x => x.same ? `${x.group.name}本币` : `${x.group.name} ${ORG_NAME[x.org]}`;
     const top = all[0], second = all[1], last = all[all.length - 1];
-    const line = el('div', {class: 'hl'}, '三类卡折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
+    const line = el('div', {class: 'hl'}, '折成人民币比较：最省 ', el('b', null, name(top)), ` ≈ ${fmt(top.cny, 2)} 元`);
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「折合元」按中间价折成人民币，只用于三类卡之间比较。'));
+  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。「折合元」按中间价折成人民币，只用于几类卡之间比较；日元卡的「还款需元」是入账日元按内地银行最低现汇卖出价购汇的真实成本。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 

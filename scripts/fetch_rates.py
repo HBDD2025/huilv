@@ -210,7 +210,7 @@ def _find_rate_list(obj):
     return []
 
 
-BILLING = ["CNY", "HKD", "USD"]          # 三类卡的账单币种：内地卡 / 港卡 / 美元卡
+BILLING = ["CNY", "HKD", "USD", "JPY"]   # 账单币种：内地卡 / 港卡 / 美元卡 / 日元卡（内地 JCB）
 TRANS = CODES + ["CNY"]                    # 可能用来消费的当地货币（含人民币；港币、美元已在 CODES 里）
 
 
