@@ -97,7 +97,10 @@ section.tint-2{background:var(--tint-2)}
 .band select,.band button,.band input{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.35); color:var(--band-ink); border-radius:4px; padding:2px 6px; font-size:12px}
 .band select,.band .amt input{background:#ffffff; color:#182230; border-color:rgba(255,255,255,.6); -webkit-text-fill-color:#182230}
 .band .amt{font-size:12px}
-.band .amt.full{flex-basis:100%}
+.band .amt.full{flex-basis:100%; display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px}
+.band .sync{margin-left:auto; font-size:12px; display:inline-flex; align-items:center; gap:4px; cursor:pointer}
+.band .sync input{accent-color:#ffe08a}
+.band .amt select:disabled,.band .amt input:disabled{opacity:.6}
 .band .amt input{width:86px; padding:2px 6px; border-radius:4px; border:1px solid rgba(255,255,255,.6)}
 .amtrow{display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; margin:2px 0 6px; padding:6px 8px; background:var(--accent-soft, var(--surface-2)); border-radius:var(--radius)}
 .amtrow .amt{font-size:12.5px; color:var(--fg-2)}
@@ -344,7 +347,7 @@ footer p{margin:3px 0; max-width:90ch}
 <section id="cn">
   <div class="band">
     <h2>内地银行换汇</h2>
-    <label class="amt full">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-dir" aria-label="换汇方向"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select></label>
+    <label class="amt full">我用 <input type="number" id="cn-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="cn-from" aria-label="用什么币"></select> → 换 <select id="cn-to" aria-label="换成什么币"></select> <select id="cn-kind" aria-label="现汇或现钞"><option value="hui">现汇</option><option value="chao">现钞</option></select> <span class="note" id="cn-follow"></span></label>
   </div>
   <div class="body tablewrap">
     <table id="cn-table">
@@ -359,13 +362,13 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="cn-status"></p>
-  <p class="foot">换到最多的标绿、最少的标红，点表头按高低排序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；港元与美元之间银行先换成人民币再换，这里按两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
+  <p class="foot">换到最多的标绿、最少的标红，点表头按高低排序。现汇是账户里的外币（汇款、刷卡入账），现钞是手里的纸币，现钞价通常更差。人民币与外币用银行直接牌价；两种外币之间按「先结汇成人民币、再购汇」两步折算。带「聚」标记的来自聚合站（快易理财网、ip.cn），其余来自银行官网。</p>
 </section>
 
 <section id="hk" class="tint-2">
   <div class="band">
     <h2>香港银行换汇</h2>
-    <label class="amt full">我用 <input type="number" id="hk-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="hk-dir" aria-label="换汇方向"></select></label>
+    <label class="amt full">我用 <input type="number" id="hk-amt" inputmode="decimal" min="0" step="any" value="10000"> <select id="hk-from" aria-label="用什么币"></select> → 换 <select id="hk-to" aria-label="换成什么币"></select> <label class="sync"><input type="checkbox" id="xc-sync" checked> 内地表同步</label></label>
   </div>
   <div class="body tablewrap">
     <table id="hk-table">
@@ -380,7 +383,7 @@ footer p{margin:3px 0; max-width:90ch}
     </table>
   </div>
   <p class="foot" id="hk-status"></p>
-  <p class="foot">按各行电汇（TT）牌价计算，换到最多的标绿、最少的标红。港元与人民币、港元与美元用银行直接牌价；人民币与美元之间银行通常先换成港元再换，这里按两步折算，实际以银行当时报价为准。</p>
+  <p class="foot">按各行电汇（TT）牌价计算，换到最多的标绿、最少的标红。港元与外币用银行直接牌价；两种外币之间按「先换成港元、再换」两步折算，实际以银行当时报价为准。勾选「内地表同步」后，这里改金额和币种，内地银行表跟着变。</p>
 </section>
 
 <section id="fees" class="tint-1 span2">
@@ -624,8 +627,7 @@ const state = {
   countries: null,
   indCache: {},
   sort: {cn: store.get('sort_cn', null), hk: store.get('sort_hk', null)},
-  hkDir: store.get('hk_dir', 'HKD>CNY'),
-  cnDir: store.get('cn_dir', 'CNY>USD'),
+  xc: Object.assign({amt: 10000, hkFrom: 'HKD', hkTo: 'CNY', cnFrom: 'CNY', cnTo: 'USD', cnAmt: 10000, sync: true}, store.get('xc_v1', {})),
 };
 
 (function renderDateline() {
@@ -852,9 +854,11 @@ function setCurrency(code) {
   state.trendCode = code; store.set('trend_code', code);
   $('trend-tabs').querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x.id === 'tab-' + code)));
   const sel = $('trend-cur'); if (sel.value !== code) sel.value = code;
-  if (code !== 'CNY') {
-    const d = 'CNY>' + code, bs = $('cn-dir');
-    if ([...bs.options].some(o => o.value === d) && state.cnDir !== d) { state.cnDir = d; bs.value = d; store.set('cn_dir', d); renderCN(); }
+  if (state.xc) {
+    const want = code === 'CNY' ? 'CNY' : code;
+    if (state.xc.hkTo !== want) { state.xc.hkTo = want; if (state.xc.hkFrom === want) state.xc.hkFrom = want === 'HKD' ? 'CNY' : 'HKD'; }
+    if (!state.xc.sync && state.xc.cnTo !== want) { state.xc.cnTo = want; if (state.xc.cnFrom === want) state.xc.cnFrom = want === 'CNY' ? 'USD' : 'CNY'; }
+    applySync(); renderHK(); renderCN();
   }
   renderTrend();
 }
@@ -958,7 +962,7 @@ async function loadData() {
     for (const [id, n] of [['card-body', 7], ['cn-body', 6], ['hk-body', 5]]) $(id).replaceChildren(el('tr', null, el('td', {colspan: String(n), class: 'empty'}, msg)));
     return;
   }
-  renderCards(); renderCN(); renderHK(); renderQuick();
+  applySync(); renderCards(); renderCN(); renderHK(); renderQuick();
 }
 function sourceStatus(keys, labels) {
   const src = (state.data && state.data.sources) || {};
@@ -1114,9 +1118,13 @@ function renderQuick() {
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
+/* ---- 两张换汇表共用的币种与状态 ---- */
+const XC_CODES = ['HKD', 'CNY', 'USD', 'JPY', ...CURRENCIES.map(c => c.code).filter(c => !['HKD', 'USD', 'JPY'].includes(c))];
+const XC_NAME = Object.assign({CNY: '人民币'}, Object.fromEntries(CURRENCIES.map(c => [c.code, c.name])));
+function saveXC() { store.set('xc_v1', state.xc); }
+
 /* ---- 内地银行换汇：人民币与外币双向，港元与美元经人民币折算 ---- */
 const CN_NAME = Object.assign({CNY: '人民币'}, Object.fromEntries(CURRENCIES.map(c => [c.code, c.name])));
-const CN_CORE = ['CNY>USD', 'USD>CNY', 'CNY>HKD', 'HKD>CNY', 'USD>HKD', 'HKD>USD'];
 function cnRate(r, from, to, kind) {
   const q = code => r[code] || {};
   const buy = code => q(code)[kind + '_buy'], sell = code => q(code)[kind + '_sell'];   // 银行买入/卖出 1 外币 的人民币价
@@ -1129,9 +1137,9 @@ function cnRate(r, from, to, kind) {
 function renderBankTable() { renderCN(); }
 function renderCN() {
   if (!state.data) return;
-  const [from, to] = state.cnDir.split('>');
+  const from = state.xc.cnFrom, to = state.xc.cnTo;
   const kind = $('cn-kind').value;
-  const amt = parseFloat($('cn-amt').value) || 0;
+  const amt = state.xc.cnAmt || 0;
   $('cn-rate-head').firstChild.textContent = `1 ${from} = ${to}`;
   $('cn-get-head').firstChild.textContent = `换到 ${to}`;
   const tables = state.data.banks_cn || {};
@@ -1169,18 +1177,14 @@ function renderCN() {
   setStatus($('cn-status'), parts.join(' · '), failed.length > 0);
 }
 (function initCN() {
-  const sel = $('cn-dir');
-  const opt = d => { const [f, t] = d.split('>'); return el('option', {value: d}, `${f} ${CN_NAME[f]} → ${t} ${CN_NAME[t]}`); };
-  const g1 = el('optgroup', {label: '常用'}, ...CN_CORE.map(opt));
-  const others = CURRENCIES.filter(c => c.code !== 'USD' && c.code !== 'HKD').map(c => c.code);
-  const g2 = el('optgroup', {label: '人民币 → 其他外币'}, ...others.map(x => opt('CNY>' + x)));
-  const g3 = el('optgroup', {label: '其他外币 → 人民币'}, ...others.map(x => opt(x + '>CNY')));
-  sel.replaceChildren(g1, g2, g3);
-  sel.value = state.cnDir; if (!sel.value) { sel.value = 'CNY>USD'; state.cnDir = 'CNY>USD'; }
-  sel.addEventListener('change', () => { state.cnDir = sel.value; store.set('cn_dir', sel.value); renderCN(); });
+  const codes = ['CNY', 'USD', 'HKD', 'JPY', ...CURRENCIES.map(c => c.code).filter(c => !['USD', 'HKD', 'JPY'].includes(c))];
+  const opts = () => codes.map(c => el('option', {value: c}, `${c} ${XC_NAME[c]}`));
+  $('cn-from').replaceChildren(...opts()); $('cn-to').replaceChildren(...opts());
+  $('cn-from').addEventListener('change', () => setXC('cn', {cnFrom: $('cn-from').value}));
+  $('cn-to').addEventListener('change', () => setXC('cn', {cnTo: $('cn-to').value}));
+  $('cn-amt').addEventListener('input', () => { state.xc.cnAmt = parseFloat($('cn-amt').value) || 0; saveXC(); renderCN(); });
   $('cn-kind').value = store.get('cn_kind', 'hui');
   $('cn-kind').addEventListener('change', () => { store.set('cn_kind', $('cn-kind').value); renderCN(); });
-  $('cn-amt').addEventListener('input', renderCN);
   $('cn-table').querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
     const k = th.dataset.k === 'get' ? 'rate' : th.dataset.k; const cur = state.sort.cn;
     if (k === 'order') state.sort.cn = null;
@@ -1192,7 +1196,6 @@ function renderCN() {
 
 /* ---- 香港银行换汇：CNY / USD / HKD 两两双向 ---- */
 const HK_NAME = {HKD: '港元', CNY: '人民币', USD: '美元'};
-const HK_DIRS = ['HKD>CNY', 'CNY>HKD', 'HKD>USD', 'USD>HKD', 'USD>CNY', 'CNY>USD'];
 // 返回 {rate: 1 from = ? to, basis: 文字} ；r 是该行的牌价表（以港元计价）
 function hkRate(r, from, to) {
   const q = code => r[code] || {};
@@ -1204,8 +1207,8 @@ function hkRate(r, from, to) {
 }
 function renderHK() {
   if (!state.data) return;
-  const [from, to] = state.hkDir.split('>');
-  const amt = parseFloat($('hk-amt').value) || 0;
+  const from = state.xc.hkFrom, to = state.xc.hkTo;
+  const amt = state.xc.amt || 0;
   $('hk-rate-head').firstChild.textContent = `1 ${from} = ${to}`;
   $('hk-get-head').firstChild.textContent = `换到 ${to}`;
   const tables = state.data.banks_hk || {};
@@ -1242,12 +1245,32 @@ function renderHK() {
   const g = generatedText(); if (g) parts.push(g);
   setStatus($('hk-status'), parts.join(' · '), failed.length > 0);
 }
+// 同步：勾选时内地表跟随香港表的金额与币种
+function applySync() {
+  const on = state.xc.sync;
+  if (on) { state.xc.cnFrom = state.xc.hkFrom; state.xc.cnTo = state.xc.hkTo; state.xc.cnAmt = state.xc.amt; }
+  $('cn-from').value = state.xc.cnFrom; $('cn-to').value = state.xc.cnTo; $('cn-amt').value = state.xc.cnAmt;
+  for (const id of ['cn-from', 'cn-to', 'cn-amt']) $(id).disabled = on;
+  $('cn-follow').textContent = on ? '跟随香港表' : '';
+  $('hk-from').value = state.xc.hkFrom; $('hk-to').value = state.xc.hkTo; $('hk-amt').value = state.xc.amt;
+  saveXC();
+}
+function setXC(side, patch) {
+  Object.assign(state.xc, patch);
+  // 同一边 from == to 时把另一个换掉
+  const f = side + 'From', t = side + 'To';
+  if (state.xc[f] === state.xc[t]) state.xc[t] = state.xc[f] === 'HKD' ? 'CNY' : (side === 'hk' ? 'HKD' : 'CNY');
+  if (side === 'cn' && state.xc.cnFrom === state.xc.cnTo) state.xc.cnTo = state.xc.cnFrom === 'CNY' ? 'USD' : 'CNY';
+  applySync(); renderHK(); renderCN();
+}
 (function initHK() {
-  const sel = $('hk-dir');
-  sel.replaceChildren(...HK_DIRS.map(d => { const [f, t] = d.split('>'); return el('option', {value: d}, `${f} ${HK_NAME[f]} → ${t} ${HK_NAME[t]}`); }));
-  sel.value = state.hkDir;
-  sel.addEventListener('change', () => { state.hkDir = sel.value; store.set('hk_dir', sel.value); renderHK(); });
-  $('hk-amt').addEventListener('input', renderHK);
+  const opts = () => XC_CODES.map(c => el('option', {value: c}, `${c} ${XC_NAME[c]}`));
+  $('hk-from').replaceChildren(...opts()); $('hk-to').replaceChildren(...opts());
+  $('hk-from').addEventListener('change', () => setXC('hk', {hkFrom: $('hk-from').value}));
+  $('hk-to').addEventListener('change', () => setXC('hk', {hkTo: $('hk-to').value}));
+  $('hk-amt').addEventListener('input', () => { state.xc.amt = parseFloat($('hk-amt').value) || 0; if (state.xc.sync) { state.xc.cnAmt = state.xc.amt; $('cn-amt').value = state.xc.cnAmt; renderCN(); } saveXC(); renderHK(); });
+  $('xc-sync').checked = state.xc.sync !== false;
+  $('xc-sync').addEventListener('change', () => { state.xc.sync = $('xc-sync').checked; applySync(); renderCN(); });
   $('hk-table').querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
     const k = th.dataset.k === 'get' ? 'rate' : th.dataset.k; const cur = state.sort.hk;
     if (k === 'order') state.sort.hk = null;
