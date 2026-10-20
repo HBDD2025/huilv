@@ -1020,9 +1020,9 @@ const CARD_GROUPS = [
     // 内地发卡的真实记账路径：via = 卡组织先换成的币种，bank = 第二步购汇用哪家银行的现汇卖出价
     {org: 'unionpay',   label: 'UnionPay',     note: '人民币直接入账',                      via: 'CNY'},
     {org: 'mastercard', label: 'Mastercard',   note: '人民币卡，人民币入账',                 via: 'CNY'},
-    {org: 'visa',       label: 'Visa',         note: '美元清算，记账日银行购汇入人民币（招行）', via: 'USD', bank: 'cmb'},
-    {org: 'jcb',        label: 'JCB（招行）',   note: '美元清算，记账日银行购汇入人民币',       via: 'USD', bank: 'cmb'},
-    {org: 'jcb',        label: 'JCB（工行）',   note: '日元入账，用人民币购汇日元还款',         via: 'JPY', bank: 'icbc'},
+    {org: 'visa',       label: 'Visa（招行）',  note: '美元清算，招行按记账日美元卖出价购汇入账', via: 'USD', bank: 'cmb'},
+    {org: 'jcb',        label: 'JCB（招行）',   note: '美元清算，招行按记账日美元卖出价购汇入账', via: 'USD', bank: 'cmb'},
+    {org: 'jcb',        label: 'JCB（工行）',   note: '日元入账，在工行购汇日元还款',            via: 'JPY', bank: 'icbc'},
     {org: 'amex',       label: 'Amex',         note: '',                                   via: null},
   ]},
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
@@ -1093,7 +1093,6 @@ function renderQuick() {
       table.append(el('thead', null, el('tr', null, el('th', null, '卡 · 记账路径'), el('th', {class: 'num'}, '卡组织汇率'), el('th', {class: 'num'}, '入账'), el('th', {class: 'num'}, '还款人民币'))), tbody);
       const banks = (state.data && state.data.banks_cn) || {};
       const bankSell = (key, code) => { const r = banks[key] && banks[key][code]; return r && r.hui_sell != null ? {rate: r.hui_sell, who: (BANKS_CN.find(b => b[0] === key) || [null, key === 'cmb' ? '招行' : key])[1]} : null; };
-      const lowestSell = code => { let b = null; for (const [key, name] of BANKS_CN) { const r = banks[key] && banks[key][code]; if (r && r.hui_sell != null && (!b || r.hui_sell < b.rate)) b = {rate: r.hui_sell, who: name}; } return b; };
       const rows = [];
       for (const rt of g.routes) {
         if (!rt.via) { rows.push({rt, cny: null}); continue; }
@@ -1103,8 +1102,8 @@ function renderQuick() {
         const billAmt = amt * orgRate;                      // 入账金额（via 币种）
         let cny = billAmt, basis = '';
         if (rt.via !== 'CNY') {
-          const bs = bankSell(rt.bank, rt.via) || lowestSell(rt.via);
-          if (!bs) { rows.push({rt, cny: null}); continue; }
+          const bs = bankSell(rt.bank, rt.via);              // 购汇还款只能在发卡行，不用别家的价
+          if (!bs) { rows.push({rt, cny: null, why: `${rt.bank === 'cmb' ? '招行' : '工行'}牌价暂未抓到`}); continue; }
           const u = CUR_BY[rt.via] ? CUR_BY[rt.via].unit : 1;
           cny = billAmt * bs.rate; basis = `${bs.who}${rt.via}卖出 ${fmt(bs.rate * u, 4)}${u > 1 ? '/' + u : ''}`;
         }
@@ -1115,7 +1114,7 @@ function renderQuick() {
       rows.sort((a, b) => (a.cny == null) - (b.cny == null) || (a.cny ?? 0) - (b.cny ?? 0));
       for (const r of rows) {
         const name = el('td', {class: 'net'}, r.rt.label, el('div', {class: 'route'}, r.rt.note + (r.basis ? ` · ${r.basis}` : '')));
-        if (r.cny == null) { tbody.append(el('tr', null, el('td', {class: 'net na'}, r.rt.label, r.rt.note ? el('div', {class: 'route'}, r.rt.note) : null), el('td', {class: 'num na', colspan: '3'}, r.rt.org === 'amex' ? '不公布汇率' : '暂无'))); continue; }
+        if (r.cny == null) { tbody.append(el('tr', null, el('td', {class: 'net na'}, r.rt.label, r.rt.note ? el('div', {class: 'route'}, r.rt.note) : null), el('td', {class: 'num na', colspan: '3'}, r.rt.org === 'amex' ? '不公布汇率' : (r.why || '暂无')))); continue; }
         candidates.push({group: g, org: r.rt.org, label: r.rt.label, bill: r.cny, cny: r.cny});
         tbody.append(el('tr', {class: r === best ? 'best' : r === worstRow ? 'worst' : null}, name,
           el('td', {class: 'num'}, r.same ? el('span', {class: 'dim'}, '本币入账，不换汇') : `1 ${X} = ${fmt(r.orgRate * c.unit, dec(r.orgRate * c.unit))} ${r.rt.via}`),
@@ -1168,7 +1167,7 @@ function renderQuick() {
     line.append(el('span', {class: 'vs'}, `，其次 ${name(second)} ≈ ${fmt(second.cny, 2)} 元（多 ${fmt(second.cny - top.cny, 2)} 元）；最贵 ${name(last)}，多 ${fmt(last.cny - top.cny, 2)} 元`));
     verdict.append(line);
   }
-  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。内地卡按各自真实记账路径算到「还款人民币」；其它卡的「折合元」按中间价折成人民币，只用于几类卡之间比较。'));
+  verdict.append(el('div', {class: 'vs'}, '入账金额 = 当地消费 × 卡组织汇率，只换一次，没有第二次转换；发卡行的外币交易手续费（通常 0–3%）另计。内地卡按各自真实记账路径算到「还款人民币」，第二步购汇只能在发卡行，用的是发卡行自己的现汇卖出价；其它卡的「折合元」按中间价折成人民币，只用于几类卡之间比较。'));
 }
 $('quick-amount').addEventListener('input', renderQuick);
 
