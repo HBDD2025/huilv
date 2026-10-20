@@ -116,6 +116,9 @@ section.tint-2{background:var(--tint-2)}
 .body{padding:6px 8px 0}
 .note{color:var(--muted); font-size:12px; margin:0}
 .foot{padding:6px 10px 0; color:var(--muted); font-size:11.5px}
+.foot.notes{padding-top:8px; line-height:1.5}
+.foot.notes p{margin:0 0 3px}
+.foot.notes b{color:var(--fg-2); font-weight:600}
 .lead{color:var(--fg-2); max-width:70ch; margin:0 0 8px}
 
 /* 按钮与输入 */
@@ -312,7 +315,7 @@ footer p{margin:3px 0; max-width:90ch}
 
 <section id="rates">
   <div class="band">
-    <h2>汇率总览<button type="button" class="info" data-note="rates" aria-label="说明">i</button></h2>
+    <h2>汇率总览</h2>
     <p class="note" id="rates-note">1 外币 = 人民币 · 红涨绿跌</p>
   </div>
   <div class="body tablewrap">
@@ -326,6 +329,11 @@ footer p{margin:3px 0; max-width:90ch}
       </tr></thead>
       <tbody id="rates-body"><tr><td colspan="5" class="empty">正在读取汇率…</td></tr></tbody>
     </table>
+  </div>
+  <div class="foot notes">
+    <p><b>币种</b>：中行长城跨境通（莫奈卡）19 种免货币转换费币种，另加马来西亚元、印尼盾、老挝基普、越南盾。</p>
+    <p><b>中间价</b>：中国外汇交易中心每个交易日 9:15 公布。</p>
+    <p><b>国际参考</b>：Frankfurter 汇总各国央行参考汇率，含周末，接近离岸水平但不是 CNH。</p>
   </div>
 </section>
 
