@@ -1030,8 +1030,8 @@ const CARD_GROUPS = [
     // 内地发卡的真实记账路径：via = 卡组织先换成的币种，bank = 第二步购汇用哪家银行的现汇卖出价
     {org: 'unionpay',   label: 'UnionPay',     note: '人民币直接入账',                      via: 'CNY'},
     {org: 'mastercard', label: 'Mastercard',   note: '人民币卡，人民币入账',                 via: 'CNY'},
-    {org: 'visa',       label: 'Visa（招行）',  note: '美元清算，招行按记账日美元卖出价购汇入账', via: 'USD', bank: 'cmb'},
-    {org: 'jcb',        label: 'JCB（招行）',   note: '美元清算，招行按记账日美元卖出价购汇入账', via: 'USD', bank: 'cmb'},
+    {org: 'visa',       label: 'Visa',         note: '美元清算，发卡行按记账日美元卖出价购汇入人民币账单。各行牌价略有差异，这里按招行牌价计算', via: 'USD', bank: 'cmb'},
+    {org: 'jcb',        label: 'JCB',          note: '美元清算，发卡行按记账日美元卖出价购汇入人民币账单（招行 JCB 的记账方式，按招行牌价计算）', via: 'USD', bank: 'cmb'},
     {org: 'amex',       label: 'Amex',         note: '',                                   via: null},
   ]},
   {key: 'HKD', name: '港卡', bill: '港元', orgs: ['unionpay', 'visa', 'mastercard', 'jcb', 'amex']},
@@ -1114,7 +1114,7 @@ function renderQuick() {
           const bs = bankSell(rt.bank, rt.via);              // 购汇还款只能在发卡行，不用别家的价
           if (!bs) { rows.push({rt, cny: null, why: `${rt.bank === 'cmb' ? '招行' : '工行'}牌价暂未抓到`}); continue; }
           const u = CUR_BY[rt.via] ? CUR_BY[rt.via].unit : 1;
-          cny = billAmt * bs.rate; basis = `${bs.who}${rt.via}卖出 ${fmt(bs.rate * u, 4)}${u > 1 ? '/' + u : ''}`;
+          cny = billAmt * bs.rate; basis = `${rt.via} 现汇卖出 ${fmt(bs.rate * u, 4)}${u > 1 ? '/' + u : ''}（${bs.who}）`;
         }
         rows.push({rt, orgRate, billAmt, cny, basis, same});
       }
