@@ -2,9 +2,8 @@ name: 更新刷卡汇率
 
 on:
   schedule:
-    # 北京时间 10:40 与 18:10 各跑一次（cron 用的是 UTC）
-    - cron: "40 2 * * *"
-    - cron: "10 10 * * *"
+    # 北京时间 08:23 到 23:23 每小时一次（cron 用的是 UTC；GitHub 的定时常有几十分钟延迟）
+    - cron: "23 0-15 * * *"
   workflow_dispatch:
 
 permissions:

@@ -58,6 +58,7 @@ body{
 }
 .wrap{max-width:1000px; margin:0 auto}
 a{color:var(--accent)}
+a.btn{text-decoration:none; color:var(--fg)}
 button,input,select{font:inherit; color:inherit}
 :focus-visible{outline:2px solid var(--accent); outline-offset:1px}
 [hidden]{display:none!important}
@@ -271,6 +272,7 @@ footer p{margin:3px 0; max-width:90ch}
   <div class="tools">
     <span class="status" id="fx-status">正在读取…</span>
     <button class="btn btn-sm" id="refresh" type="button">刷新</button>
+    <a class="btn btn-sm" href="https://github.com/HBDD2025/huilv/actions/workflows/update-rates.yml" target="_blank" rel="noopener" title="打开后点 Run workflow，两三分钟后刷新本页">立即抓取牌价 ↗</a>
   </div>
 </header>
 
