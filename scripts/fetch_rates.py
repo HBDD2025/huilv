@@ -150,16 +150,36 @@ def err_text(exc):
 def parse_generic_table(html, name_col_hint="币种"):
     """解析带「现汇买入/现钞买入/现汇卖出/现钞卖出」表头的 HTML 表格（快易理财网等聚合页通用）。"""
     soup = BeautifulSoup(html, "html.parser")
+    seen_headers = []
     for table in soup.find_all("table"):
         header = None
-        for tr in table.find_all("tr"):
+        trs = table.find_all("tr")
+        for i, tr in enumerate(trs):
             cells = [c.get_text(" ", strip=True) for c in tr.find_all(["th", "td"])]
             if not cells:
                 continue
-            if header is None:
-                if any("买入" in c for c in cells) and any("卖出" in c for c in cells):
-                    header = cells
-                continue
+            if header is None and any("买入" in c for c in cells) and any("卖出" in c for c in cells):
+                # 两行表头（买入价/卖出价 各 colspan=2，下一行 现汇/现钞）：按 colspan 展开后与下一行合并
+                expanded = []
+                for c in tr.find_all(["th", "td"]):
+                    txt = c.get_text(" ", strip=True)
+                    expanded += [txt] * int(c.get("colspan", 1) or 1)
+                if not any("现汇" in c or "现钞" in c for c in expanded) and i + 1 < len(trs):
+                    sub = [c.get_text(" ", strip=True) for c in trs[i + 1].find_all(["th", "td"])]
+                    if any("现汇" in c or "现钞" in c for c in sub):
+                        # 子表头只覆盖带 colspan 的那几列，按顺序补进去
+                        merged, k = [], 0
+                        for c in tr.find_all(["th", "td"]):
+                            txt = c.get_text(" ", strip=True); span = int(c.get("colspan", 1) or 1)
+                            if span > 1:
+                                for _ in range(span):
+                                    merged.append((sub[k] if k < len(sub) else "") + txt); k += 1
+                            else:
+                                merged.append(txt)
+                        expanded = merged
+                header = expanded
+                seen_headers.append(header)
+                break
         if not header:
             continue
         idx = {}
@@ -190,7 +210,7 @@ def parse_generic_table(html, name_col_hint="币种"):
                 rates[code] = row
         if rates:
             return rates
-    raise RuntimeError("页面里没有找到牌价表")
+    raise RuntimeError("页面里没有找到牌价表" + (f"；表头={seen_headers[:2]}" if seen_headers else ""))
 
 
 # ================================================================ 刷卡汇率
@@ -590,8 +610,17 @@ def fetch_shengjing():
                 tm = f"{year}-{tm}"
             r["time"] = tm
         rates = scale(rates)
+        for r in rates.values():
+            tm = r.get("time") or ""
+            if re.fullmatch(r"\d{8}", tm):
+                r["time"] = f"{tm[:4]}-{tm[4:6]}-{tm[6:]}"
+        usd = rates.get("USD") or {}
+        note = None
+        if usd.get("hui_sell") is None:
+            heads = re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", resp.text, flags=re.S)[:16]
+            note = "官网表格列不全：" + " | ".join(re.sub(r"<[^>]+>|\s+", " ", h).strip() for h in heads)[:400]
         log("  盛京官网抓取成功")
-        return {"date": max((r.get("time") or "") for r in rates.values()), "rates": rates, "origin": "官网"}
+        return {"date": max((r.get("time") or "") for r in rates.values()), "rates": rates, "origin": "官网", "note": note}
     except Exception as exc:  # noqa: BLE001
         log(f"  盛京官网失败（{str(exc)[:80]}），改用快易理财网")
         r = make_kylc("shengjingb")()
