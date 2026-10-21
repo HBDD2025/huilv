@@ -565,15 +565,24 @@ def fetch_cbhb_ipcn():
 def fetch_shengjing():
     """盛京银行：先试官网牌价页（通用表格解析），不行再退到快易理财网。"""
     try:
-        resp = get("https://www.shengjingbank.com.cn/sjyh/bjfw/whpj/index.shtml", insecure_fallback=True)
-        resp.encoding = resp.apparent_encoding or "utf-8"
-        try:
-            rates = parse_generic_table(resp.text)
-        except RuntimeError as exc:
-            # 诊断：页面里有没有 iframe / 数据接口的线索
-            hints = re.findall(r'(?:src|href|url)\s*[=:]\s*["\']([^"\']*(?:whpj|rate|hq|quot|json|ajax|\.do|\.action)[^"\']*)["\']', resp.text, flags=re.I)[:8]
-            text = BeautifulSoup(resp.text, "html.parser").get_text(" ", strip=True)[:160]
-            raise RuntimeError(f"{exc}；len={len(resp.text)}；线索={hints}；正文开头={text}") from exc
+        # 牌价页本身只是外壳，表格在 /exchangeRate.html（页面里引用的）；两个都试
+        errors = []
+        rates = None
+        for url in ("https://www.shengjingbank.com.cn/exchangeRate.html", "https://www.shengjingbank.com.cn/sjyh/bjfw/whpj/index.shtml"):
+            try:
+                resp = get(url, insecure_fallback=True, headers={**HEADERS, "Referer": "https://www.shengjingbank.com.cn/sjyh/bjfw/whpj/index.shtml"})
+                resp.encoding = resp.apparent_encoding or "utf-8"
+                rates = parse_generic_table(resp.text)
+                break
+            except Exception as exc:  # noqa: BLE001
+                snippet = ""
+                try:
+                    snippet = BeautifulSoup(resp.text, "html.parser").get_text(" ", strip=True)[:120]
+                except Exception:  # noqa: BLE001
+                    pass
+                errors.append(f"{url.rsplit('/', 1)[-1]}: {str(exc)[:60]}；正文={snippet}")
+        if rates is None:
+            raise RuntimeError(" | ".join(errors))
         year = dt.datetime.now(BJT).year
         for r in rates.values():
             tm = (r.get("time") or "").replace("/", "-")
