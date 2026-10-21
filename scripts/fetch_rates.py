@@ -581,6 +581,7 @@ def fetch_shengjing():
         log(f"  盛京官网失败（{str(exc)[:80]}），改用快易理财网")
         r = make_kylc("shengjingb")()
         r["origin"] = "kylc"
+        r["note"] = f"官网失败：{err_text(exc)[:200]}"
         return r
 
 
@@ -788,7 +789,7 @@ def main():
                     for k, v in list(row.items()):
                         if isinstance(v, float):
                             row[k] = round(v, 6)
-            out["sources"][key] = {"ok": True, "date": result.get("date"), "stale": False, "name": label, "group": group, "origin": result.get("origin") or origin, "error": None}
+            out["sources"][key] = {"ok": True, "date": result.get("date"), "stale": False, "name": label, "group": group, "origin": result.get("origin") or origin, "error": None, "note": result.get("note")}
             if group == "card":
                 for code, value in result["rates"].items():
                     if code in out["card"]:
