@@ -562,6 +562,28 @@ def fetch_cbhb_ipcn():
     return {"date": max(r.get("time") or "" for r in rates.values()), "rates": rates}
 
 
+def fetch_shengjing():
+    """盛京银行：先试官网牌价页（通用表格解析），不行再退到快易理财网。"""
+    try:
+        resp = get("https://www.shengjingbank.com.cn/sjyh/bjfw/whpj/index.shtml", insecure_fallback=True)
+        resp.encoding = resp.apparent_encoding or "utf-8"
+        rates = parse_generic_table(resp.text)
+        year = dt.datetime.now(BJT).year
+        for r in rates.values():
+            tm = (r.get("time") or "").replace("/", "-")
+            if re.fullmatch(r"\d{2}-\d{2} \d{2}:\d{2}", tm):
+                tm = f"{year}-{tm}"
+            r["time"] = tm
+        rates = scale(rates)
+        log("  盛京官网抓取成功")
+        return {"date": max((r.get("time") or "") for r in rates.values()), "rates": rates, "origin": "官网"}
+    except Exception as exc:  # noqa: BLE001
+        log(f"  盛京官网失败（{str(exc)[:80]}），改用快易理财网")
+        r = make_kylc("shengjingb")()
+        r["origin"] = "kylc"
+        return r
+
+
 # ================================================================ 香港银行（1 外币兑港元）
 # 每个抓取函数返回 {"date", "rates": {CODE: {tt_buy, tt_sell, note_buy, note_sell, time}}}
 # tt_buy / note_buy = 银行买入（你把外币换成港元时拿到的价）；tt_sell / note_sell = 银行卖出（你买外币付的价）
@@ -725,7 +747,7 @@ SOURCES = [
     ("cgb", "广发银行", "cn", "kylc", make_kylc("cgb")),
     ("pab", "平安银行", "cn", "kylc", make_kylc("pab")),
     ("nbcb", "宁波银行", "cn", "kylc", make_kylc("nbcb")),
-    ("shengjing", "盛京银行", "cn", "kylc", make_kylc("shengjingb")),
+    ("shengjing", "盛京银行", "cn", "kylc", fetch_shengjing),
     ("cbhb", "渤海银行", "cn", "kylc", make_kylc("cbnb")),   # 快易理财网的代码是 cbnb；ip.cn 那页一天才更新一次
     ("cmb", "招商银行", "cn", "kylc", make_kylc("cmb")),   # 用于信用卡人民币入账的购汇价，不在 12 家表里显示
 ]
