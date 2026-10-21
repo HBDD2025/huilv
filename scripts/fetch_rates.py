@@ -567,7 +567,13 @@ def fetch_shengjing():
     try:
         resp = get("https://www.shengjingbank.com.cn/sjyh/bjfw/whpj/index.shtml", insecure_fallback=True)
         resp.encoding = resp.apparent_encoding or "utf-8"
-        rates = parse_generic_table(resp.text)
+        try:
+            rates = parse_generic_table(resp.text)
+        except RuntimeError as exc:
+            # 诊断：页面里有没有 iframe / 数据接口的线索
+            hints = re.findall(r'(?:src|href|url)\s*[=:]\s*["\']([^"\']*(?:whpj|rate|hq|quot|json|ajax|\.do|\.action)[^"\']*)["\']', resp.text, flags=re.I)[:8]
+            text = BeautifulSoup(resp.text, "html.parser").get_text(" ", strip=True)[:160]
+            raise RuntimeError(f"{exc}；len={len(resp.text)}；线索={hints}；正文开头={text}") from exc
         year = dt.datetime.now(BJT).year
         for r in rates.values():
             tm = (r.get("time") or "").replace("/", "-")
@@ -581,7 +587,7 @@ def fetch_shengjing():
         log(f"  盛京官网失败（{str(exc)[:80]}），改用快易理财网")
         r = make_kylc("shengjingb")()
         r["origin"] = "kylc"
-        r["note"] = f"官网失败：{err_text(exc)[:200]}"
+        r["note"] = f"官网失败：{err_text(exc)[:600]}"
         return r
 
 
