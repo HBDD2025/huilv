@@ -193,8 +193,14 @@ def parse_generic_table(html, name_col_hint="币种"):
                 idx.setdefault("hui_sell", i)
             elif "现钞卖出" in h2:
                 idx.setdefault("chao_sell", i)
-            elif "时间" in h2 or "日期" in h2:
+            elif "买入" in h2:            # 只有一个「买入价」：现汇现钞同价
+                idx.setdefault("hui_buy", i); idx.setdefault("chao_buy", i)
+            elif "卖出" in h2:            # 只有一个「卖出价」：现汇现钞同价（盛京等）
+                idx.setdefault("hui_sell", i); idx.setdefault("chao_sell", i)
+            elif "日期" in h2:
                 idx.setdefault("time", i)
+            elif "时间" in h2:
+                idx.setdefault("time2" if "time" in idx else "time", i)
         if "hui_buy" not in idx and "hui_sell" not in idx:
             continue
         rates = {}
@@ -205,7 +211,9 @@ def parse_generic_table(html, name_col_hint="币种"):
             code = to_code(cells[0])
             if not code or code == "CNY":
                 continue
-            row = {k: (num(cells[i]) if k != "time" else cells[i]) for k, i in idx.items() if i < len(cells)}
+            row = {k: (num(cells[i]) if k not in ("time", "time2") else cells[i]) for k, i in idx.items() if i < len(cells)}
+            if row.get("time2"):
+                row["time"] = f"{row.get('time', '')} {row.pop('time2')}".strip()
             if any(row.get(k) is not None for k in ("hui_buy", "hui_sell", "chao_buy", "chao_sell")):
                 rates[code] = row
         if rates:
@@ -612,8 +620,9 @@ def fetch_shengjing():
         rates = scale(rates)
         for r in rates.values():
             tm = r.get("time") or ""
-            if re.fullmatch(r"\d{8}", tm):
-                r["time"] = f"{tm[:4]}-{tm[4:6]}-{tm[6:]}"
+            m = re.fullmatch(r"(\d{4})(\d{2})(\d{2})(?:\s+(\d{2}:\d{2}(?::\d{2})?))?", tm)
+            if m:
+                r["time"] = f"{m.group(1)}-{m.group(2)}-{m.group(3)}" + (f" {m.group(4)}" if m.group(4) else "")
         usd = rates.get("USD") or {}
         note = None
         if usd.get("hui_sell") is None:
