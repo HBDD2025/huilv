@@ -726,7 +726,7 @@ SOURCES = [
     ("pab", "平安银行", "cn", "kylc", make_kylc("pab")),
     ("nbcb", "宁波银行", "cn", "kylc", make_kylc("nbcb")),
     ("shengjing", "盛京银行", "cn", "kylc", make_kylc("shengjingb")),
-    ("cbhb", "渤海银行", "cn", "ipcn", fetch_cbhb_ipcn),
+    ("cbhb", "渤海银行", "cn", "kylc", make_kylc("cbnb")),   # 快易理财网的代码是 cbnb；ip.cn 那页一天才更新一次
     ("cmb", "招商银行", "cn", "kylc", make_kylc("cmb")),   # 用于信用卡人民币入账的购汇价，不在 12 家表里显示
 ]
 SOURCES += [(key, name, "hk", origin, fn) for key, (name, origin, fn) in HK_FETCHERS.items()]
