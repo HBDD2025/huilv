@@ -17,18 +17,24 @@ var CardGuide = (function () {
     ['ads','网络广告',['广告','advertising']],['foreign','境外日常',['境外','海外','外币','foreign']],
     ['generic','普通消费',['网购','购物','日常','普通','京东','淘宝','拼多多','百货','generic']]
   ];
+  const thirdPartyTravel=/trip\.com|ctrip|携程|expedia|booking\.com|agoda|飞猪|去哪儿|同程|途牛/i;
   function classify(input) {
     const text=String(input||'').trim().toLowerCase();
+    if(thirdPartyTravel.test(text))return {scene:'thirdparty',label:'第三方旅行平台',wallet:/支付宝|微信|alipay|wechat/.test(text)};
     const hit=aliases.find(x=>x[2].some(k=>text.includes(k)));
     return {scene:hit?.[0]||null,label:hit?.[1]||'',wallet:/支付宝|微信|alipay|wechat/.test(text)};
   }
   function resolve(card,scene,context) {
     let scenes=[scene];
+    if(scene==='thirdparty'&&context.travelCategoryConfirmed){scenes.push('travel');if(card.id==='citi')scenes.push('airfare')}
     if(['marriott','hilton','ihg','hyatt'].includes(scene))scenes.push('hotel','travel');
     if(scene==='hotel')scenes.push('travel');
     const allowed=card.rates.filter(r=>r.scenes.some(s=>scenes.includes(s)) && (r.region==='all'||r.region===(context.location==='us'?'us':'foreign')));
     let rate={value:card.base,label:'普通合资格消费',note:'没有已核验的该类专项加倍'};
     if(allowed.length)rate=allowed.reduce((a,b)=>a.value>b.value?a:b);
+    if(scene==='thirdparty'&&rate.value>card.base)rate={...rate,label:'已确认旅行类商户计分',note:'仅按银行确认的旅行/旅行社类别；不包含品牌直订或银行自家门户加成'};
+    const thirdPartyRates=scene==='thirdparty'&&!context.travelCategoryConfirmed?card.rates.filter(r=>(r.scenes.includes('travel')||(card.id==='citi'&&r.scenes.includes('airfare')))&&(r.region==='all'||r.region===(context.location==='us'?'us':'foreign'))):[];
+    const possibleThirdParty=thirdPartyRates.length?Math.max(...thirdPartyRates.map(r=>r.value)):card.base;
     if(card.id==='ibp'&&context.ibpCapReached)rate={value:card.base,label:'年度类别上限已用完',note:'按普通 1X 计算'};
     if(card.id==='atmos'&&context.location!=='us'&&context.foreignEligible&&rate.value<3)rate={value:3,label:'已确认合资格境外交易',note:'需银行实际认定'};
     const wallet=context.channel==='wallet';
@@ -36,7 +42,7 @@ var CardGuide = (function () {
     const possible=rate;
     if(wallet&&rate.value>card.base&&!(card.id==='atmos'&&context.foreignEligible&&context.location!=='us'))rate={value:card.base,label:'钱包渠道按普通积分先估',note:'加倍是否传递取决于实际入账；上限情形单列'};
     const factor=card.id==='atmos'&&context.bofaBonus?1.1:1;
-    return {rate:rate.value*factor,rawRate:rate.value,reason:rate.label,note:rate.note,possibleRate:possible.value*factor,conditional:wallet||card.status==='account',special:rate.value>card.base,potentialForeign:card.id==='atmos'&&context.location!=='us'&&!context.foreignEligible&&rate.value<3};
+    return {rate:rate.value*factor,rawRate:rate.value,reason:rate.label,note:rate.note,possibleRate:possible.value*factor,possibleThirdParty:card.id==='ibp'&&context.ibpCapReached?card.base:possibleThirdParty*factor,conditional:wallet||card.status==='account',special:rate.value>card.base,potentialForeign:card.id==='atmos'&&context.location!=='us'&&!context.foreignEligible&&rate.value<3};
   }
   function calculate(rate,pointValue,fee) {
     const low=rate*pointValue[0]-fee,high=rate*pointValue[1]-fee;
