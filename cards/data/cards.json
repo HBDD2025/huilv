@@ -1020,5 +1020,14 @@
       "url": "https://www.chase.com/personal/credit-cards/education/basics/how-chase-ultimate-rewards-works"
     },
     "formula": "倍率 × 每点价值（美分）= 等值回报百分比；净回报再扣支付通道手续费。不含年费、开卡礼、汇率损益、独立报销；手续费部分不额外计分。"
+  },
+  "hosting": {
+    "repository": "HBDD2025/huilv",
+    "directory": "cards",
+    "url": "https://hbdd2025.github.io/huilv/cards/"
+  },
+  "maintenance": {
+    "dailySourceCheck": "configured",
+    "weeklySummary": "blocked_task_limit"
   }
 }
