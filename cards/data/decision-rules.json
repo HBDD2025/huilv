@@ -1,0 +1,72 @@
+{
+  "reviewedAt": "2026-10-23",
+  "scope": "本页用于按单笔增量收益建议用卡；未确认的个人进度和定向活动不参与保证收益排序。",
+  "sources": {
+    "hsbcRhr": "https://www.redhotoffers.hsbc.com.hk/tc/rewards/red-hot-rewards-of-your-choice/",
+    "hsbcPulse": "https://www.hsbc.com.hk/credit-cards/products/unionpay-dual-currency-diamond/",
+    "hsbcRed": "https://www.hsbc.com.hk/credit-cards/products/red/",
+    "hsbcMiles": "https://www.hsbc.com.hk/credit-cards/rewards/mileage-programme/",
+    "hsbcVisa": "https://www.hsbc.com.hk/credit-cards/products/visa-signature/",
+    "hsbcGuru": "https://www.redhotoffers.hsbc.com.hk/tc/latest-offers/travel-guru/",
+    "hangsengRail": "https://www.hangseng.com/content/dam/wpb/hase/rwd/personal/cards/pdfs/2025/dec/Designated_Overseas_Public_Transportation_Merchants_Spending_Promotion_TnC_SC.pdf",
+    "cncbiMotion": "https://www.cncbinternational.com/_document/personal/motion_credit_card/en/motion_cardcvp_tnc_en.pdf?uuid=GOI3NoXfVGYREGct0957",
+    "icbcSupermarketExpired": "https://www.icbcasia.com/hk/en/promotion/limited-offer-supermarket-creditcard-cashrebate.html"
+  },
+  "buckets": [
+    {
+      "id": "hsbc-rhr-2026",
+      "label": "汇丰最红自主 · 全部合资格卡共享",
+      "limit": 100000,
+      "currency": "HKD",
+      "start": "2026-01-01",
+      "end": "2026-12-31",
+      "source": "hsbcRhr"
+    },
+    {
+      "id": "hsbc-pulse-h1-2026",
+      "label": "Pulse 内地／澳门手机或码付 · 上半年",
+      "limit": 80000,
+      "currency": "HKD",
+      "start": "2026-01-01",
+      "end": "2026-06-30",
+      "source": "hsbcPulse"
+    },
+    {
+      "id": "hsbc-pulse-h2-2026",
+      "label": "Pulse 内地／澳门手机或码付 · 下半年",
+      "limit": 80000,
+      "currency": "HKD",
+      "start": "2026-07-01",
+      "end": "2026-12-31",
+      "source": "hsbcPulse"
+    },
+    {
+      "id": "hsbc-vs-2026",
+      "label": "汇丰 Visa Signature 额外奖励 · 卡片年度额",
+      "limit": 100000,
+      "currency": "HKD",
+      "start": "2026-01-01",
+      "end": "2026-12-31",
+      "source": "hsbcVisa"
+    },
+    {
+      "id": "hangseng-rail-h2-2026",
+      "label": "恒生多货币 Mastercard 扣账卡 · 12306 阶段回赠",
+      "limit": 120,
+      "currency": "HKD 回赠",
+      "start": "2026-10-01",
+      "end": "2026-12-31",
+      "source": "hangsengRail"
+    },
+    {
+      "id": "hsbc-red-month",
+      "label": "汇丰 Red 网上首 HK$10,000 · 本月",
+      "limit": 10000,
+      "currency": "HKD",
+      "start": "2026-01-01",
+      "end": "2026-12-31",
+      "source": "hsbcRed",
+      "cycle": "month"
+    }
+  ]
+}

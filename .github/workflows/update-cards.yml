@@ -5,6 +5,8 @@ on:
     paths:
       - 'cards/data/cards.json'
       - 'cards/data/hk-cards.json'
+      - 'cards/data/decision-rules.json'
+      - 'cards/web/decision.js'
       - '.github/workflows/update-cards.yml'
   schedule:
     - cron: '17 23 * * *'
@@ -32,6 +34,7 @@ jobs:
           python3 scripts/check_sources.py
           python3 scripts/validate.py
           node scripts/test_recommend.cjs
+          node scripts/test_decision.cjs
           python3 scripts/build.py
       - name: Save source status
         run: |

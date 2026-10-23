@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+global.CardGuide=require('../web/recommend.js');const D=require('../web/decision.js');
+const data=JSON.parse(fs.readFileSync('data/cards.json')),hk=JSON.parse(fs.readFileSync('data/hk-cards.json')),rules=JSON.parse(fs.readFileSync('data/decision-rules.json'));const p=D.valid(null);p.rhrCategory='world';p.buckets={'hsbc-rhr-2026':0,'hsbc-pulse-h2-2026':0,'hsbc-pulse-h1-2026':80000,'hsbc-vs-2026':0};
+const tx={amount:1000,currency:'CNY',region:'cn',channel:'qr',date:'2026-10-23',purpose:'普通消费'},values=data.valuations.defaults;
+function card(profile=p,input=tx,id='hsbc-pulse'){return D.evaluate(data,hk,rules,input,profile,values).known.find(c=>c.id===id)}
+let a=card();assert(Math.abs(a.rc-47.52)<0.001);assert(Math.abs(a.miles-712.8)<0.001);assert(Math.abs(a.value-71.28)<0.001);assert.equal(a.consumed['hsbc-rhr-2026'],1080);assert.equal(a.consumed['hsbc-pulse-h2-2026'],1080);
+let exhausted=D.valid({...p,buckets:{...p.buckets,'hsbc-rhr-2026':100000}});assert(Math.abs(card(exhausted).rc-25.92)<0.001);
+let both=D.valid({...exhausted,buckets:{...exhausted.buckets,'hsbc-pulse-h2-2026':80000}});assert(Math.abs(card(both).rc-4.32)<0.001);
+let june=card(p,{...tx,date:'2026-06-30'});assert(Math.abs(june.rc-25.92)<0.001);
+let direct=card(p,{...tx,channel:'direct'});assert(Math.abs(direct.rc-25.92)<0.001);
+let unknown=D.valid(null);assert(Math.abs(card(unknown).rc-4.32)<0.001);assert(D.evaluate(data,hk,rules,tx,unknown,values).possible.some(x=>x.name.includes('Pulse')));
+let rail={...tx,purpose:'12306 高铁票',channel:'online'},hp=D.valid({...p,hangsengMulti:true,buckets:{...p.buckets,'hangseng-rail-h2-2026':0}});assert(Math.abs(card(hp,rail,'hangseng-debit').value-120)<0.001);assert(!card(hp,{...rail,date:'2027-01-01'},'hangseng-debit'));
+assert(!D.evaluate(data,hk,rules,{...tx,purpose:'超市'},p,values).known.some(x=>x.reason.includes('15%')));
+let red=D.valid({...p,buckets:{...p.buckets,'hsbc-red-month:2026-10':0}}),online={...tx,purpose:'Starbucks',channel:'online'};
+assert.equal(D.classify(online),'dining');assert(Math.abs(card(red,online,'hsbc-red').rc-43.2)<0.001);assert.equal(card(red,online,'hsbc-red').consumed['hsbc-red-month:2026-10'],1080);
+assert(Math.abs(card(red,{...online,date:'2026-11-01'},'hsbc-red').rc-4.32)<0.001);
+assert.equal(D.classify({...tx,purpose:'Trip.com'}),'thirdparty');assert(D.evaluate(data,hk,rules,{...tx,purpose:'Trip.com',channel:'online'},p,values).known.some(x=>x.group==='美国'));
+assert(D.evaluate(data,hk,rules,{...tx,purpose:'陌生商户',channel:'direct'},p,values).known.some(x=>x.group==='美国'));
+assert(!D.evaluate(data,hk,rules,tx,p,values).known.some(x=>x.group==='美国'||x.id==='hsbc-premier'||x.id==='icbc-horoscope-visa'));
+assert(D.rhrMatch(p,'generic',{...tx,region:'us'}));
+console.log('Passed: shared HSBC caps, half-year reset, Avios valuation, channel gating, monthly reset, merchant matching, third-party, 12306 cap and expiry');

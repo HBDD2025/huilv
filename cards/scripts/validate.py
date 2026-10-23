@@ -31,9 +31,19 @@ def validate():
  hk=json.loads((ROOT/'data/hk-cards.json').read_text());assert len(hk['cards'])==23
  assert sum(c['type']=='扣账卡' for c in hk['cards'])==6
  assert len({(c['bank'],c['name']) for c in hk['cards']})==23
+ assert len({c['id'] for c in hk['cards']})==len(hk['cards'])
+ assert all(re.fullmatch('[a-z0-9-]+',c['id']) for c in hk['cards'])
  from check_sources import trusted
  for c in hk['cards']:
   assert c['type'] in ['信用卡','扣账卡'] and c['bank'] and c['name'] and c['offer'] and c['note'] and c['categories'] and trusted(c['url']) and (not c.get('termsUrl') or trusted(c['termsUrl']))
+ rules=json.loads((ROOT/'data/decision-rules.json').read_text())
+ dt.date.fromisoformat(rules['reviewedAt'])
+ assert all(trusted(u) for u in rules['sources'].values())
+ assert len({b['id'] for b in rules['buckets']})==len(rules['buckets'])
+ for b in rules['buckets']:
+  assert re.fullmatch('[a-z0-9-]+',b['id']) and b['limit']>0 and b['source'] in rules['sources']
+  assert dt.date.fromisoformat(b['start'])<=dt.date.fromisoformat(b['end'])
+  assert b.get('cycle','') in ('','month')
  assert set(m['sources'])<=sources.keys()|{f'hk-{i+1}' for i in range(len({c['url'] for c in hk['cards']}))}
  # No card numbers, limits, approval dates or secrets are part of the public schema.
  raw=(ROOT/'data/cards.json').read_text()+(ROOT/'data/hk-cards.json').read_text()

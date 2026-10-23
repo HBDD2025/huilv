@@ -4,4 +4,4 @@
 
 每项信息改成简体中文的简短结论，包含适用卡、门槛、上限、有效期、登记/付款动作、地区或渠道限制、官方原文链接。优先提示即将到期的优惠与影响日常选择的改版。个人定向权益、用户余额和消费进度无法从公网确认，不编造。对 IHG 老卡保留账户通知确认条件，直到用户给出相应通知。保留已有正确规则，来源冲突则标注待确认。
 
-有可靠变化时更新对应的 data/cards.json 或 data/hk-cards.json、data/hk-cards.json、相应 reviewedAt 和 changes；检查对应的 source-status.json 待复核项，实质核验后才清除。运行 validate.py 与 build.py，提交推送并检查 GitHub Pages 发布结果。无变化则无需提交“核验日期”空更新。报告实际新增/修订及发布状态；遇到权限或来源错误如实说明，不声称已经更新。不得将用户账户私密信息写入公开仓库。
+有可靠变化时更新对应的 data/cards.json、data/hk-cards.json 或 data/decision-rules.json，以及相应 reviewedAt 和 changes；检查对应的 source-status.json 待复核项，实质核验后才清除。新增活动要先判断是否影响首页单笔比较，再将日期、门槛、共用额、叠加、地区／币种／付款渠道写入规则及测试。运行 validate.py、test_recommend.cjs、test_decision.cjs 与 build.py，提交推送并检查 GitHub Pages 发布结果。无变化则无需提交“核验日期”空更新。报告实际新增/修订及发布状态；遇到权限或来源错误如实说明，不声称已经更新。不得将用户账户私密信息写入公开仓库。
