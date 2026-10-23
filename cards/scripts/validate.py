@@ -28,9 +28,15 @@ def validate():
   assert p['source'] in sources and all(c in card_ids for c in p['cards'])
   dt.date.fromisoformat(p['end'])
  for a in d['alerts']:assert a['source'] in sources and set(a['cards'])<=card_ids
- assert set(m['sources'])<=sources.keys()
+ hk=json.loads((ROOT/'data/hk-cards.json').read_text());assert len(hk['cards'])==23
+ assert sum(c['type']=='扣账卡' for c in hk['cards'])==6
+ assert len({(c['bank'],c['name']) for c in hk['cards']})==23
+ from check_sources import trusted
+ for c in hk['cards']:
+  assert c['type'] in ['信用卡','扣账卡'] and c['bank'] and c['name'] and c['offer'] and c['note'] and c['categories'] and trusted(c['url']) and (not c.get('termsUrl') or trusted(c['termsUrl']))
+ assert set(m['sources'])<=sources.keys()|{f'hk-{i+1}' for i in range(len({c['url'] for c in hk['cards']}))}
  # No card numbers, limits, approval dates or secrets are part of the public schema.
- raw=(ROOT/'data/cards.json').read_text()
+ raw=(ROOT/'data/cards.json').read_text()+(ROOT/'data/hk-cards.json').read_text()
  assert not re.search(r'(?i)creditLimit|approvedDate|cardNumber|access_token|api_key',raw)
- print(f"Validated {len(card_ids)} cards, {len(benefit_ids)} benefits, {len(sources)} official sources")
+ print(f"Validated {len(card_ids)} US + {len(hk['cards'])} HK cards, {len(benefit_ids)} benefits, {len(sources)} official sources")
 if __name__=='__main__':validate()

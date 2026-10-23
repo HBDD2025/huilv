@@ -11,7 +11,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-ALLOWED={'americanexpress.com','hilton.com','chase.com','ihgplc.com','capitalone.com','capitalonetravel.com','citi.com','bankofamerica.com','alaskaair.com'}
+ALLOWED={'americanexpress.com','hilton.com','chase.com','ihgplc.com','capitalone.com','capitalonetravel.com','citi.com','bankofamerica.com','alaskaair.com','hsbc.com.hk','icbcasia.com','asia.ccb.com','cncbinternational.com','bochk.com','hangseng.com','hkbea.com','sc.com','cmbwinglungbank.com'}
 def trusted(url):
     u=urllib.parse.urlsplit(url)
     return u.scheme=='https' and u.hostname and not u.username and not u.password and any(u.hostname==d or u.hostname.endswith('.'+d) for d in ALLOWED)
@@ -33,7 +33,7 @@ def fingerprint(html):
     text='\n'.join(' '.join(line.split()) for line in ''.join(p.parts).splitlines() if line.strip())
     # Keep reward-related lines, not entire copyrighted web pages. Cookie banners,
     # review widgets and changing welcome offers can still trigger false positives.
-    lines=[line for line in text.splitlines() if re.search(r'\$|\bpoints?\b|\bmiles?\b|\bcredit\b|\breward\b|\blounge\b|\banniversary\b|\bfee\b|\b\d+[xX%]\b|existing card',line,re.I)]
+    lines=[line for line in text.splitlines() if re.search(r'\$|\bpoints?\b|\bmiles?\b|\bcredit\b|\breward\b|\blounge\b|\banniversary\b|\bfee\b|\b\d+[xX%]\b|existing card|回贈|優惠|積分|獎賞|年費|签账|簽賬|現金',line,re.I)]
     evidence='\n'.join(lines)
     lower=text.lower()
     if len(text)<500 or len(evidence)<150 or len(lines)<5:raise ValueError('网页内容不足，可能依赖登录或 JavaScript')
@@ -64,15 +64,19 @@ def inspect(source,old,now):
 
 def main():
     data=json.loads((ROOT/'data/cards.json').read_text())
+    hk=json.loads((ROOT/'data/hk-cards.json').read_text())
+    urls=dict.fromkeys(c['url'] for c in hk['cards'])
+    hk_sources=[{'id':f'hk-{i+1}','label':next(c['bank']+' · '+c['name'] for c in hk['cards'] if c['url']==url),'url':url} for i,url in enumerate(urls)]
+    all_sources=data['sources']+hk_sources
     path=ROOT/'data/source-status.json'
     previous=json.loads(path.read_text()) if path.exists() else {'sources':{}}
     now=dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds')
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-        results=dict(pool.map(lambda s:inspect(s,previous.get('sources',{}).get(s['id']),now),data['sources']))
+        results=dict(pool.map(lambda s:inspect(s,previous.get('sources',{}).get(s['id']),now),all_sources))
     out={'lastRun':now,'mode':'github_actions','sources':results}
     path.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
     counts={k:sum(s['status']==k for s in results.values()) for k in ['baseline','unchanged','changed','failed']}
     print(json.dumps(counts,ensure_ascii=False))
     summary=ROOT/'data/monitor-summary.md'
-    summary.write_text('# 官方来源巡检\n\n'+now+'\n\n'+'\n'.join('- '+s['label']+': '+results[s['id']]['status'] for s in data['sources'])+'\n\n抓取结果不等于人工内容核验。失败不会覆盖上次成功的指纹，变化不会自动写成权益。\n')
+    summary.write_text('# 官方来源巡检\n\n'+now+'\n\n'+'\n'.join('- '+s['label']+': '+results[s['id']]['status'] for s in all_sources)+'\n\n抓取结果不等于人工内容核验。失败不会覆盖上次成功的指纹，变化不会自动写成权益。\n')
 if __name__=='__main__':main()

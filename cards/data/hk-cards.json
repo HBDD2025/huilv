@@ -1,0 +1,340 @@
+{
+  "reviewedAt": "2026-10-23",
+  "scope": "香港持卡清单；仅公开产品名称，不含账户资料。百分比为港币合资格签账的宣传回赠，须符合所列条件。",
+  "cards": [
+    {
+      "bank": "汇丰",
+      "name": "卓越理财信用卡（Premier Mastercard）",
+      "type": "信用卡",
+      "url": "https://www.hsbc.com.hk/credit-cards/products/premier-mastercard/",
+      "offer": "自选最红类别最高 2.4% RewardCash",
+      "categories": [
+        "餐饮",
+        "购物",
+        "旅行"
+      ],
+      "note": "先确认已登记的最红自主奖赏类别及额度；其他交易、外币手续费另看条款。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "汇丰",
+      "name": "Red 卡",
+      "type": "信用卡",
+      "url": "https://www.hsbc.com.hk/credit-cards/products/red/",
+      "offer": "网上购物首 HK$10,000／月 4%；指定商户首 HK$1,250／月 8%",
+      "categories": [
+        "网购",
+        "购物",
+        "旅行"
+      ],
+      "note": "超过相应月度额度为 0.4%；指定商户按当期名单。Trip.com 等第三方付款须核对是否符合网上签账定义。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "汇丰",
+      "name": "Pulse 银联双币钻石卡",
+      "type": "信用卡",
+      "url": "https://www.hsbc.com.hk/credit-cards/products/unionpay-dual-currency-diamond/",
+      "offer": "内地／澳门二维码或手机支付额外最高 2%；叠加最红类别最高 2.4%",
+      "categories": [
+        "内地",
+        "澳门",
+        "钱包",
+        "购物"
+      ],
+      "note": "最高 4.4% 需两套条件同时满足；二维码、地区、登记和额度以活动条款为准。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "汇丰",
+      "name": "Visa Signature 卡",
+      "type": "信用卡",
+      "url": "https://www.hsbc.com.hk/credit-cards/products/visa-signature/",
+      "offer": "最红自选类别最高 2.4% + Visa Signature 额外 1.2%",
+      "categories": [
+        "餐饮",
+        "购物",
+        "旅行"
+      ],
+      "note": "最高 3.6% 须对应已选类别；额外 1.2% 的范围及上限须按官方条款。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "汇丰",
+      "name": "扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.hsbc.com.hk/debit-cards/products/mastercard-debit-card/",
+      "offer": "回赠待核对卡面与账户",
+      "categories": [
+        "扣账",
+        "外币",
+        "内地"
+      ],
+      "note": "官方链接为普通 Mastercard 扣账卡；若持有 Premier Elite、Jade 或银联 ATM 卡，权益不同。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "工银亚洲",
+      "name": "星座银联钻石卡",
+      "type": "信用卡",
+      "url": "https://www.icbcasia.com/hk/tc/personal/credit-cards/type-of-cards/icbc-horoscope-card.html",
+      "offer": "合资格本地／海外签账 1.5% 现金回赠",
+      "categories": [
+        "普通消费",
+        "购物",
+        "餐饮",
+        "外币"
+      ],
+      "note": "银联双币结算、商户排除与外币费用需按该卡条款。",
+      "status": "常规回赠"
+    },
+    {
+      "bank": "工银亚洲",
+      "name": "星座 Visa Signature 卡",
+      "type": "信用卡",
+      "url": "https://www.icbcasia.com/hk/tc/personal/credit-cards/type-of-cards/icbc-horoscope-card.html",
+      "offer": "合资格本地／海外签账 1.5% 现金回赠",
+      "categories": [
+        "普通消费",
+        "购物",
+        "餐饮",
+        "外币"
+      ],
+      "note": "香港境外或跨境网购可能有外币或港币跨境手续费，算净回赠。",
+      "status": "常规回赠"
+    },
+    {
+      "bank": "工银亚洲",
+      "name": "大湾区银联钻石卡",
+      "type": "信用卡",
+      "url": "https://www.icbcasia.com/hk/tc/personal/credit-cards/type-of-cards/icbc-greater-bay-area-credit-cards.html",
+      "offer": "合资格签账 3X 积分，官方折算约 1.5% 现金回赠",
+      "categories": [
+        "内地",
+        "澳门",
+        "普通消费",
+        "购物"
+      ],
+      "note": "核对银联交易及积分兑换条件；不把 3X 直接当 3%。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "工银亚洲",
+      "name": "Mastercard 世界卡（系列待确认）",
+      "type": "信用卡",
+      "url": "https://www.icbcasia.com/hk/tc/personal/credit-cards/type-of-cards/default.html",
+      "offer": "待核对卡面产品系列，暂不估算回赠",
+      "categories": [
+        "旅行",
+        "餐饮",
+        "普通消费"
+      ],
+      "note": "工银财富、湾区等均有世界卡；请凭卡面全名确认后再套用专属权益。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "建银亚洲",
+      "name": "eye+ 卡（级别待确认）",
+      "type": "信用卡",
+      "url": "https://www.asia.ccb.com/hongkong/personal/credit_cards/eye_credit_card.html",
+      "offer": "网上最高 5%；非接触最高 3%（2026-10-01 至 2027-03-31）",
+      "categories": [
+        "网购",
+        "钱包",
+        "购物",
+        "餐饮"
+      ],
+      "note": "每月须满 HK$3,000 合资格签账；eye+ Signature／Infinite 上限不同；确认卡级别。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "建银亚洲",
+      "name": "银联双币信用卡（级别待确认）",
+      "type": "信用卡",
+      "url": "https://www.asia.ccb.com/hongkong/personal/credit_cards/card_list.html/1000",
+      "offer": "回赠待核对具体产品／级别",
+      "categories": [
+        "内地",
+        "澳门",
+        "普通消费"
+      ],
+      "note": "建行亚洲有多款银联双币卡；勿将指定推广或其他级别奖励直接套用。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "建银亚洲",
+      "name": "TRAVO 卡（World／普通级别待确认）",
+      "type": "信用卡",
+      "url": "https://www.asia.ccb.com/hongkong_sc/personal/credit_cards/travoworld.html",
+      "offer": "登记 TRAVO Rewards 后可享旅行／境外专属奖励",
+      "categories": [
+        "旅行",
+        "机票",
+        "酒店",
+        "外币"
+      ],
+      "note": "旧卡面也可登记；2026 年活动须登记。World 专属境外回赠不能用于普通 Mastercard。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "信银国际",
+      "name": "CITICdiamond 银联双币钻石卡",
+      "type": "信用卡",
+      "url": "https://www.cncbinternational.com/personal/credit-cards/citicdiamond-unionpay-dcc-credit-card/sc/index.jsp",
+      "offer": "指定电子钱包及人民币签账最高 4% 现金回赠",
+      "categories": [
+        "内地",
+        "人民币",
+        "钱包",
+        "购物"
+      ],
+      "note": "电子钱包指定微信支付香港钱包、云闪付；每期门槛、额度及排除按官方活动条款。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "信银国际",
+      "name": "Motion 万事达卡",
+      "type": "信用卡",
+      "url": "https://www.cncbinternational.com/personal/e-banking/inmotion/en/offers/index.html",
+      "offer": "餐饮／网上合资格签账 6%（至 2026-12-31）",
+      "categories": [
+        "餐饮",
+        "网购",
+        "旅行",
+        "购物"
+      ],
+      "note": "每月合资格签账满 HK$3,800；额外回赠每月封顶 HK$200。账单缴费、微信／支付宝钱包、网超等不计。实体与虚拟 Motion 卡均适用。",
+      "status": "条件回赠",
+      "termsUrl": "https://www.cncbinternational.com/_document/personal/motion_credit_card/en/motion_cardcvp_tnc_en.pdf?uuid=GOI3NoXfVGYREGct0957"
+    },
+    {
+      "bank": "信银国际",
+      "name": "扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.cncbinternational.com/personal/multi-currency-debit-card/en/index.html",
+      "offer": "回赠待确认；多币种扣账可直接扣对应账户",
+      "categories": [
+        "扣账",
+        "外币",
+        "旅行"
+      ],
+      "note": "官方链接为多币种 Mastercard 扣账卡；卡面及外币账户未确认，换汇及手续费先核对。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "中银香港",
+      "name": "扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.bochk.com/dam/more/bocdebitcard/card/en.html",
+      "offer": "若为中银 Mastercard 扣账卡：合资格签账基本 0.5%",
+      "categories": [
+        "扣账",
+        "普通消费",
+        "购物",
+        "外币"
+      ],
+      "note": "确认卡面为 Mastercard 扣账卡才适用；额外 0.5% 为指定客户／限时条件，不能默认享有。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "恒生",
+      "name": "扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.hangseng.com/zh-hk/personal/cards/products/multi-currency-debit-card/",
+      "offer": "多货币 Mastercard 扣账卡回赠须按账户和当期条款",
+      "categories": [
+        "扣账",
+        "外币",
+        "普通消费"
+      ],
+      "note": "先确认持有的是否为多货币 Mastercard 扣账卡，而非提款卡。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "东亚",
+      "name": "扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.hkbea.com/html/tc/bea-debit-card-key-features.html",
+      "offer": "若为多货币 Mastercard 扣账卡：合资格签账 0.5% 无限额现金回赠",
+      "categories": [
+        "扣账",
+        "普通消费",
+        "外币",
+        "购物"
+      ],
+      "note": "可选择奖分模式；确认卡面及目前奖赏设置，模式变更下月生效。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "东亚",
+      "name": "银联双币钻石卡",
+      "type": "信用卡",
+      "url": "https://www.hkbea.com/html/tc/bea-unionpay-dual-currency-diamond-card.html",
+      "offer": "双币银联卡；回赠按当期奖励计划核算",
+      "categories": [
+        "内地",
+        "澳门",
+        "购物",
+        "普通消费"
+      ],
+      "note": "不计新户迎新回赠；积分兑换、商户类别与每月上限需看当期规则。",
+      "status": "待核对"
+    },
+    {
+      "bank": "东亚",
+      "name": "显卓理财 World Mastercard",
+      "type": "信用卡",
+      "url": "https://www.hkbea.com/html/tc/bea-credit-card-world-mastercard.html",
+      "offer": "指定外币／本地餐饮等最高 5%（至 2026-12-31）",
+      "categories": [
+        "餐饮",
+        "外币",
+        "购物"
+      ],
+      "note": "须 BEA Mall 登记且每月基本合资格签账满 HK$4,000；额外奖分每月封顶，超市／旅行社等不算额外奖励。",
+      "status": "条件回赠"
+    },
+    {
+      "bank": "渣打",
+      "name": "Priority 理财扣账卡（卡种待确认）",
+      "type": "扣账卡",
+      "url": "https://www.sc.com/hk/bank-with-us/multicurrency-debit-card/",
+      "offer": "多货币 Mastercard 扣账功能；回赠按当期账户条款",
+      "categories": [
+        "扣账",
+        "外币",
+        "旅行"
+      ],
+      "note": "核对卡面是多货币 Mastercard 还是 Priority ATM 卡；提款与消费费率不同。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "招商永隆",
+      "name": "银联钻石卡（产品待确认）",
+      "type": "信用卡",
+      "url": "https://www.cmbwinglungbank.com/wlb_corporate/hk/personal/credit-card/credit-card-products/index.html",
+      "offer": "待核对卡面产品；暂不估算回赠",
+      "categories": [
+        "内地",
+        "澳门",
+        "普通消费"
+      ],
+      "note": "官网产品目录目前有银联双币白金卡，未据此推断所持钻石卡的权益。",
+      "status": "卡种待确认"
+    },
+    {
+      "bank": "招商永隆",
+      "name": "World Mastercard",
+      "type": "信用卡",
+      "url": "https://www.cmbwinglungbank.com/wlb_corporate/hk/personal/credit-card/credit-card-products/CMBWLBWorldMastercard.html",
+      "offer": "指定交易里数最低 HK$2.4／里；境外外币交易可豁免 1.75% 手续费",
+      "categories": [
+        "餐饮",
+        "旅行",
+        "外币"
+      ],
+      "note": "最低里数价是指定奖励档位；贵宾室需付费，不视为免费。活动与外币减免目前至 2026-12-31。",
+      "status": "条件回赠"
+    }
+  ]
+}
