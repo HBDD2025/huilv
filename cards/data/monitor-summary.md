@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-10-24T01:39:04+00:00
+2026-10-25T01:14:36+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -20,7 +20,7 @@
 - Citi · Strata Premier 完整权益: unchanged
 - BofA · Atmos Summit 当前权益: failed
 - Alaska · Summit 权益和会籍积分: unchanged
-- Chase · Ink Business Preferred 完整条款: unchanged
+- Chase · Ink Business Preferred 完整条款: changed
 - 汇丰 · 卓越理财信用卡（Premier Mastercard）: unchanged
 - 汇丰 · Red 卡: unchanged
 - 汇丰 · Pulse 银联双币钻石卡: unchanged
