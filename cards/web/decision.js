@@ -19,6 +19,7 @@ var DecisionGuide=(function(){
   return p;
  }
  function hkAmount(tx,p){return tx.amount*(tx.currency==='HKD'?1:p.fx[tx.currency]);}
+ function cnyValue(hkd,p){return hkd/p.fx.CNY;}
  function bucket(rules,id,date){return rules.buckets.find(x=>x.id===id&&date>=x.start&&date<=x.end);}
  function progressKey(rules,id,date){let b=bucket(rules,id,date);return b?.cycle==='month'?`${id}:${date.slice(0,7)}`:id;}
  function used(p,id){return Object.hasOwn(p.buckets,id)&&Number.isFinite(p.buckets[id])?p.buckets[id]:null;}
@@ -79,13 +80,14 @@ var DecisionGuide=(function(){
   else if(tx.region==='cn'&&tx.channel==='wallet')missing.push('内地钱包能否绑定并使用美国卡、商户分类能否传递，需要以该付款入口及入账结果为准。');
   return {amount,scene,known,possible,missing};
  }
- return {DEFAULT,valid,hkAmount,bucket,room,progressKey,classify,rhrMatch,evaluate};
+ return {DEFAULT,valid,hkAmount,cnyValue,bucket,room,progressKey,classify,rhrMatch,evaluate};
 })();
 if(typeof module!=='undefined'&&module.exports)module.exports=DecisionGuide;
 if(typeof document!=='undefined') (function(){
  const rules=JSON.parse(document.getElementById('decision-data').textContent);let p;
  try{p=DecisionGuide.valid(JSON.parse(localStorage.getItem('cards-magic-decision-v1')||'null'))}catch(e){p=DecisionGuide.valid(null)}
  const amt=n=>`HK$${Number(n).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:2})}`;
+ const rmb=n=>`¥${DecisionGuide.cnyValue(n,p).toLocaleString('zh-CN',{maximumFractionDigits:2,minimumFractionDigits:2})}`;
  const todayHK=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const save=()=>{try{localStorage.setItem('cards-magic-decision-v1',JSON.stringify(p));return true}catch(e){toast('此浏览器无法保存，请导出配置');return false}};
  $('d-date').value=todayHK();
@@ -108,7 +110,7 @@ if(typeof document!=='undefined') (function(){
   let top=out.known[0],n=out.known.length,missing=out.missing.map(x=>`<div class="d-warning">${esc(x)}</div>`).join('');
   const sub=p.sub,remaining=Math.max(0,sub.target-sub.spent),days=sub.deadline?Math.ceil((new Date(sub.deadline+'T12:00:00Z')-new Date(tx.date+'T12:00:00Z'))/86400000):null;
   let subHtml=sub.card&&remaining>0&&days!==null&&days>=0?`<div class="d-sub"><strong>新卡任务优先检查：</strong>${esc([...DATA.cards,...HK.cards].find(c=>c.id===sub.card)?.name||sub.card)}，尚差 ${remaining.toLocaleString()} ${sub.currency}，距截止约 ${days} 天。${sub.bonusHkd?'完成后的个人奖励估值 '+amt(sub.bonusHkd)+'；':''}这笔能否计入任务须核对条款。任务未完成时，可优先考虑这张卡；不把任务奖励按每笔消费摊作保证回报。</div>`:'';
-  const show=c=>`<article class="d-result-card ${c===top?'first':''}"><div class="d-result-top"><div><span class="d-chip">${esc(c.group)} · ${esc(c.bank)}</span><h3>${esc(c.name)}</h3><div class="d-status">${esc(c.certainty)}</div></div><div class="d-result-value"><strong>${amt(c.value)}</strong><span class="tiny">${c.highPct-c.pct>.01?`${c.pct.toFixed(2)}–${c.highPct.toFixed(2)}%`:`约 ${c.pct.toFixed(2)}%`} · 本笔估值</span></div></div><div class="d-reason">${esc(c.reason)}</div>${c.rc!==undefined?`<p>约 $${c.rc.toFixed(2)} 奖赏钱 → ${c.miles.toFixed(0)} BA Avios；按本机估值折算。</p>`:''}<p>${esc(c.note)}</p><div class="d-foot">${link(c.source,'官方依据')} ${c===top?`<button class="small" id="d-record" data-card="${esc(c.id)}">这笔已刷，记入本机进度</button>`:''}</div></article>`;
+  const show=c=>`<article class="d-result-card ${c===top?'first':''}"><div class="d-result-top"><div><span class="d-chip">${esc(c.group)} · ${esc(c.bank)}</span><h3>${esc(c.name)}</h3><div class="d-status">${esc(c.certainty)}</div></div><div class="d-result-value"><span class="d-reward-label">可返利益 · 本笔估值</span><span class="d-reward-rate">${c.highPct-c.pct>.01?`${c.pct.toFixed(2)}–${c.highPct.toFixed(2)}%`:`约 ${c.pct.toFixed(2)}%`}</span><strong>${rmb(c.value)} 人民币</strong></div></div><div class="d-reason">${esc(c.reason)}</div>${c.rc!==undefined?`<p>约 $${c.rc.toFixed(2)} 奖赏钱 → ${c.miles.toFixed(0)} BA Avios；按本机估值折算。</p>`:''}<p>${esc(c.note)}</p><div class="d-foot">${link(c.source,'官方依据')} ${c===top?`<button class="small" id="d-record" data-card="${esc(c.id)}">这笔已刷，记入本机进度</button>`:''}</div></article>`;
   const alternatives=out.known.slice(1,7),hidden=out.known.slice(7);
   $('d-results').innerHTML=`${subHtml}${missing}${out.possible.length?`<div class="d-warning"><strong>先核对，可能改变首选：</strong>${out.possible.slice(0,5).map(x=>`${esc(x.name)}（${esc(x.note)}） ${link(x.source,'规则')}`).join('；')}</div>`:''}<div class="advisor-heading"><h2>当前已录入、可估算条件下的首选</h2><span class="tiny muted">${esc(tx.date)} · ${amt(out.amount)} 规划基数</span></div>${top?show(top):'<div class="d-warning">这笔尚无可靠候选，请核对商户与付款方式。</div>'}<div class="advisor-heading"><h2>其他选择</h2><span class="tiny muted">按保守估值排序，共 ${n} 张可估算</span></div>${alternatives.map(show).join('')}${hidden.length?`<details class="d-others"><summary>另有 ${hidden.length} 张，展开查看</summary>${hidden.map(show).join('')}</details>`:''}<p class="tiny muted">美国卡积分采用本页可调整的点值下限；香港里数按你设定的 BA Avios 价值。数值是规划估值，不是保证现金入账。独立报销与未知商户分类不计入本次排序。</p>`;
   $('d-coverage').innerHTML=`当前比较：美国 11 张与已编码的香港现金／汇丰叠加／12306 等规则。其余香港卡保留在“香港卡”资料页，未核实产品版本、登记或进度时不参加确定收益排名。${link(rules.sources.hsbcGuru,'Travel Guru 规则')} ${link(rules.sources.icbcSupermarketExpired,'工银超市活动（已于 9 月结束）')}`;

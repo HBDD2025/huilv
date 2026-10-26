@@ -4,6 +4,8 @@ const data=JSON.parse(fs.readFileSync('data/cards.json')),hk=JSON.parse(fs.readF
 const tx={amount:1000,currency:'CNY',region:'cn',channel:'qr',date:'2026-10-23',purpose:'普通消费'},values=data.valuations.defaults;
 function card(profile=p,input=tx,id='hsbc-pulse'){return D.evaluate(data,hk,rules,input,profile,values).known.find(c=>c.id===id)}
 let a=card();assert(Math.abs(a.rc-47.52)<0.001);assert(Math.abs(a.miles-712.8)<0.001);assert(Math.abs(a.value-71.28)<0.001);assert.equal(a.consumed['hsbc-rhr-2026'],1080);assert.equal(a.consumed['hsbc-pulse-h2-2026'],1080);
+assert(Math.abs(D.cnyValue(a.value,p)-66)<0.001);
+assert(Math.abs(D.cnyValue(78,D.valid({...p,fx:{...p.fx,CNY:1.3}}))-60)<0.001);
 let exhausted=D.valid({...p,buckets:{...p.buckets,'hsbc-rhr-2026':100000}});assert(Math.abs(card(exhausted).rc-25.92)<0.001);
 let both=D.valid({...exhausted,buckets:{...exhausted.buckets,'hsbc-pulse-h2-2026':80000}});assert(Math.abs(card(both).rc-4.32)<0.001);
 let june=card(p,{...tx,date:'2026-06-30'});assert(Math.abs(june.rc-25.92)<0.001);
