@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-10-26T01:15:39+00:00
+2026-10-26T03:33:28+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -10,7 +10,7 @@
 - IHG · 2026 改版及老客户过渡公告: unchanged
 - Chase · CSP 当前权益: unchanged
 - Chase · 2026 CSP 改版与生效规则: unchanged
-- Chase · World of Hyatt 完整条款: unchanged
+- Chase · World of Hyatt 完整条款: changed
 - Chase · Ritz 积分及报销条款: unchanged
 - Chase · Ritz 休息室及保障条款: unchanged
 - Capital One · Savor 官方权益: unchanged
@@ -20,7 +20,7 @@
 - Citi · Strata Premier 完整权益: unchanged
 - BofA · Atmos Summit 当前权益: failed
 - Alaska · Summit 权益和会籍积分: unchanged
-- Chase · Ink Business Preferred 完整条款: changed
+- Chase · Ink Business Preferred 完整条款: unchanged
 - 汇丰 · 卓越理财信用卡（Premier Mastercard）: unchanged
 - 汇丰 · Red 卡: unchanged
 - 汇丰 · Pulse 银联双币钻石卡: unchanged
@@ -28,7 +28,7 @@
 - 汇丰 · 扣账卡（卡种待确认）: unchanged
 - 工银亚洲 · 星座银联钻石卡: failed
 - 工银亚洲 · 大湾区银联钻石卡: failed
-- 工银亚洲 · Mastercard 世界卡（系列待确认）: failed
+- 工银亚洲 · Mastercard 世界卡（系列待确认）: unchanged
 - 建银亚洲 · eye+ 卡（级别待确认）: unchanged
 - 建银亚洲 · 银联双币信用卡（级别待确认）: unchanged
 - 建银亚洲 · TRAVO 卡（World／普通级别待确认）: unchanged
