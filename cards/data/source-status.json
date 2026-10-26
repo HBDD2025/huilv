@@ -1,307 +1,308 @@
 {
-  "lastRun": "2026-10-26T03:33:28+00:00",
+  "lastRun": "2026-10-26T03:58:45+00:00",
   "mode": "github_actions",
   "sources": {
     "brilliant": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "页面过大，未作为成功抓取"
     },
     "brilliant-dining": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "网页内容不足，可能依赖登录或 JavaScript"
     },
     "aspire": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "页面过大，未作为成功抓取"
     },
     "hilton-resorts": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "9015954ef7525ba66d2d0e25e4b9d672e8dbd66d575816f210834cfc9470da08",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 19
     },
     "ihg": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "67eea61267b7f81614c92c54a049930682a2d442a4428e0f9a531a742e1bfc6d",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 174
     },
     "ihg-refresh": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "fed1709b66c5fe6e7de827c2f2099ddd097f235d002a234b27cb40c4cec1c1f0",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 55
     },
     "csp": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "8d116ad53480b4ac44177ec32bf0c11566af93fe6678232e3a27a97d3ced0028",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 52
     },
     "csp-refresh": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "2d4652dc3bdcab71d81ac71e059ab09e258c0fce31387dfb7b0d00101fcb2bca",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 84
     },
     "hyatt": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "changed",
-      "sha256": "29dc9f218b61bbc3e062a4c6286df9074c26a1b1ef5af0772e07b8c29b155278",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "sha256": "65a41c922358c00eb38e46d2aa8f572c3b327b1535e1cf3f1008750385bc4ca4",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": true,
-      "matchedLines": 59,
-      "changedAt": "2026-10-26T03:33:28+00:00"
+      "matchedLines": 91,
+      "changedAt": "2026-10-26T03:58:45+00:00"
     },
     "ritz": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "d1e453a289f89c9365848a8582df533739d1c8ad625bff22c986d8a0db665771",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 42
     },
     "ritz-benefits": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "3f7a884bc163bfebe86084c630d7c9a621df4d95572006a688812a1c5265a562",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 82
     },
     "savor": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "d4faf346d98f6315eff4361e246ad7e9e0df946a2218171cd6492d398c6410ab",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 24
     },
     "venturex": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "3765b110a0c9d60a321ab4b96655697b0fa1dc93b24ea0cb24a0bbe913c36395",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 50
     },
     "venturex-guide": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "a9f41cd4556bc48fdde81e54ad977dd57178d859d5f4fc5e7271aff120062cfd",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 53
     },
     "venturex-lounge": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "网页内容不足，可能依赖登录或 JavaScript"
     },
     "citi": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "cc2d7596e2458840bb6320c319daf5052b1095bec4e399644cda0d1620ebecd6",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 59
     },
     "atmos": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "被站点验证或临时不可用页面拦截"
     },
     "atmos-airline": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "f92b17894458cbeda38c5a65d7955efc988493ddff8f7199ffd9f80f21032ccd",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 38
     },
     "ibp": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
-      "status": "unchanged",
-      "sha256": "7d4b4884029e71e84797f75a9ea4b4c34a659a8779899bdc9e35d25d8e0be312",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
+      "status": "changed",
+      "sha256": "f93161b0f386f2bb29ce23d9b437634a26454fedb5ca4548c63b06371c21fdea",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": true,
-      "matchedLines": 51,
-      "changedAt": "2026-10-26T01:15:39+00:00"
+      "matchedLines": 102,
+      "changedAt": "2026-10-26T03:58:45+00:00"
     },
     "hk-1": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "b8b287f091c959d399433dab924a98e0e3de3ba2fb58b3d4e5b7709fd3ef36b3",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 61
     },
     "hk-2": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "cef590e46f0891ea509f1ee228d3cfd3b656a965b06b32111c56e7721ca3e635",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 78
     },
     "hk-3": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "4e9cb8708d6a97068764d8e5f06ba57da1207e40a581a1615ed68f233bfda33f",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 74
     },
     "hk-4": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "71adbf7be63eaa7d8648b4f3787d7d28da7ae0172d69e393793b724af491607b",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 66
     },
     "hk-5": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "79a228239075465a6cb373ba5f899a2ae80df070ab8a4c77a30a7193b6f6ab11",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 37
     },
     "hk-6": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "HTTP Error 406: Not Acceptable"
     },
     "hk-7": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "HTTP Error 406: Not Acceptable"
     },
     "hk-8": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
-      "status": "unchanged",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
+      "status": "failed",
       "sha256": "0002acf5f59380f2121639ad4fdc4a1db78eed22752e85890a55dd61856f1bb1",
       "lastSuccessAt": "2026-10-26T03:33:28+00:00",
       "needsReview": false,
-      "matchedLines": 85
+      "matchedLines": 85,
+      "error": "HTTP Error 406: Not Acceptable"
     },
     "hk-9": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "29af3827ad4bfeb0b020970a8e1fb4b24a2f9726e72be0249c885f9abe7644ef",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 79
     },
     "hk-10": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "6b53fcacf560b39ca792f1202b668b7117a0b4eecbbbde9dc9880267f9c0dbc3",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 31
     },
     "hk-11": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "f6bd212e168a292b40fa6a3890653b751df3a2402ab91be09a1c1eacb665dd60",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 15
     },
     "hk-12": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "网页内容不足，可能依赖登录或 JavaScript"
     },
     "hk-13": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "5782ca36c97296a6ba13c38eced50fb0c83772d76420e4113ec74086e8a2fb55",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 78
     },
     "hk-14": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "6fc36c25220a56ab3c556054f9b3d7c0ad03c8c88f53488fc91883ae71244355",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 11
     },
     "hk-15": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "7323366843abeffa28ffa0808b950e7c3d5e2d6d66c4242c004a05e9856c8866",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 21
     },
     "hk-16": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "83158a5ae5b531f747f37f90e7c739a1976b7f1b2bb17d41c40eeedc89031f5a",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 28
     },
     "hk-17": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "831e99443cc88eb36acf561c089508849b21d41adfbfdcea181e7b2df9e037c4",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 27
     },
     "hk-18": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "ad30b0681d099e50ccb189e12ca49e7f8f9be549b1ff64b750bb7486ac15bfbc",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 29
     },
     "hk-19": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "c19f81f3e4f7869e48be2d4a148467c9e29182cbabe48bd1dde10ae3a6c5e6da",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 13
     },
     "hk-20": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "8f05ce3715b057e7705c986741541ade2cfb534faf140d82da8ceb1ba417898e",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 50
     },
     "hk-21": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "failed",
       "error": "网页内容不足，可能依赖登录或 JavaScript"
     },
     "hk-22": {
-      "attemptedAt": "2026-10-26T03:33:28+00:00",
+      "attemptedAt": "2026-10-26T03:58:45+00:00",
       "status": "unchanged",
       "sha256": "e94d52beec0ef75a2ea5c1a25e734fe39ff78afa5c8707a6a08a18d9a59eb6e0",
-      "lastSuccessAt": "2026-10-26T03:33:28+00:00",
+      "lastSuccessAt": "2026-10-26T03:58:45+00:00",
       "needsReview": false,
       "matchedLines": 29
     }
