@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-11-02T02:34:26+00:00
+2026-11-03T03:57:04+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -16,11 +16,11 @@
 - Capital One · Savor 官方权益: unchanged
 - Capital One · Venture X 当前产品页: unchanged
 - Capital One · Venture X 权益指南: unchanged
-- Capital One · 休息室当前准入规则: failed
+- Capital One · 休息室当前准入规则: baseline
 - Citi · Strata Premier 完整权益: unchanged
 - BofA · Atmos Summit 当前权益: failed
 - Alaska · Summit 权益和会籍积分: unchanged
-- Chase · Ink Business Preferred 完整条款: unchanged
+- Chase · Ink Business Preferred 完整条款: changed
 - 汇丰 · 卓越理财信用卡（Premier Mastercard）: unchanged
 - 汇丰 · Red 卡: unchanged
 - 汇丰 · Pulse 银联双币钻石卡: unchanged
@@ -37,10 +37,10 @@
 - 信银国际 · 扣账卡（卡种待确认）: unchanged
 - 中银香港 · 扣账卡（卡种待确认）: unchanged
 - 恒生 · 扣账卡（卡种待确认）: unchanged
-- 东亚 · 扣账卡（卡种待确认）: changed
+- 东亚 · 扣账卡（卡种待确认）: unchanged
 - 东亚 · 银联双币钻石卡: unchanged
 - 东亚 · 显卓理财 World Mastercard: unchanged
-- 渣打 · Priority 理财扣账卡（卡种待确认）: unchanged
+- 渣打 · Priority 理财扣账卡（卡种待确认）: changed
 - 招商永隆 · 银联钻石卡（产品待确认）: failed
 - 招商永隆 · World Mastercard: unchanged
 
