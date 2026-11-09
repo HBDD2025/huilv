@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-11-08T02:32:17+00:00
+2026-11-09T02:42:26+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -42,6 +42,6 @@
 - 东亚 · 显卓理财 World Mastercard: unchanged
 - 渣打 · Priority 理财扣账卡（卡种待确认）: unchanged
 - 招商永隆 · 银联钻石卡（产品待确认）: failed
-- 招商永隆 · World Mastercard: failed
+- 招商永隆 · World Mastercard: unchanged
 
 抓取结果不等于人工内容核验。失败不会覆盖上次成功的指纹，变化不会自动写成权益。
