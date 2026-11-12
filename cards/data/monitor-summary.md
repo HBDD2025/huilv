@@ -1,13 +1,13 @@
 # 官方来源巡检
 
-2026-11-11T02:50:30+00:00
+2026-11-12T03:52:05+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
 - Amex · Aspire 官方权益: failed
 - Hilton · 参加报销的度假村名单: unchanged
 - Chase · IHG Premier 当前产品条款: unchanged
-- IHG · 2026 改版及老客户过渡公告: changed
+- IHG · 2026 改版及老客户过渡公告: unchanged
 - Chase · CSP 当前权益: unchanged
 - Chase · 2026 CSP 改版与生效规则: unchanged
 - Chase · World of Hyatt 完整条款: changed
@@ -20,7 +20,7 @@
 - Citi · Strata Premier 完整权益: unchanged
 - BofA · Atmos Summit 当前权益: failed
 - Alaska · Summit 权益和会籍积分: unchanged
-- Chase · Ink Business Preferred 完整条款: unchanged
+- Chase · Ink Business Preferred 完整条款: changed
 - 汇丰 · 卓越理财信用卡（Premier Mastercard）: unchanged
 - 汇丰 · Red 卡: unchanged
 - 汇丰 · Pulse 银联双币钻石卡: unchanged
@@ -42,6 +42,6 @@
 - 东亚 · 显卓理财 World Mastercard: unchanged
 - 渣打 · Priority 理财扣账卡（卡种待确认）: unchanged
 - 招商永隆 · 银联钻石卡（产品待确认）: failed
-- 招商永隆 · World Mastercard: unchanged
+- 招商永隆 · World Mastercard: failed
 
 抓取结果不等于人工内容核验。失败不会覆盖上次成功的指纹，变化不会自动写成权益。
