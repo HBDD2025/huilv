@@ -1,9 +1,9 @@
 {
- "generated_at": "2026-11-12T16:54:39+00:00",
+ "generated_at": "2026-11-13T06:58:16+00:00",
  "sources": {
   "unionpay": {
    "ok": true,
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "stale": false,
    "name": "银联",
    "group": "card",
@@ -13,7 +13,7 @@
   },
   "jcb": {
    "ok": true,
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "stale": false,
    "name": "JCB",
    "group": "card",
@@ -23,7 +23,7 @@
   },
   "mastercard": {
    "ok": true,
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "stale": false,
    "name": "万事达",
    "group": "card",
@@ -33,7 +33,7 @@
   },
   "visa": {
    "ok": true,
-   "date": "2026-11-12",
+   "date": "2026-11-13",
    "stale": false,
    "name": "Visa",
    "group": "card",
@@ -43,7 +43,7 @@
   },
   "icbc": {
    "ok": true,
-   "date": "2026-11-13 00:54:00",
+   "date": "2026-11-13 14:58:00",
    "stale": false,
    "name": "工商银行",
    "group": "cn",
@@ -53,7 +53,7 @@
   },
   "abc": {
    "ok": true,
-   "date": "2026-11-13 00:54:41",
+   "date": "2026-11-13 14:58:16",
    "stale": false,
    "name": "农业银行",
    "group": "cn",
@@ -63,7 +63,7 @@
   },
   "boc": {
    "ok": true,
-   "date": "2026-11-13 00:51:49",
+   "date": "2026-11-13 14:55:15",
    "stale": false,
    "name": "中国银行",
    "group": "cn",
@@ -73,7 +73,7 @@
   },
   "ccb": {
    "ok": true,
-   "date": "2026-11-13 00:54:04",
+   "date": "2026-11-13 14:54:05",
    "stale": false,
    "name": "建设银行",
    "group": "cn",
@@ -83,7 +83,7 @@
   },
   "bocom": {
    "ok": true,
-   "date": "2026-11-12 22:55",
+   "date": "2026-11-13 14:50",
    "stale": false,
    "name": "交通银行",
    "group": "cn",
@@ -93,7 +93,7 @@
   },
   "cib": {
    "ok": true,
-   "date": "2026-11-12 22:59:02",
+   "date": "2026-11-13 14:57:32",
    "stale": false,
    "name": "兴业银行",
    "group": "cn",
@@ -103,7 +103,7 @@
   },
   "citic": {
    "ok": true,
-   "date": "2026-11-13 00:46",
+   "date": "2026-11-13 14:56",
    "stale": false,
    "name": "中信银行",
    "group": "cn",
@@ -113,7 +113,7 @@
   },
   "cgb": {
    "ok": true,
-   "date": "11-13",
+   "date": "2026-11-13 14:56",
    "stale": false,
    "name": "广发银行",
    "group": "cn",
@@ -123,7 +123,7 @@
   },
   "pab": {
    "ok": true,
-   "date": "2026-11-13 00:43",
+   "date": "2026-11-13 14:55",
    "stale": false,
    "name": "平安银行",
    "group": "cn",
@@ -143,7 +143,7 @@
   },
   "shengjing": {
    "ok": true,
-   "date": "2026-11-12 16:28:58",
+   "date": "2026-11-13 14:57:58",
    "stale": false,
    "name": "盛京银行",
    "group": "cn",
@@ -153,7 +153,7 @@
   },
   "cbhb": {
    "ok": true,
-   "date": "11-13",
+   "date": "2026-11-13 14:56",
    "stale": false,
    "name": "渤海银行",
    "group": "cn",
@@ -163,7 +163,7 @@
   },
   "cmb": {
    "ok": true,
-   "date": "2026-11-13 00:46",
+   "date": "2026-11-13 14:56",
    "stale": false,
    "name": "招商银行",
    "group": "cn",
@@ -178,7 +178,7 @@
    "name": "汇丰",
    "group": "hk",
    "origin": "hkrates",
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_hsbc.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x77e2fe6286b0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_hsbc.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x7ae946d5aab0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
   },
   "hangseng": {
    "ok": false,
@@ -187,11 +187,11 @@
    "name": "恒生",
    "group": "hk",
    "origin": "hkrates",
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_hangseng.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x77e2ffc10cb0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_hangseng.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x7ae947111be0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
   },
   "bochk": {
    "ok": true,
-   "date": "2026-11-13 00:52:58",
+   "date": "2026-11-13 14:57:58",
    "stale": false,
    "name": "中银香港",
    "group": "hk",
@@ -206,7 +206,7 @@
    "name": "工银亚洲",
    "group": "hk",
    "origin": "hkrates",
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_icbc.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x77e2ffc10710>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_icbc.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x7ae947110950>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
   },
   "cncbi": {
    "ok": false,
@@ -215,7 +215,7 @@
    "name": "信银国际",
    "group": "hk",
    "origin": "hkrates",
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_cncb.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x77e2ffbd7500>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_cncb.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x7ae94684ffb0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
   },
   "bea": {
    "ok": false,
@@ -224,11 +224,11 @@
    "name": "东亚",
    "group": "hk",
    "origin": "hkrates",
-   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_bea.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x77e2ffbd4560>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
+   "error": "ConnectTimeout: HTTPSConnectionPool(host='hkrates.com', port=443): Max retries exceeded with url: /bankrate/hk_bea.html (Caused by ConnectTimeoutError(<HTTPSConnection(host='hkrates.com', port=443) at 0x7ae946d5a9c0>, 'Connection to hkrates.com timed out. (connect timeout=40)'))"
   },
   "cmbwlb": {
    "ok": true,
-   "date": "2026-11-13 00:58:39",
+   "date": "2026-11-13 15:02:20",
    "stale": false,
    "name": "招商永隆",
    "group": "hk",
@@ -239,926 +239,926 @@
  },
  "card": {
   "USD": {
-   "unionpay": 6.6912,
-   "jcb": 6.65402425,
-   "mastercard": 6.66840045,
-   "visa": 6.67187073
+   "unionpay": 6.6885,
+   "jcb": 6.653774,
+   "mastercard": 6.66969026,
+   "visa": 6.6689341
   },
   "EUR": {
    "unionpay": 7.4206998,
-   "jcb": 7.38178819,
-   "mastercard": 7.44993698,
-   "visa": 7.4538073
+   "jcb": 7.35139559,
+   "mastercard": 7.40601739,
+   "visa": 7.40517776
   },
   "GBP": {
    "unionpay": 8.88819995,
-   "jcb": 8.83336359,
-   "mastercard": 8.92964838,
-   "visa": 8.91094387
+   "jcb": 8.80329566,
+   "mastercard": 8.8766841,
+   "visa": 8.86300676
   },
   "JPY": {
-   "unionpay": 0.041988,
-   "jcb": 0.0416513,
-   "mastercard": 0.0420376,
-   "visa": 0.04205947
+   "unionpay": 0.0419,
+   "jcb": 0.04161717,
+   "mastercard": 0.04182563,
+   "visa": 0.04182089
   },
   "HKD": {
-   "unionpay": 0.8526,
-   "jcb": 0.84830116,
-   "mastercard": 0.85018105,
-   "visa": 0.85066352
+   "unionpay": 0.8525,
+   "jcb": 0.84846818,
+   "mastercard": 0.85060561,
+   "visa": 0.85050917
   },
   "MOP": {
-   "unionpay": 0.8282,
-   "jcb": 0.82290678,
-   "mastercard": 0.8255013,
-   "visa": 0.82650467
+   "unionpay": 0.8281,
+   "jcb": 0.82297761,
+   "mastercard": 0.82556092,
+   "visa": 0.82617423
   },
   "SGD": {
-   "unionpay": 5.21439996,
-   "jcb": 5.18030917,
-   "mastercard": 5.20806076,
-   "visa": 5.2107644
+   "unionpay": 5.20590012,
+   "jcb": 5.16990723,
+   "mastercard": 5.19770296,
+   "visa": 5.19710702
   },
   "AUD": {
-   "unionpay": 4.58840009,
-   "jcb": 4.55389443,
-   "mastercard": 4.59319423,
-   "visa": 4.59557788
+   "unionpay": 4.56699999,
+   "jcb": 4.52902435,
+   "mastercard": 4.57807539,
+   "visa": 4.5775497
   },
   "NZD": {
-   "unionpay": 3.73111504,
-   "jcb": 3.70130764,
-   "mastercard": 3.74564053,
-   "visa": 3.74758311
+   "unionpay": 3.71553547,
+   "jcb": 3.68862608,
+   "mastercard": 3.72168716,
+   "visa": 3.71659031
   },
   "CAD": {
-   "unionpay": 4.70119996,
-   "jcb": 4.67034939,
-   "mastercard": 4.70367629,
-   "visa": 4.70545692
+   "unionpay": 4.70139998,
+   "jcb": 4.66464717,
+   "mastercard": 4.68936585,
+   "visa": 4.6888342
   },
   "CHF": {
    "unionpay": 8.04400004,
-   "jcb": 7.99324439,
-   "mastercard": 8.0878095,
-   "visa": 8.09987123
+   "jcb": 7.95742264,
+   "mastercard": 8.0270656,
+   "visa": 8.02614889
   },
   "KRW": {
-   "unionpay": 0.00502256,
-   "jcb": 0.00499136,
-   "mastercard": 0.00500797,
-   "visa": 0.00501057
+   "unionpay": 0.0050338,
+   "jcb": 0.0049985,
+   "mastercard": 0.00502895,
+   "visa": 0.00502838
   },
   "THB": {
-   "unionpay": 0.19850804,
-   "jcb": 0.19743414,
-   "mastercard": 0.19875834,
-   "visa": 0.19886178
+   "unionpay": 0.19784218,
+   "jcb": 0.19684394,
+   "mastercard": 0.19791639,
+   "visa": 0.19789395
   },
   "MYR": {
-   "unionpay": 1.6488474,
-   "jcb": 1.62548555,
-   "mastercard": 1.64448757,
-   "visa": 1.64595051
+   "unionpay": 1.64596243,
+   "jcb": 1.62979356,
+   "mastercard": 1.6387429,
+   "visa": 1.63855711
   },
   "IDR": {
-   "unionpay": 0.00037062,
-   "jcb": 0.00036726,
-   "mastercard": 0.00036676,
-   "visa": 0.00036695
+   "unionpay": 0.00036874,
+   "jcb": 0.00036554,
+   "mastercard": 0.00036683,
+   "visa": 0.00036679
   },
   "LAK": {
-   "unionpay": 0.00029824,
-   "jcb": 0.00029569,
-   "mastercard": 0.00030008,
-   "visa": 0.00030023
+   "unionpay": 0.00029804,
+   "jcb": 0.0002956,
+   "mastercard": 0.00030014,
+   "visa": 0.0003001
   },
   "VND": {
-   "unionpay": 0.00026145,
-   "jcb": 0.00025937,
-   "mastercard": 0.00026007,
-   "visa": 0.0002602
+   "unionpay": 0.00026119,
+   "jcb": 0.00025911,
+   "mastercard": 0.00026012,
+   "visa": 0.00026009
   },
   "PHP": {
-   "unionpay": 0.10573109,
-   "jcb": 0.10525648,
-   "mastercard": 0.10602757,
-   "visa": 0.10543557
+   "unionpay": 0.10501097,
+   "jcb": 0.10440934,
+   "mastercard": 0.10552117,
+   "visa": 0.10460223
   },
   "DKK": {
-   "unionpay": 0.99621987,
-   "jcb": 0.98745624,
-   "mastercard": 0.99653243,
-   "visa": 0.99705103
+   "unionpay": 0.99270866,
+   "jcb": 0.98339289,
+   "mastercard": 0.99072913,
+   "visa": 0.99061681
   },
   "NOK": {
-   "unionpay": 0.70233094,
-   "jcb": 0.69624678,
-   "mastercard": 0.70384967,
-   "visa": 0.70428935
+   "unionpay": 0.70157766,
+   "jcb": 0.69538311,
+   "mastercard": 0.70201825,
+   "visa": 0.70193866
   },
   "SEK": {
-   "unionpay": 0.67345345,
-   "jcb": 0.66755221,
-   "mastercard": 0.67720941,
-   "visa": 0.67756183
+   "unionpay": 0.66946341,
+   "jcb": 0.66289988,
+   "mastercard": 0.67128432,
+   "visa": 0.67179508
   },
   "RUB": {
-   "unionpay": 0.0813579,
-   "jcb": 0.08050135,
-   "mastercard": 0.08082768,
-   "visa": 0.08086975
+   "unionpay": 0.08118491,
+   "jcb": 0.08035959,
+   "mastercard": 0.08086332,
+   "visa": 0.08085416
   },
   "ZAR": {
-   "unionpay": 0.40453605,
-   "jcb": 0.40074465,
-   "mastercard": 0.40425177,
-   "visa": 0.40460226
+   "unionpay": 0.40065012,
+   "jcb": 0.39690139,
+   "mastercard": 0.4024291,
+   "visa": 0.40247684
   }
  },
  "cards": {
   "CNY": {
    "AUD": {
-    "unionpay": 4.58840009,
-    "jcb": 4.55389443,
-    "mastercard": 4.59319423,
-    "visa": 4.59557788
+    "unionpay": 4.56699999,
+    "jcb": 4.52902435,
+    "mastercard": 4.57807539,
+    "visa": 4.5775497
    },
    "CAD": {
-    "unionpay": 4.70119996,
-    "jcb": 4.67034939,
-    "mastercard": 4.70367629,
-    "visa": 4.70545692
+    "unionpay": 4.70139998,
+    "jcb": 4.66464717,
+    "mastercard": 4.68936585,
+    "visa": 4.6888342
    },
    "CHF": {
     "unionpay": 8.04400004,
-    "jcb": 7.99324439,
-    "mastercard": 8.0878095,
-    "visa": 8.09987123
+    "jcb": 7.95742264,
+    "mastercard": 8.0270656,
+    "visa": 8.02614889
    },
    "DKK": {
-    "unionpay": 0.99621987,
-    "jcb": 0.98745624,
-    "mastercard": 0.99653243,
-    "visa": 0.99705103
+    "unionpay": 0.99270866,
+    "jcb": 0.98339289,
+    "mastercard": 0.99072913,
+    "visa": 0.99061681
    },
    "EUR": {
     "unionpay": 7.4206998,
-    "jcb": 7.38178819,
-    "mastercard": 7.44993698,
-    "visa": 7.4538073
+    "jcb": 7.35139559,
+    "mastercard": 7.40601739,
+    "visa": 7.40517776
    },
    "GBP": {
     "unionpay": 8.88819995,
-    "jcb": 8.83336359,
-    "mastercard": 8.92964838,
-    "visa": 8.91094387
+    "jcb": 8.80329566,
+    "mastercard": 8.8766841,
+    "visa": 8.86300676
    },
    "HKD": {
-    "unionpay": 0.8526,
-    "jcb": 0.84830116,
-    "mastercard": 0.85018105,
-    "visa": 0.85066352
+    "unionpay": 0.8525,
+    "jcb": 0.84846818,
+    "mastercard": 0.85060561,
+    "visa": 0.85050917
    },
    "IDR": {
-    "unionpay": 0.00037062,
-    "jcb": 0.00036726,
-    "mastercard": 0.00036676,
-    "visa": 0.00036695
+    "unionpay": 0.00036874,
+    "jcb": 0.00036554,
+    "mastercard": 0.00036683,
+    "visa": 0.00036679
    },
    "JPY": {
-    "unionpay": 0.041988,
-    "jcb": 0.0416513,
-    "mastercard": 0.0420376,
-    "visa": 0.04205947
+    "unionpay": 0.0419,
+    "jcb": 0.04161717,
+    "mastercard": 0.04182563,
+    "visa": 0.04182089
    },
    "KRW": {
-    "unionpay": 0.00502256,
-    "jcb": 0.00499136,
-    "mastercard": 0.00500797,
-    "visa": 0.00501057
+    "unionpay": 0.0050338,
+    "jcb": 0.0049985,
+    "mastercard": 0.00502895,
+    "visa": 0.00502838
    },
    "LAK": {
-    "unionpay": 0.00029824,
-    "jcb": 0.00029569,
-    "mastercard": 0.00030008,
-    "visa": 0.00030023
+    "unionpay": 0.00029804,
+    "jcb": 0.0002956,
+    "mastercard": 0.00030014,
+    "visa": 0.0003001
    },
    "MOP": {
-    "unionpay": 0.8282,
-    "jcb": 0.82290678,
-    "mastercard": 0.8255013,
-    "visa": 0.82650467
+    "unionpay": 0.8281,
+    "jcb": 0.82297761,
+    "mastercard": 0.82556092,
+    "visa": 0.82617423
    },
    "MYR": {
-    "unionpay": 1.6488474,
-    "jcb": 1.62548555,
-    "mastercard": 1.64448757,
-    "visa": 1.64595051
+    "unionpay": 1.64596243,
+    "jcb": 1.62979356,
+    "mastercard": 1.6387429,
+    "visa": 1.63855711
    },
    "NOK": {
-    "unionpay": 0.70233094,
-    "jcb": 0.69624678,
-    "mastercard": 0.70384967,
-    "visa": 0.70428935
+    "unionpay": 0.70157766,
+    "jcb": 0.69538311,
+    "mastercard": 0.70201825,
+    "visa": 0.70193866
    },
    "NZD": {
-    "unionpay": 3.73111504,
-    "jcb": 3.70130764,
-    "mastercard": 3.74564053,
-    "visa": 3.74758311
+    "unionpay": 3.71553547,
+    "jcb": 3.68862608,
+    "mastercard": 3.72168716,
+    "visa": 3.71659031
    },
    "PHP": {
-    "unionpay": 0.10573109,
-    "jcb": 0.10525648,
-    "mastercard": 0.10602757,
-    "visa": 0.10543557
+    "unionpay": 0.10501097,
+    "jcb": 0.10440934,
+    "mastercard": 0.10552117,
+    "visa": 0.10460223
    },
    "RUB": {
-    "unionpay": 0.0813579,
-    "jcb": 0.08050135,
-    "mastercard": 0.08082768,
-    "visa": 0.08086975
+    "unionpay": 0.08118491,
+    "jcb": 0.08035959,
+    "mastercard": 0.08086332,
+    "visa": 0.08085416
    },
    "SEK": {
-    "unionpay": 0.67345345,
-    "jcb": 0.66755221,
-    "mastercard": 0.67720941,
-    "visa": 0.67756183
+    "unionpay": 0.66946341,
+    "jcb": 0.66289988,
+    "mastercard": 0.67128432,
+    "visa": 0.67179508
    },
    "SGD": {
-    "unionpay": 5.21439996,
-    "jcb": 5.18030917,
-    "mastercard": 5.20806076,
-    "visa": 5.2107644
+    "unionpay": 5.20590012,
+    "jcb": 5.16990723,
+    "mastercard": 5.19770296,
+    "visa": 5.19710702
    },
    "THB": {
-    "unionpay": 0.19850804,
-    "jcb": 0.19743414,
-    "mastercard": 0.19875834,
-    "visa": 0.19886178
+    "unionpay": 0.19784218,
+    "jcb": 0.19684394,
+    "mastercard": 0.19791639,
+    "visa": 0.19789395
    },
    "USD": {
-    "unionpay": 6.6912,
-    "jcb": 6.65402425,
-    "mastercard": 6.66840045,
-    "visa": 6.67187073
+    "unionpay": 6.6885,
+    "jcb": 6.653774,
+    "mastercard": 6.66969026,
+    "visa": 6.6689341
    },
    "VND": {
-    "unionpay": 0.00026145,
-    "jcb": 0.00025937,
-    "mastercard": 0.00026007,
-    "visa": 0.0002602
+    "unionpay": 0.00026119,
+    "jcb": 0.00025911,
+    "mastercard": 0.00026012,
+    "visa": 0.00026009
    },
    "ZAR": {
-    "unionpay": 0.40453605,
-    "jcb": 0.40074465,
-    "mastercard": 0.40425177,
-    "visa": 0.40460226
+    "unionpay": 0.40065012,
+    "jcb": 0.39690139,
+    "mastercard": 0.4024291,
+    "visa": 0.40247684
    }
   },
   "HKD": {
    "AUD": {
-    "unionpay": 5.40375983,
-    "jcb": 5.36825203,
-    "mastercard": 5.40260718,
-    "visa": 5.4023451
+    "unionpay": 5.37600323,
+    "jcb": 5.33788357,
+    "mastercard": 5.38213639,
+    "visa": 5.38212855
    },
    "CAD": {
-    "unionpay": 5.53696412,
-    "jcb": 5.50553225,
-    "mastercard": 5.53255839,
-    "visa": 5.53151373
+    "unionpay": 5.53646928,
+    "jcb": 5.49772789,
+    "mastercard": 5.51297311,
+    "visa": 5.51297311
    },
    "CHF": {
-    "unionpay": 9.48153129,
-    "jcb": 9.42264937,
-    "mastercard": 9.51304375,
-    "visa": 9.52182745
+    "unionpay": 9.44862033,
+    "jcb": 9.37857522,
+    "mastercard": 9.436883,
+    "visa": 9.43687516
    },
    "CNY": {
-    "unionpay": 1.1775789,
-    "jcb": 1.17882663,
-    "mastercard": 1.17622006,
-    "visa": 1.17555294
+    "unionpay": 1.17771758,
+    "jcb": 1.17859458,
+    "mastercard": 1.17563297,
+    "visa": 1.17576627
    },
    "DKK": {
-    "unionpay": 1.17132829,
-    "jcb": 1.16403972,
-    "mastercard": 1.17214143,
-    "visa": 1.17208627
+    "unionpay": 1.16781251,
+    "jcb": 1.15902154,
+    "mastercard": 1.16473383,
+    "visa": 1.16473383
    },
    "EUR": {
-    "unionpay": 8.7566476,
-    "jcb": 8.70184852,
-    "mastercard": 8.76276531,
-    "visa": 8.7623451
+    "unionpay": 8.73008633,
+    "jcb": 8.66431503,
+    "mastercard": 8.70675825,
+    "visa": 8.70675825
    },
    "GBP": {
-    "unionpay": 10.4788593,
-    "jcb": 10.41300425,
-    "mastercard": 10.50323152,
-    "visa": 10.47528627
+    "unionpay": 10.44698225,
+    "jcb": 10.37551659,
+    "mastercard": 10.43572252,
+    "visa": 10.42082441
    },
    "IDR": {
-    "unionpay": 0.00043576,
-    "jcb": 0.00043294,
-    "mastercard": 0.00043139,
-    "visa": 0.00043137
+    "unionpay": 0.00043378,
+    "jcb": 0.00043082,
+    "mastercard": 0.00043126,
+    "visa": 0.00043126
    },
    "JPY": {
-    "unionpay": 0.04942071,
-    "jcb": 0.04909966,
-    "mastercard": 0.04944546,
-    "visa": 0.04944314
+    "unionpay": 0.04935868,
+    "jcb": 0.04904977,
+    "mastercard": 0.04917159,
+    "visa": 0.04917159
    },
    "KRW": {
-    "unionpay": 0.00590538,
-    "jcb": 0.00588395,
-    "mastercard": 0.00589047,
-    "visa": 0.0058902
+    "unionpay": 0.00592171,
+    "jcb": 0.00589121,
+    "mastercard": 0.0059122,
+    "visa": 0.0059122
    },
    "LAK": {
-    "unionpay": 0.00035066,
-    "jcb": 0.00034857,
-    "mastercard": 0.00035296,
-    "visa": 0.00035294
+    "unionpay": 0.00035061,
+    "jcb": 0.00034839,
+    "mastercard": 0.00035285,
+    "visa": 0.00035285
    },
    "MOP": {
     "unionpay": 0.97087379,
-    "jcb": 0.97006443,
-    "mastercard": 0.97097118,
-    "visa": 0.9716
+    "jcb": 0.96995696,
+    "mastercard": 0.97055664,
+    "visa": 0.9713878
    },
    "MYR": {
-    "unionpay": 1.93867003,
-    "jcb": 1.91616566,
-    "mastercard": 1.93427926,
-    "visa": 1.93490196
+    "unionpay": 1.93629367,
+    "jcb": 1.92086586,
+    "mastercard": 1.92656018,
+    "visa": 1.92656018
    },
    "NOK": {
-    "unionpay": 0.82578166,
-    "jcb": 0.82075425,
-    "mastercard": 0.8278821,
-    "visa": 0.82792941
+    "unionpay": 0.82532891,
+    "jcb": 0.81957477,
+    "mastercard": 0.8253158,
+    "visa": 0.8253158
    },
    "NZD": {
-    "unionpay": 4.38694382,
-    "jcb": 4.36320003,
-    "mastercard": 4.40569752,
-    "visa": 4.40548235
+    "unionpay": 4.37091863,
+    "jcb": 4.34739472,
+    "mastercard": 4.37533815,
+    "visa": 4.36984153
    },
    "PHP": {
-    "unionpay": 0.12431575,
-    "jcb": 0.12407914,
-    "mastercard": 0.12471175,
-    "visa": 0.1239451
+    "unionpay": 0.12353385,
+    "jcb": 0.12305628,
+    "mastercard": 0.12405417,
+    "visa": 0.12298778
    },
    "RUB": {
-    "unionpay": 0.09565841,
-    "jcb": 0.09489714,
-    "mastercard": 0.09507114,
-    "visa": 0.09506667
+    "unionpay": 0.09550511,
+    "jcb": 0.09471138,
+    "mastercard": 0.09506559,
+    "visa": 0.09506559
    },
    "SEK": {
-    "unionpay": 0.79182829,
-    "jcb": 0.78692832,
-    "mastercard": 0.79654729,
-    "visa": 0.7965098
+    "unionpay": 0.78755003,
+    "jcb": 0.78129021,
+    "mastercard": 0.78918398,
+    "visa": 0.78987399
    },
    "SGD": {
-    "unionpay": 6.14468495,
-    "jcb": 6.10668642,
-    "mastercard": 6.12582553,
-    "visa": 6.12552941
+    "unionpay": 6.1356347,
+    "jcb": 6.09322466,
+    "mastercard": 6.11059098,
+    "visa": 6.11058314
    },
    "THB": {
-    "unionpay": 0.23340037,
-    "jcb": 0.23274063,
-    "mastercard": 0.23378355,
-    "visa": 0.23377255
+    "unionpay": 0.23273955,
+    "jcb": 0.2319992,
+    "mastercard": 0.23267703,
+    "visa": 0.23267703
    },
    "USD": {
-    "unionpay": 7.8673314,
-    "jcb": 7.843941,
-    "mastercard": 7.84350636,
-    "visa": 7.84313725
+    "unionpay": 7.86828425,
+    "jcb": 7.842102,
+    "mastercard": 7.84110779,
+    "visa": 7.84110779
    },
    "VND": {
-    "unionpay": 0.00030741,
-    "jcb": 0.00030575,
-    "mastercard": 0.0003059,
-    "visa": 0.00030588
+    "unionpay": 0.00030726,
+    "jcb": 0.00030538,
+    "mastercard": 0.0003058,
+    "visa": 0.0003058
    },
    "ZAR": {
-    "unionpay": 0.47564251,
-    "jcb": 0.47240846,
-    "mastercard": 0.47548904,
-    "visa": 0.47563137
+    "unionpay": 0.47132078,
+    "jcb": 0.46778583,
+    "mastercard": 0.47310892,
+    "visa": 0.4732187
    }
   },
   "USD": {
    "AUD": {
-    "unionpay": 0.68686058,
-    "jcb": 0.684382,
-    "mastercard": 0.6888,
-    "visa": 0.688799
+    "unionpay": 0.68324975,
+    "jcb": 0.68067,
+    "mastercard": 0.6864,
+    "visa": 0.686399
    },
    "CAD": {
-    "unionpay": 0.7037919,
-    "jcb": 0.70188343,
-    "mastercard": 0.705368,
-    "visa": 0.705268
+    "unionpay": 0.70364378,
+    "jcb": 0.70105284,
+    "mastercard": 0.703086,
+    "visa": 0.703086
    },
    "CHF": {
-    "unionpay": 1.20517756,
-    "jcb": 1.20126469,
-    "mastercard": 1.212856,
-    "visa": 1.214033
+    "unionpay": 1.20084888,
+    "jcb": 1.1959262,
+    "mastercard": 1.203514,
+    "visa": 1.203513
    },
    "CNY": {
-    "unionpay": 0.15028294,
-    "jcb": 0.15028499,
-    "mastercard": 0.149961,
-    "visa": 0.149883
+    "unionpay": 0.15027505,
+    "jcb": 0.15029065,
+    "mastercard": 0.149932,
+    "visa": 0.149949
    },
    "DKK": {
-    "unionpay": 0.14888508,
-    "jcb": 0.14839986,
-    "mastercard": 0.149441,
-    "visa": 0.149441
+    "unionpay": 0.14842022,
+    "jcb": 0.14779475,
+    "mastercard": 0.148542,
+    "visa": 0.148542
    },
    "EUR": {
-    "unionpay": 1.11303912,
-    "jcb": 1.109372,
-    "mastercard": 1.1172,
-    "visa": 1.117199
+    "unionpay": 1.10952859,
+    "jcb": 1.104846,
+    "mastercard": 1.110399,
+    "visa": 1.110399
    },
    "GBP": {
-    "unionpay": 1.33194584,
-    "jcb": 1.327522,
-    "mastercard": 1.339099,
-    "visa": 1.335599
+    "unionpay": 1.3277332,
+    "jcb": 1.323053,
+    "mastercard": 1.330899,
+    "visa": 1.328999
    },
    "HKD": {
-    "unionpay": 0.12787285,
-    "jcb": 0.12748694,
-    "mastercard": 0.127494,
-    "visa": 0.1275
+    "unionpay": 0.12785736,
+    "jcb": 0.12751683,
+    "mastercard": 0.127533,
+    "visa": 0.127533
    },
    "IDR": {
-    "unionpay": 5.539e-05,
-    "jcb": 5.519e-05,
+    "unionpay": 5.513e-05,
+    "jcb": 5.494e-05,
     "mastercard": 5.5e-05,
     "visa": 5.5e-05
    },
    "JPY": {
-    "unionpay": 0.00628176,
-    "jcb": 0.00625957,
-    "mastercard": 0.006304,
-    "visa": 0.006304
+    "unionpay": 0.00627312,
+    "jcb": 0.00625467,
+    "mastercard": 0.006271,
+    "visa": 0.006271
    },
    "KRW": {
-    "unionpay": 0.00075062,
-    "jcb": 0.00075013,
-    "mastercard": 0.000751,
-    "visa": 0.000751
+    "unionpay": 0.00075261,
+    "jcb": 0.00075123,
+    "mastercard": 0.000754,
+    "visa": 0.000754
    },
    "LAK": {
-    "unionpay": 4.457e-05,
-    "jcb": 4.444e-05,
+    "unionpay": 4.456e-05,
+    "jcb": 4.443e-05,
     "mastercard": 4.5e-05,
     "visa": 4.5e-05
    },
    "MOP": {
-    "unionpay": 0.12405801,
-    "jcb": 0.12367054,
-    "mastercard": 0.123793,
-    "visa": 0.123879
+    "unionpay": 0.12404267,
+    "jcb": 0.12368584,
+    "mastercard": 0.123778,
+    "visa": 0.123884
    },
    "MYR": {
-    "unionpay": 0.24642028,
-    "jcb": 0.24428609,
-    "mastercard": 0.246609,
-    "visa": 0.2467
+    "unionpay": 0.24608842,
+    "jcb": 0.24494273,
+    "mastercard": 0.2457,
+    "visa": 0.2457
    },
    "NOK": {
-    "unionpay": 0.10496338,
-    "jcb": 0.10463544,
-    "mastercard": 0.10555,
-    "visa": 0.105561
+    "unionpay": 0.10489312,
+    "jcb": 0.10450958,
+    "mastercard": 0.105255,
+    "visa": 0.105255
    },
    "NZD": {
-    "unionpay": 0.55761523,
-    "jcb": 0.556251,
-    "mastercard": 0.5617,
-    "visa": 0.561699
+    "unionpay": 0.55551102,
+    "jcb": 0.554366,
+    "mastercard": 0.558,
+    "visa": 0.557299
    },
    "PHP": {
-    "unionpay": 0.01580151,
-    "jcb": 0.01581847,
-    "mastercard": 0.0159,
-    "visa": 0.015803
+    "unionpay": 0.01570023,
+    "jcb": 0.01569175,
+    "mastercard": 0.015821,
+    "visa": 0.015685
    },
    "RUB": {
-    "unionpay": 0.01215894,
-    "jcb": 0.01209814,
-    "mastercard": 0.012121,
-    "visa": 0.012121
+    "unionpay": 0.01213798,
+    "jcb": 0.01207729,
+    "mastercard": 0.012124,
+    "visa": 0.012124
    },
    "SEK": {
-    "unionpay": 0.10064763,
-    "jcb": 0.10032308,
-    "mastercard": 0.101555,
-    "visa": 0.101555
+    "unionpay": 0.10009171,
+    "jcb": 0.09962765,
+    "mastercard": 0.100647,
+    "visa": 0.100735
    },
    "SGD": {
-    "unionpay": 0.78103802,
-    "jcb": 0.77852274,
-    "mastercard": 0.781006,
-    "visa": 0.781005
+    "unionpay": 0.77979322,
+    "jcb": 0.7769887,
+    "mastercard": 0.779302,
+    "visa": 0.779301
    },
    "THB": {
-    "unionpay": 0.02966703,
-    "jcb": 0.02967139,
-    "mastercard": 0.029806,
-    "visa": 0.029806
+    "unionpay": 0.02957945,
+    "jcb": 0.0295838,
+    "mastercard": 0.029674,
+    "visa": 0.029674
    },
    "VND": {
-    "unionpay": 3.907e-05,
-    "jcb": 3.898e-05,
+    "unionpay": 3.905e-05,
+    "jcb": 3.894e-05,
     "mastercard": 3.9e-05,
     "visa": 3.9e-05
    },
    "ZAR": {
-    "unionpay": 0.06045792,
-    "jcb": 0.06022591,
-    "mastercard": 0.060622,
-    "visa": 0.060643
+    "unionpay": 0.05990134,
+    "jcb": 0.05965057,
+    "mastercard": 0.060337,
+    "visa": 0.060351
    }
   },
   "JPY": {
    "AUD": {
-    "unionpay": 110.00004238,
-    "jcb": 109.33378862,
-    "mastercard": 109.26395939,
-    "visa": 109.26380076
+    "unionpay": 109.57253668,
+    "jcb": 108.82585998,
+    "mastercard": 109.45622708,
+    "visa": 109.45606761
    },
    "CAD": {
-    "unionpay": 112.71157612,
-    "jcb": 112.12973894,
-    "mastercard": 111.89213198,
-    "visa": 111.87626904
+    "unionpay": 112.8431209,
+    "jcb": 112.08467877,
+    "mastercard": 112.11704672,
+    "visa": 112.11704672
    },
    "CHF": {
-    "unionpay": 193.00799364,
-    "jcb": 191.90864142,
-    "mastercard": 192.39467005,
-    "visa": 192.5813769
+    "unionpay": 192.57973862,
+    "jcb": 191.20527834,
+    "mastercard": 191.91739754,
+    "visa": 191.91723808
    },
    "CNY": {
-    "unionpay": 24.00038401,
-    "jcb": 24.00885449,
-    "mastercard": 23.7882297,
-    "visa": 23.7758566
+    "unionpay": 24.05118091,
+    "jcb": 24.0285438,
+    "mastercard": 23.90878648,
+    "visa": 23.91149737
    },
    "DKK": {
-    "unionpay": 23.84379864,
-    "jcb": 23.70769324,
-    "mastercard": 23.70574239,
-    "visa": 23.70574239
+    "unionpay": 23.80210223,
+    "jcb": 23.62949924,
+    "mastercard": 23.68713124,
+    "visa": 23.68713124
    },
    "EUR": {
-    "unionpay": 178.25211275,
-    "jcb": 177.22827861,
-    "mastercard": 177.22081218,
-    "visa": 177.22065355
+    "unionpay": 177.93473391,
+    "jcb": 176.64333104,
+    "mastercard": 177.06888853,
+    "visa": 177.06888853
    },
    "GBP": {
-    "unionpay": 213.30980709,
-    "jcb": 212.07894109,
-    "mastercard": 212.42052665,
-    "visa": 211.8653236
+    "unionpay": 212.92813554,
+    "jcb": 211.53037542,
+    "mastercard": 212.2307447,
+    "visa": 211.92776272
    },
    "HKD": {
-    "unionpay": 20.47870964,
-    "jcb": 20.36673912,
-    "mastercard": 20.22430203,
-    "visa": 20.22525381
+    "unionpay": 20.50444268,
+    "jcb": 20.38745479,
+    "mastercard": 20.33694786,
+    "visa": 20.33694786
    },
    "IDR": {
-    "unionpay": 0.00887042,
-    "jcb": 0.0088176,
-    "mastercard": 0.00872462,
-    "visa": 0.00872462
+    "unionpay": 0.00884123,
+    "jcb": 0.00878336,
+    "mastercard": 0.00877053,
+    "visa": 0.00877053
    },
    "KRW": {
-    "unionpay": 0.12021121,
-    "jcb": 0.11983677,
-    "mastercard": 0.11913071,
-    "visa": 0.11913071
+    "unionpay": 0.12069511,
+    "jcb": 0.12010669,
+    "mastercard": 0.12023601,
+    "visa": 0.12023601
    },
    "LAK": {
-    "unionpay": 0.00713804,
-    "jcb": 0.00709914,
-    "mastercard": 0.00713832,
-    "visa": 0.00713832
+    "unionpay": 0.00714597,
+    "jcb": 0.0071028,
+    "mastercard": 0.00717589,
+    "visa": 0.00717589
    },
    "MOP": {
-    "unionpay": 19.86776781,
-    "jcb": 19.75704922,
-    "mastercard": 19.63721447,
-    "visa": 19.6508566
+    "unionpay": 19.892682,
+    "jcb": 19.77495362,
+    "mastercard": 19.73815978,
+    "visa": 19.75506299
    },
    "MYR": {
-    "unionpay": 39.46396442,
-    "jcb": 39.02604603,
-    "mastercard": 39.11944797,
-    "visa": 39.13388325
+    "unionpay": 39.46511943,
+    "jcb": 39.16156594,
+    "mastercard": 39.18035401,
+    "visa": 39.18035401
    },
    "NOK": {
-    "unionpay": 16.80978073,
-    "jcb": 16.71608773,
-    "mastercard": 16.74333756,
-    "visa": 16.74508249
+    "unionpay": 16.82167563,
+    "jcb": 16.70904356,
+    "mastercard": 16.7844044,
+    "visa": 16.7844044
    },
    "NZD": {
-    "unionpay": 89.30152726,
-    "jcb": 88.86415663,
-    "mastercard": 89.10215736,
-    "visa": 89.10199873
+    "unionpay": 89.08711929,
+    "jcb": 88.63231327,
+    "mastercard": 88.98102376,
+    "visa": 88.86923936
    },
    "PHP": {
-    "unionpay": 2.53059689,
-    "jcb": 2.52708755,
-    "mastercard": 2.52220812,
-    "visa": 2.50682107
+    "unionpay": 2.51784029,
+    "jcb": 2.50880444,
+    "mastercard": 2.52288311,
+    "visa": 2.50119598
    },
    "RUB": {
-    "unionpay": 1.94724215,
-    "jcb": 1.9327452,
-    "mastercard": 1.92274746,
-    "visa": 1.92274746
+    "unionpay": 1.94656459,
+    "jcb": 1.93092391,
+    "mastercard": 1.93334396,
+    "visa": 1.93334396
    },
    "SEK": {
-    "unionpay": 16.11861891,
-    "jcb": 16.02716388,
-    "mastercard": 16.10961294,
-    "visa": 16.10961294
+    "unionpay": 16.05167467,
+    "jcb": 15.92851875,
+    "mastercard": 16.04959337,
+    "visa": 16.06362622
    },
    "SGD": {
-    "unionpay": 125.0824659,
-    "jcb": 124.3732892,
-    "mastercard": 123.89054569,
-    "visa": 123.89038706
+    "unionpay": 125.05518109,
+    "jcb": 124.22534226,
+    "mastercard": 124.27077021,
+    "visa": 124.27061075
    },
    "THB": {
-    "unionpay": 4.75114581,
-    "jcb": 4.74016764,
-    "mastercard": 4.72810914,
-    "visa": 4.72810914
+    "unionpay": 4.74364729,
+    "jcb": 4.72987325,
+    "mastercard": 4.73194068,
+    "visa": 4.73194068
    },
    "USD": {
-    "unionpay": 160.14901,
-    "jcb": 159.7555,
-    "mastercard": 158.62944162,
-    "visa": 158.62944162
+    "unionpay": 160.36967,
+    "jcb": 159.8805,
+    "mastercard": 159.46420029,
+    "visa": 159.46420029
    },
    "VND": {
-    "unionpay": 0.00625766,
-    "jcb": 0.00622719,
-    "mastercard": 0.00618655,
-    "visa": 0.00618655
+    "unionpay": 0.0062625,
+    "jcb": 0.006226,
+    "mastercard": 0.0062191,
+    "visa": 0.0062191
    },
    "ZAR": {
-    "unionpay": 9.68227645,
-    "jcb": 9.62141995,
-    "mastercard": 9.61643401,
-    "visa": 9.61976523
+    "unionpay": 9.60635836,
+    "jcb": 9.53696247,
+    "mastercard": 9.62159145,
+    "visa": 9.62382395
    }
   }
  },
  "banks_cn": {
   "icbc": {
    "GBP": {
-    "hui_buy": 8.7883,
-    "chao_buy": 8.7883,
-    "hui_sell": 8.8696,
-    "chao_sell": 8.8696,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 8.7842,
+    "chao_buy": 8.7842,
+    "hui_sell": 8.8654,
+    "chao_sell": 8.8654,
+    "time": "2026-11-13 14:57:59"
    },
    "HKD": {
-    "hui_buy": 0.8483,
-    "chao_buy": 0.8483,
-    "hui_sell": 0.8526,
-    "chao_sell": 0.8526,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 0.8481,
+    "chao_buy": 0.8481,
+    "hui_sell": 0.8524,
+    "chao_sell": 0.8524,
+    "time": "2026-11-13 14:57:59"
    },
    "USD": {
-    "hui_buy": 6.6536,
-    "chao_buy": 6.6536,
-    "hui_sell": 6.6883,
-    "chao_sell": 6.6883,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 6.6522,
+    "chao_buy": 6.6522,
+    "hui_sell": 6.6869,
+    "chao_sell": 6.6869,
+    "time": "2026-11-13 14:57:59"
    },
    "CHF": {
-    "hui_buy": 7.9542,
-    "chao_buy": 7.9542,
-    "hui_sell": 8.0278,
-    "chao_sell": 8.0278,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 7.9516,
+    "chao_buy": 7.9516,
+    "hui_sell": 8.0252,
+    "chao_sell": 8.0252,
+    "time": "2026-11-13 14:57:59"
    },
    "SGD": {
-    "hui_buy": 5.1589,
-    "chao_buy": 5.1589,
-    "hui_sell": 5.2066,
-    "chao_sell": 5.2066,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 5.158,
+    "chao_buy": 5.158,
+    "hui_sell": 5.2057,
+    "chao_sell": 5.2057,
+    "time": "2026-11-13 14:57:59"
    },
    "SEK": {
-    "hui_buy": 0.6622,
-    "chao_buy": 0.6622,
-    "hui_sell": 0.6683,
-    "chao_sell": 0.6683,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 0.6624,
+    "chao_buy": 0.6624,
+    "hui_sell": 0.6685,
+    "chao_sell": 0.6685,
+    "time": "2026-11-13 14:57:59"
    },
    "DKK": {
-    "hui_buy": 0.9821,
-    "chao_buy": 0.9821,
-    "hui_sell": 0.9911,
-    "chao_sell": 0.9911,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 0.9828,
+    "chao_buy": 0.9828,
+    "hui_sell": 0.9918,
+    "chao_sell": 0.9918,
+    "time": "2026-11-13 14:57:59"
    },
    "NOK": {
-    "hui_buy": 0.6932,
-    "chao_buy": 0.6932,
-    "hui_sell": 0.6996,
-    "chao_sell": 0.6996,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 0.6947,
+    "chao_buy": 0.6947,
+    "hui_sell": 0.7011,
+    "chao_sell": 0.7011,
+    "time": "2026-11-13 14:57:59"
    },
    "JPY": {
-    "hui_buy": 0.041578,
-    "chao_buy": 0.041578,
-    "hui_sell": 0.041963,
-    "chao_sell": 0.041963,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 0.041539,
+    "chao_buy": 0.041539,
+    "hui_sell": 0.041923,
+    "chao_sell": 0.041923,
+    "time": "2026-11-13 14:57:59"
    },
    "CAD": {
-    "hui_buy": 4.6564,
-    "chao_buy": 4.6564,
-    "hui_sell": 4.6995,
-    "chao_sell": 4.6995,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 4.6561,
+    "chao_buy": 4.6561,
+    "hui_sell": 4.6992,
+    "chao_sell": 4.6992,
+    "time": "2026-11-13 14:57:59"
    },
    "AUD": {
-    "hui_buy": 4.5208,
-    "chao_buy": 4.5208,
-    "hui_sell": 4.5626,
-    "chao_sell": 4.5626,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 4.5089,
+    "chao_buy": 4.5089,
+    "hui_sell": 4.5506,
+    "chao_sell": 4.5506,
+    "time": "2026-11-13 14:57:59"
    },
    "MYR": {
-    "hui_buy": 1.6278,
-    "chao_buy": 1.6278,
-    "hui_sell": 1.6429,
-    "chao_sell": 1.6429,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 1.6242,
+    "chao_buy": 1.6242,
+    "hui_sell": 1.6393,
+    "chao_sell": 1.6393,
+    "time": "2026-11-13 14:57:59"
    },
    "EUR": {
-    "hui_buy": 7.3412,
-    "chao_buy": 7.3412,
-    "hui_sell": 7.4091,
-    "chao_sell": 7.4091,
-    "time": "2026-11-13 00:53:59"
+    "hui_buy": 7.3462,
+    "chao_buy": 7.3462,
+    "hui_sell": 7.4141,
+    "chao_sell": 7.4141,
+    "time": "2026-11-13 14:57:59"
    },
    "RUB": {
-    "hui_buy": 0.0746,
-    "chao_buy": 0.0746,
-    "hui_sell": 0.0809,
-    "chao_sell": 0.0809,
-    "time": "2026-11-13 00:54:00"
+    "hui_buy": 0.075,
+    "chao_buy": 0.075,
+    "hui_sell": 0.0813,
+    "chao_sell": 0.0813,
+    "time": "2026-11-13 14:58:00"
    },
    "MOP": {
-    "hui_buy": 0.8228,
-    "chao_buy": 0.8228,
-    "hui_sell": 0.8283,
-    "chao_sell": 0.8283,
-    "time": "2026-11-13 00:54:00"
+    "hui_buy": 0.8226,
+    "chao_buy": 0.8226,
+    "hui_sell": 0.8281,
+    "chao_sell": 0.8281,
+    "time": "2026-11-13 14:58:00"
    },
    "THB": {
-    "hui_buy": 0.1959,
-    "chao_buy": 0.1959,
-    "hui_sell": 0.1977,
-    "chao_sell": 0.1977,
-    "time": "2026-11-13 00:54:00"
+    "hui_buy": 0.1962,
+    "chao_buy": 0.1962,
+    "hui_sell": 0.198,
+    "chao_sell": 0.198,
+    "time": "2026-11-13 14:58:00"
    },
    "NZD": {
-    "hui_buy": 3.6825,
-    "chao_buy": 3.6825,
-    "hui_sell": 3.7165,
-    "chao_sell": 3.7165,
-    "time": "2026-11-13 00:54:00"
+    "hui_buy": 3.6783,
+    "chao_buy": 3.6783,
+    "hui_sell": 3.7123,
+    "chao_sell": 3.7123,
+    "time": "2026-11-13 14:58:00"
    },
    "ZAR": {
     "hui_buy": 0.3948,
     "chao_buy": 0.3948,
     "hui_sell": 0.4002,
     "chao_sell": 0.4002,
-    "time": "2026-11-13 00:54:00"
+    "time": "2026-11-13 14:58:00"
    },
    "KRW": {
-    "hui_buy": 0.004945,
-    "chao_buy": 0.004945,
-    "hui_sell": 0.005043,
-    "chao_sell": 0.005043,
-    "time": "2026-11-13 00:54:00"
+    "hui_buy": 0.004944,
+    "chao_buy": 0.004944,
+    "hui_sell": 0.005042,
+    "chao_sell": 0.005042,
+    "time": "2026-11-13 14:58:00"
    }
   },
   "abc": {
    "GBP": {
-    "hui_buy": 8.80149,
-    "chao_buy": 8.80149,
-    "hui_sell": 8.86331,
-    "chao_sell": 8.86331,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 8.7978,
+    "chao_buy": 8.7978,
+    "hui_sell": 8.8596,
+    "chao_sell": 8.8596,
+    "time": "2026-11-13 14:58:16"
    },
    "HKD": {
-    "hui_buy": 0.84886,
-    "chao_buy": 0.84886,
-    "hui_sell": 0.85226,
-    "chao_sell": 0.85226,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.84862,
+    "chao_buy": 0.84862,
+    "hui_sell": 0.85202,
+    "chao_sell": 0.85202,
+    "time": "2026-11-13 14:58:16"
    },
    "USD": {
-    "hui_buy": 6.65891,
-    "chao_buy": 6.65891,
-    "hui_sell": 6.68693,
-    "chao_sell": 6.68693,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 6.65741,
+    "chao_buy": 6.65741,
+    "hui_sell": 6.68543,
+    "chao_sell": 6.68543,
+    "time": "2026-11-13 14:58:16"
    },
    "CHF": {
-    "hui_buy": 7.96113,
-    "chao_buy": 7.96113,
-    "hui_sell": 8.02507,
-    "chao_sell": 8.02507,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 7.95933,
+    "chao_buy": 7.95933,
+    "hui_sell": 8.02327,
+    "chao_sell": 8.02327,
+    "time": "2026-11-13 14:58:16"
    },
    "SGD": {
-    "hui_buy": 5.1668,
-    "chao_buy": 5.1668,
-    "hui_sell": 5.2031,
-    "chao_sell": 5.2031,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 5.16586,
+    "chao_buy": 5.16586,
+    "hui_sell": 5.20214,
+    "chao_sell": 5.20214,
+    "time": "2026-11-13 14:58:16"
    },
    "SEK": {
-    "hui_buy": 0.66279,
-    "chao_buy": 0.66279,
-    "hui_sell": 0.66811,
-    "chao_sell": 0.66811,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.66304,
+    "chao_buy": 0.66304,
+    "hui_sell": 0.66836,
+    "chao_sell": 0.66836,
+    "time": "2026-11-13 14:58:16"
    },
    "DKK": {
-    "hui_buy": 0.98295,
-    "chao_buy": 0.98295,
-    "hui_sell": 0.99085,
-    "chao_sell": 0.99085,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.9837,
+    "chao_buy": 0.9837,
+    "hui_sell": 0.9916,
+    "chao_sell": 0.9916,
+    "time": "2026-11-13 14:58:16"
    },
    "NOK": {
-    "hui_buy": 0.69396,
-    "chao_buy": 0.69396,
-    "hui_sell": 0.69954,
-    "chao_sell": 0.69954,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.69551,
+    "chao_buy": 0.69551,
+    "hui_sell": 0.70109,
+    "chao_sell": 0.70109,
+    "time": "2026-11-13 14:58:16"
    },
    "JPY": {
-    "hui_buy": 0.04163,
-    "chao_buy": 0.04163,
-    "hui_sell": 0.04192,
-    "chao_sell": 0.04192,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.0416,
+    "chao_buy": 0.0416,
+    "hui_sell": 0.04189,
+    "chao_sell": 0.04189,
+    "time": "2026-11-13 14:58:16"
    },
    "CAD": {
-    "hui_buy": 4.66108,
-    "chao_buy": 4.66108,
-    "hui_sell": 4.69852,
-    "chao_sell": 4.69852,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 4.66068,
+    "chao_buy": 4.66068,
+    "hui_sell": 4.69812,
+    "chao_sell": 4.69812,
+    "time": "2026-11-13 14:58:16"
    },
    "AUD": {
-    "hui_buy": 4.52725,
-    "chao_buy": 4.52725,
-    "hui_sell": 4.55905,
-    "chao_sell": 4.55905,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 4.51559,
+    "chao_buy": 4.51559,
+    "hui_sell": 4.54731,
+    "chao_sell": 4.54731,
+    "time": "2026-11-13 14:58:16"
    },
    "EUR": {
-    "hui_buy": 7.35203,
-    "chao_buy": 7.35203,
-    "hui_sell": 7.40367,
-    "chao_sell": 7.40367,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 7.35736,
+    "chao_buy": 7.35736,
+    "hui_sell": 7.40904,
+    "chao_sell": 7.40904,
+    "time": "2026-11-13 14:58:16"
    },
    "VND": {
     "hui_buy": 0.00028,
@@ -1189,18 +1189,18 @@
     "time": "2022-03-18 00:01:37"
    },
    "MOP": {
-    "hui_buy": 0.8235,
-    "chao_buy": 0.8235,
-    "hui_sell": 0.8268,
-    "chao_sell": 0.8268,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.8233,
+    "chao_buy": 0.8233,
+    "hui_sell": 0.8266,
+    "chao_sell": 0.8266,
+    "time": "2026-11-13 14:58:16"
    },
    "THB": {
-    "hui_buy": 0.19606,
-    "chao_buy": 0.19606,
-    "hui_sell": 0.19764,
-    "chao_sell": 0.19764,
-    "time": "2026-11-13 00:54:41"
+    "hui_buy": 0.19643,
+    "chao_buy": 0.19643,
+    "hui_sell": 0.198,
+    "chao_sell": 0.198,
+    "time": "2026-11-13 14:58:16"
    },
    "NZD": {
     "hui_buy": 4.3625,
@@ -1214,1177 +1214,1177 @@
     "chao_buy": 0.00482,
     "hui_sell": 0.00518,
     "chao_sell": 0.00518,
-    "time": "2026-11-13 00:54:41"
+    "time": "2026-11-13 14:58:16"
    }
   },
   "boc": {
    "AUD": {
-    "hui_buy": 4.5298,
-    "chao_buy": 4.5298,
-    "hui_sell": 4.5658,
-    "chao_sell": 4.5658,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 4.5165,
+    "chao_buy": 4.5165,
+    "hui_sell": 4.5524,
+    "chao_sell": 4.5524,
+    "time": "2026-11-13 14:55:15"
    },
    "CAD": {
-    "hui_buy": 4.6649,
-    "chao_buy": 4.6649,
-    "hui_sell": 4.7016,
-    "chao_sell": 4.7016,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 4.6635,
+    "chao_buy": 4.6635,
+    "hui_sell": 4.7001,
+    "chao_sell": 4.7001,
+    "time": "2026-11-13 14:55:15"
    },
    "CHF": {
-    "hui_buy": 7.963,
-    "chao_buy": 7.963,
-    "hui_sell": 8.0246,
-    "chao_sell": 8.0246,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 7.956,
+    "chao_buy": 7.956,
+    "hui_sell": 8.0174,
+    "chao_sell": 8.0174,
+    "time": "2026-11-13 14:55:15"
    },
    "DKK": {
-    "hui_buy": 0.9834,
-    "chao_buy": 0.9834,
-    "hui_sell": 0.9912,
-    "chao_sell": 0.9912,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.9836,
+    "chao_buy": 0.9836,
+    "hui_sell": 0.9916,
+    "chao_sell": 0.9916,
+    "time": "2026-11-13 14:55:15"
    },
    "EUR": {
-    "hui_buy": 7.3541,
-    "chao_buy": 7.3541,
-    "hui_sell": 7.4079,
-    "chao_sell": 7.4079,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 7.3555,
+    "chao_buy": 7.3555,
+    "hui_sell": 7.4093,
+    "chao_sell": 7.4093,
+    "time": "2026-11-13 14:55:15"
    },
    "GBP": {
-    "hui_buy": 8.8053,
-    "chao_buy": 8.8053,
-    "hui_sell": 8.8707,
-    "chao_sell": 8.8707,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 8.7985,
+    "chao_buy": 8.7985,
+    "hui_sell": 8.8638,
+    "chao_sell": 8.8638,
+    "time": "2026-11-13 14:55:15"
    },
    "HKD": {
-    "hui_buy": 0.849,
-    "chao_buy": 0.849,
-    "hui_sell": 0.8524,
-    "chao_sell": 0.8524,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.8488,
+    "chao_buy": 0.8488,
+    "hui_sell": 0.8522,
+    "chao_sell": 0.8522,
+    "time": "2026-11-13 14:55:15"
    },
    "IDR": {
-    "hui_buy": 0.000362,
-    "chao_buy": 0.000362,
-    "hui_sell": 0.00037,
-    "chao_sell": 0.00037,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.000363,
+    "chao_buy": 0.000363,
+    "hui_sell": 0.000371,
+    "chao_sell": 0.000371,
+    "time": "2026-11-13 14:55:15"
    },
    "JPY": {
-    "hui_buy": 0.041653,
-    "chao_buy": 0.041653,
-    "hui_sell": 0.041975,
-    "chao_sell": 0.041975,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.041591,
+    "chao_buy": 0.041591,
+    "hui_sell": 0.041913,
+    "chao_sell": 0.041913,
+    "time": "2026-11-13 14:55:15"
    },
    "KRW": {
-    "hui_buy": 0.004958,
-    "chao_buy": 0.004958,
-    "hui_sell": 0.005062,
-    "chao_sell": 0.005062,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.004956,
+    "chao_buy": 0.004956,
+    "hui_sell": 0.00506,
+    "chao_sell": 0.00506,
+    "time": "2026-11-13 14:55:15"
    },
    "MOP": {
-    "hui_buy": 0.8242,
-    "chao_buy": 0.8242,
-    "hui_sell": 0.828,
-    "chao_sell": 0.828,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.824,
+    "chao_buy": 0.824,
+    "hui_sell": 0.8278,
+    "chao_sell": 0.8278,
+    "time": "2026-11-13 14:55:15"
    },
    "MYR": {
-    "hui_buy": 1.6303,
+    "hui_buy": 1.6268,
     "chao_buy": null,
-    "hui_sell": 1.645,
+    "hui_sell": 1.6415,
     "chao_sell": null,
-    "time": "2026-11-13 00:51:49"
+    "time": "2026-11-13 14:55:15"
    },
    "NOK": {
-    "hui_buy": 0.6941,
-    "chao_buy": 0.6941,
-    "hui_sell": 0.6997,
-    "chao_sell": 0.6997,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.6953,
+    "chao_buy": 0.6953,
+    "hui_sell": 0.7009,
+    "chao_sell": 0.7009,
+    "time": "2026-11-13 14:55:15"
    },
    "NZD": {
-    "hui_buy": 3.6883,
-    "chao_buy": 3.6883,
-    "hui_sell": 3.716,
-    "chao_sell": 3.716,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 3.6836,
+    "chao_buy": 3.6836,
+    "hui_sell": 3.7113,
+    "chao_sell": 3.7113,
+    "time": "2026-11-13 14:55:15"
    },
    "PHP": {
     "hui_buy": 0.1036,
     "chao_buy": 0.1036,
     "hui_sell": 0.1056,
     "chao_sell": 0.1056,
-    "time": "2026-11-13 00:51:49"
+    "time": "2026-11-13 14:55:15"
    },
    "RUB": {
-    "hui_buy": 0.0766,
-    "chao_buy": 0.0766,
-    "hui_sell": 0.0805,
-    "chao_sell": 0.0805,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.0768,
+    "chao_buy": 0.0768,
+    "hui_sell": 0.0808,
+    "chao_sell": 0.0808,
+    "time": "2026-11-13 14:55:15"
    },
    "SEK": {
-    "hui_buy": 0.6631,
-    "chao_buy": 0.6631,
-    "hui_sell": 0.6685,
-    "chao_sell": 0.6685,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.663,
+    "chao_buy": 0.663,
+    "hui_sell": 0.6684,
+    "chao_sell": 0.6684,
+    "time": "2026-11-13 14:55:15"
    },
    "SGD": {
-    "hui_buy": 5.1673,
-    "chao_buy": 5.1673,
-    "hui_sell": 5.2061,
-    "chao_sell": 5.2061,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 5.1656,
+    "chao_buy": 5.1656,
+    "hui_sell": 5.2044,
+    "chao_sell": 5.2044,
+    "time": "2026-11-13 14:55:15"
    },
    "THB": {
-    "hui_buy": 0.1963,
-    "chao_buy": 0.1963,
-    "hui_sell": 0.1979,
-    "chao_sell": 0.1979,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.1965,
+    "chao_buy": 0.1965,
+    "hui_sell": 0.1981,
+    "chao_sell": 0.1981,
+    "time": "2026-11-13 14:55:15"
    },
    "TWD": {
     "hui_buy": null,
-    "chao_buy": 0.1939,
+    "chao_buy": 0.1945,
     "hui_sell": null,
-    "chao_sell": 0.2125,
-    "time": "2026-11-13 00:51:49"
+    "chao_sell": 0.2131,
+    "time": "2026-11-13 14:55:15"
    },
    "USD": {
-    "hui_buy": 6.6616,
-    "chao_buy": 6.6616,
-    "hui_sell": 6.6897,
-    "chao_sell": 6.6897,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 6.6605,
+    "chao_buy": 6.6605,
+    "hui_sell": 6.6885,
+    "chao_sell": 6.6885,
+    "time": "2026-11-13 14:55:15"
    },
    "VND": {
     "hui_buy": null,
     "chao_buy": 0.000247,
     "hui_sell": null,
     "chao_sell": 0.000273,
-    "time": "2026-11-13 00:51:49"
+    "time": "2026-11-13 14:55:15"
    },
    "ZAR": {
-    "hui_buy": 0.3957,
-    "chao_buy": 0.3957,
-    "hui_sell": 0.4002,
-    "chao_sell": 0.4002,
-    "time": "2026-11-13 00:51:49"
+    "hui_buy": 0.3956,
+    "chao_buy": 0.3956,
+    "hui_sell": 0.4001,
+    "chao_sell": 0.4001,
+    "time": "2026-11-13 14:55:15"
    }
   },
   "ccb": {
    "USD": {
-    "hui_buy": 6.6556,
-    "chao_buy": 6.6556,
-    "hui_sell": 6.6903,
-    "chao_sell": 6.6903,
-    "time": "2026-11-13 00:51:46"
+    "hui_buy": 6.6549,
+    "chao_buy": 6.6549,
+    "hui_sell": 6.6896,
+    "chao_sell": 6.6896,
+    "time": "2026-11-13 14:54:04"
    },
    "EUR": {
-    "hui_buy": 7.3557,
-    "chao_buy": 7.3557,
-    "hui_sell": 7.4051,
-    "chao_sell": 7.4051,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 7.3578,
+    "chao_buy": 7.3578,
+    "hui_sell": 7.4072,
+    "chao_sell": 7.4072,
+    "time": "2026-11-13 14:54:04"
    },
    "JPY": {
-    "hui_buy": 0.041641,
-    "chao_buy": 0.041641,
-    "hui_sell": 0.041958,
-    "chao_sell": 0.041958,
-    "time": "2026-11-13 00:54:03"
+    "hui_buy": 0.041602,
+    "chao_buy": 0.041602,
+    "hui_sell": 0.041919,
+    "chao_sell": 0.041919,
+    "time": "2026-11-13 14:54:05"
    },
    "GBP": {
-    "hui_buy": 8.8046,
-    "chao_buy": 8.8046,
-    "hui_sell": 8.8664,
-    "chao_sell": 8.8664,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 8.7977,
+    "chao_buy": 8.7977,
+    "hui_sell": 8.8595,
+    "chao_sell": 8.8595,
+    "time": "2026-11-13 14:54:04"
    },
    "AUD": {
-    "hui_buy": 4.5294,
-    "chao_buy": 4.5294,
-    "hui_sell": 4.5612,
-    "chao_sell": 4.5612,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 4.5152,
+    "chao_buy": 4.5152,
+    "hui_sell": 4.547,
+    "chao_sell": 4.547,
+    "time": "2026-11-13 14:54:04"
    },
    "CHF": {
-    "hui_buy": 7.9641,
-    "chao_buy": 7.9641,
-    "hui_sell": 8.0241,
-    "chao_sell": 8.0241,
-    "time": "2026-11-13 00:54:02"
+    "hui_buy": 7.9575,
+    "chao_buy": 7.9575,
+    "hui_sell": 8.0173,
+    "chao_sell": 8.0173,
+    "time": "2026-11-13 14:54:04"
    },
    "CAD": {
-    "hui_buy": 4.6637,
-    "chao_buy": 4.6637,
-    "hui_sell": 4.6988,
-    "chao_sell": 4.6988,
-    "time": "2026-11-13 00:54:03"
+    "hui_buy": 4.6629,
+    "chao_buy": 4.6629,
+    "hui_sell": 4.698,
+    "chao_sell": 4.698,
+    "time": "2026-11-13 14:54:05"
    },
    "HKD": {
-    "hui_buy": 0.849,
-    "chao_buy": 0.849,
-    "hui_sell": 0.8524,
-    "chao_sell": 0.8524,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 0.8489,
+    "chao_buy": 0.8489,
+    "hui_sell": 0.8523,
+    "chao_sell": 0.8523,
+    "time": "2026-11-13 14:54:05"
    },
    "SGD": {
-    "hui_buy": 5.1672,
-    "chao_buy": 5.1672,
-    "hui_sell": 5.2034,
-    "chao_sell": 5.2034,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 5.1663,
+    "chao_buy": 5.1663,
+    "hui_sell": 5.2025,
+    "chao_sell": 5.2025,
+    "time": "2026-11-13 14:54:05"
    },
    "KRW": {
-    "hui_buy": 0.00498,
-    "chao_buy": 0.00498,
-    "hui_sell": 0.005033,
-    "chao_sell": 0.005033,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 0.004978,
+    "chao_buy": 0.004978,
+    "hui_sell": 0.00503,
+    "chao_sell": 0.00503,
+    "time": "2026-11-13 14:54:04"
    },
    "DKK": {
-    "hui_buy": 0.9836,
-    "chao_buy": 0.9836,
-    "hui_sell": 0.991,
-    "chao_sell": 0.991,
-    "time": "2026-11-13 00:54:04"
+    "hui_buy": 0.9839,
+    "chao_buy": 0.9839,
+    "hui_sell": 0.9913,
+    "chao_sell": 0.9913,
+    "time": "2026-11-13 14:54:05"
    },
    "SEK": {
-    "hui_buy": 0.6633,
-    "chao_buy": 0.6633,
-    "hui_sell": 0.6683,
-    "chao_sell": 0.6683,
-    "time": "2026-11-13 00:54:01"
+    "hui_buy": 0.6632,
+    "chao_buy": 0.6632,
+    "hui_sell": 0.6682,
+    "chao_sell": 0.6682,
+    "time": "2026-11-13 14:54:04"
    },
    "NOK": {
-    "hui_buy": 0.6947,
-    "chao_buy": 0.6947,
-    "hui_sell": 0.6999,
-    "chao_sell": 0.6999,
-    "time": "2026-11-13 00:54:01"
+    "hui_buy": 0.6958,
+    "chao_buy": 0.6958,
+    "hui_sell": 0.701,
+    "chao_sell": 0.701,
+    "time": "2026-11-13 14:54:04"
    },
    "NZD": {
-    "hui_buy": 3.6887,
-    "chao_buy": 3.6887,
-    "hui_sell": 3.7165,
-    "chao_sell": 3.7165,
-    "time": "2026-11-13 00:54:02"
+    "hui_buy": 3.6831,
+    "chao_buy": 3.6831,
+    "hui_sell": 3.7108,
+    "chao_sell": 3.7108,
+    "time": "2026-11-13 14:54:04"
    },
    "MOP": {
-    "hui_buy": 0.8238,
-    "chao_buy": 0.8238,
-    "hui_sell": 0.8272,
-    "chao_sell": 0.8272,
-    "time": "2026-11-13 00:53:19"
+    "hui_buy": 0.8236,
+    "chao_buy": 0.8236,
+    "hui_sell": 0.827,
+    "chao_sell": 0.827,
+    "time": "2026-11-13 14:54:04"
    },
    "MYR": {
-    "hui_buy": 1.629,
-    "chao_buy": 1.629,
-    "hui_sell": 1.6437,
-    "chao_sell": 1.6437,
-    "time": "2026-11-13 00:51:46"
+    "hui_buy": 1.6256,
+    "chao_buy": 1.6256,
+    "hui_sell": 1.6403,
+    "chao_sell": 1.6403,
+    "time": "2026-11-13 14:54:04"
    },
    "THB": {
-    "hui_buy": 0.1961,
-    "chao_buy": 0.1961,
-    "hui_sell": 0.1974,
-    "chao_sell": 0.1974,
-    "time": "2026-11-13 00:53:58"
+    "hui_buy": 0.1962,
+    "chao_buy": 0.1962,
+    "hui_sell": 0.1975,
+    "chao_sell": 0.1975,
+    "time": "2026-11-13 14:54:04"
    },
    "ZAR": {
-    "hui_buy": 0.3958,
-    "chao_buy": 0.3958,
-    "hui_sell": 0.3998,
-    "chao_sell": 0.3998,
-    "time": "2026-11-13 00:54:01"
+    "hui_buy": 0.3957,
+    "chao_buy": 0.3957,
+    "hui_sell": 0.3997,
+    "chao_sell": 0.3997,
+    "time": "2026-11-13 14:54:04"
    },
    "RUB": {
-    "hui_buy": 0.079,
-    "chao_buy": 0.079,
-    "hui_sell": 0.0822,
-    "chao_sell": 0.0822,
-    "time": "2026-11-13 00:51:46"
+    "hui_buy": 0.0793,
+    "chao_buy": 0.0793,
+    "hui_sell": 0.0826,
+    "chao_sell": 0.0826,
+    "time": "2026-11-13 14:54:04"
    }
   },
   "bocom": {
    "HKD": {
-    "hui_buy": 0.8484,
-    "chao_buy": 0.8484,
-    "hui_sell": 0.8523,
-    "chao_sell": 0.8523,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 0.8488,
+    "chao_buy": 0.8488,
+    "hui_sell": 0.8527,
+    "chao_sell": 0.8527,
+    "time": "2026-11-13 14:50"
    },
    "MOP": {
-    "hui_buy": 0.8238,
-    "chao_buy": 0.8238,
-    "hui_sell": 0.827,
-    "chao_sell": 0.827,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 0.8241,
+    "chao_buy": 0.8241,
+    "hui_sell": 0.8273,
+    "chao_sell": 0.8273,
+    "time": "2026-11-13 14:50"
    },
    "USD": {
-    "hui_buy": 6.6587,
-    "chao_buy": 6.6587,
-    "hui_sell": 6.6873,
-    "chao_sell": 6.6873,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 6.6613,
+    "chao_buy": 6.6613,
+    "hui_sell": 6.6899,
+    "chao_sell": 6.6899,
+    "time": "2026-11-13 14:50"
    },
    "EUR": {
-    "hui_buy": 7.3625,
-    "chao_buy": 7.3625,
-    "hui_sell": 7.4185,
-    "chao_sell": 7.4185,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 7.3529,
+    "chao_buy": 7.3529,
+    "hui_sell": 7.4089,
+    "chao_sell": 7.4089,
+    "time": "2026-11-13 14:50"
    },
    "TWD": {
     "hui_buy": null,
-    "chao_buy": 0.1942,
+    "chao_buy": 0.1949,
     "hui_sell": null,
-    "chao_sell": 0.2102,
-    "time": "2026-11-12 22:55"
+    "chao_sell": 0.2111,
+    "time": "2026-11-13 14:50"
    },
    "SGD": {
-    "hui_buy": 5.1672,
-    "chao_buy": 5.1672,
-    "hui_sell": 5.2065,
-    "chao_sell": 5.2065,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 5.1651,
+    "chao_buy": 5.1651,
+    "hui_sell": 5.2044,
+    "chao_sell": 5.2044,
+    "time": "2026-11-13 14:50"
    },
    "JPY": {
-    "hui_buy": 0.041582,
-    "chao_buy": 0.041582,
-    "hui_sell": 0.041898,
-    "chao_sell": 0.041898,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 0.041597,
+    "chao_buy": 0.041597,
+    "hui_sell": 0.041914,
+    "chao_sell": 0.041914,
+    "time": "2026-11-13 14:50"
    },
    "THB": {
-    "hui_buy": 0.1965,
-    "chao_buy": 0.1965,
-    "hui_sell": 0.1979,
-    "chao_sell": 0.1979,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 0.1964,
+    "chao_buy": 0.1964,
+    "hui_sell": 0.1978,
+    "chao_sell": 0.1978,
+    "time": "2026-11-13 14:50"
    },
    "PHP": {
     "hui_buy": null,
-    "chao_buy": 0.1043,
+    "chao_buy": 0.1042,
     "hui_sell": null,
-    "chao_sell": 0.1051,
-    "time": "2026-11-12 22:55"
+    "chao_sell": 0.105,
+    "time": "2026-11-13 14:50"
    },
    "KRW": {
     "hui_buy": null,
-    "chao_buy": 0.004981,
-    "hui_sell": 0.005037,
-    "chao_sell": 0.005037,
-    "time": "2026-11-12 22:55"
+    "chao_buy": 0.004978,
+    "hui_sell": 0.005032,
+    "chao_sell": 0.005032,
+    "time": "2026-11-13 14:50"
    },
    "GBP": {
-    "hui_buy": 8.8083,
-    "chao_buy": 8.8083,
-    "hui_sell": 8.8754,
-    "chao_sell": 8.8754,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 8.7943,
+    "chao_buy": 8.7943,
+    "hui_sell": 8.8612,
+    "chao_sell": 8.8612,
+    "time": "2026-11-13 14:50"
    },
    "CAD": {
-    "hui_buy": 4.6582,
-    "chao_buy": 4.6582,
-    "hui_sell": 4.6984,
-    "chao_sell": 4.6984,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 4.6595,
+    "chao_buy": 4.6595,
+    "hui_sell": 4.6997,
+    "chao_sell": 4.6997,
+    "time": "2026-11-13 14:50"
    },
    "AUD": {
-    "hui_buy": 4.5326,
-    "chao_buy": 4.5326,
-    "hui_sell": 4.5671,
-    "chao_sell": 4.5671,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 4.5134,
+    "chao_buy": 4.5134,
+    "hui_sell": 4.5477,
+    "chao_sell": 4.5477,
+    "time": "2026-11-13 14:50"
    },
    "CHF": {
-    "hui_buy": 7.9658,
-    "chao_buy": 7.9658,
-    "hui_sell": 8.0344,
-    "chao_sell": 8.0344,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 7.9535,
+    "chao_buy": 7.9535,
+    "hui_sell": 8.0221,
+    "chao_sell": 8.0221,
+    "time": "2026-11-13 14:50"
    },
    "SEK": {
-    "hui_buy": 0.6649,
+    "hui_buy": 0.6624,
     "chao_buy": null,
-    "hui_sell": 0.6701,
+    "hui_sell": 0.6676,
     "chao_sell": null,
-    "time": "2026-11-12 22:55"
+    "time": "2026-11-13 14:50"
    },
    "DKK": {
-    "hui_buy": 0.9844,
+    "hui_buy": 0.9832,
     "chao_buy": null,
-    "hui_sell": 0.9922,
+    "hui_sell": 0.991,
     "chao_sell": null,
-    "time": "2026-11-12 22:55"
+    "time": "2026-11-13 14:50"
    },
    "NOK": {
-    "hui_buy": 0.6952,
+    "hui_buy": 0.695,
     "chao_buy": null,
-    "hui_sell": 0.7006,
+    "hui_sell": 0.7004,
     "chao_sell": null,
-    "time": "2026-11-12 22:55"
+    "time": "2026-11-13 14:50"
    },
    "NZD": {
-    "hui_buy": 3.688,
-    "chao_buy": 3.688,
-    "hui_sell": 3.7176,
-    "chao_sell": 3.7176,
-    "time": "2026-11-12 22:55"
+    "hui_buy": 3.6795,
+    "chao_buy": 3.6795,
+    "hui_sell": 3.7089,
+    "chao_sell": 3.7089,
+    "time": "2026-11-13 14:50"
    },
    "MYR": {
     "hui_buy": null,
-    "chao_buy": 1.6293,
+    "chao_buy": 1.6275,
     "hui_sell": null,
-    "chao_sell": 1.6423,
-    "time": "2026-11-12 22:55"
+    "chao_sell": 1.6405,
+    "time": "2026-11-13 14:50"
    },
    "IDR": {
-    "hui_buy": 0.000364,
+    "hui_buy": 0.000365,
     "chao_buy": null,
-    "hui_sell": 0.000367,
+    "hui_sell": 0.000368,
     "chao_sell": null,
-    "time": "2026-11-12 22:55"
+    "time": "2026-11-13 14:50"
    },
    "ZAR": {
-    "hui_buy": 0.3974,
+    "hui_buy": 0.3959,
     "chao_buy": null,
-    "hui_sell": 0.4004,
+    "hui_sell": 0.3989,
     "chao_sell": null,
-    "time": "2026-11-12 22:55"
+    "time": "2026-11-13 14:50"
    }
   },
   "cib": {
    "EUR": {
-    "hui_buy": 7.3612,
-    "hui_sell": 7.4203,
-    "chao_buy": 7.1286,
-    "chao_sell": 7.4166,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 7.358,
+    "hui_sell": 7.417,
+    "chao_buy": 7.1254,
+    "chao_sell": 7.4133,
+    "time": "2026-11-13 14:57:32"
    },
    "TWD": {
-    "hui_buy": 0.1982,
-    "hui_sell": 0.2103,
-    "chao_buy": 0.1982,
-    "chao_sell": 0.2103,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 0.1988,
+    "hui_sell": 0.211,
+    "chao_buy": 0.1988,
+    "chao_sell": 0.211,
+    "time": "2026-11-13 14:57:32"
+   },
+   "GBP": {
+    "hui_buy": 8.8007,
+    "hui_sell": 8.8713,
+    "chao_buy": 8.5225,
+    "chao_sell": 8.8669,
+    "time": "2026-11-13 14:57:32"
    },
    "HKD": {
-    "hui_buy": 0.8489,
-    "hui_sell": 0.8521,
-    "chao_buy": 0.8418,
-    "chao_sell": 0.852,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 0.8492,
+    "hui_sell": 0.8524,
+    "chao_buy": 0.842,
+    "chao_sell": 0.8522,
+    "time": "2026-11-13 14:57:32"
+   },
+   "CHF": {
+    "hui_buy": 7.9642,
+    "hui_sell": 8.0282,
+    "chao_buy": 7.7125,
+    "chao_sell": 8.0242,
+    "time": "2026-11-13 14:57:32"
    },
    "JPY": {
     "hui_buy": 0.0416,
     "hui_sell": 0.0419,
     "chao_buy": 0.0403,
     "chao_sell": 0.0419,
-    "time": "2026-11-12 22:59:02"
+    "time": "2026-11-13 14:57:32"
    },
    "CAD": {
-    "hui_buy": 4.66,
-    "hui_sell": 4.6974,
-    "chao_buy": 4.5127,
-    "chao_sell": 4.6951,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 4.6639,
+    "hui_sell": 4.7014,
+    "chao_buy": 4.5165,
+    "chao_sell": 4.699,
+    "time": "2026-11-13 14:57:32"
    },
    "KRW": {
     "hui_buy": 0.005,
     "hui_sell": 0.005,
     "chao_buy": 0.0048,
     "chao_sell": 0.005,
-    "time": "2026-11-12 22:59:02"
+    "time": "2026-11-13 14:57:32"
    },
    "AUD": {
-    "hui_buy": 4.5311,
-    "hui_sell": 4.5675,
-    "chao_buy": 4.3879,
-    "chao_sell": 4.5652,
-    "time": "2026-11-12 22:59:02"
-   },
-   "THB": {
-    "hui_buy": 0.1963,
-    "hui_sell": 0.1979,
-    "chao_buy": 0.1902,
-    "chao_sell": 0.1979,
-    "time": "2026-11-12 22:59:02"
-   },
-   "SGD": {
-    "hui_buy": 5.167,
-    "hui_sell": 5.2084,
-    "chao_buy": 5.0036,
-    "chao_sell": 5.2058,
-    "time": "2026-11-12 22:59:02"
-   },
-   "SEK": {
-    "hui_buy": 0.665,
-    "hui_sell": 0.6703,
-    "chao_buy": 0.6439,
-    "chao_sell": 0.67,
-    "time": "2026-11-12 22:59:02"
-   },
-   "NZD": {
-    "hui_buy": 3.6889,
-    "hui_sell": 3.7186,
-    "chao_buy": 3.5723,
-    "chao_sell": 3.7167,
-    "time": "2026-11-12 22:59:02"
-   },
-   "GBP": {
-    "hui_buy": 8.805,
-    "hui_sell": 8.8757,
-    "chao_buy": 8.5266,
-    "chao_sell": 8.8712,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 4.5163,
+    "hui_sell": 4.5526,
+    "chao_buy": 4.3736,
+    "chao_sell": 4.5503,
+    "time": "2026-11-13 14:57:32"
    },
    "USD": {
-    "hui_buy": 6.6594,
-    "hui_sell": 6.6848,
-    "chao_buy": 6.6034,
-    "chao_sell": 6.6834,
-    "time": "2026-11-12 22:59:02"
+    "hui_buy": 6.6612,
+    "hui_sell": 6.6866,
+    "chao_buy": 6.6052,
+    "chao_sell": 6.6852,
+    "time": "2026-11-13 14:57:32"
    },
-   "CHF": {
-    "hui_buy": 7.9688,
-    "hui_sell": 8.0328,
-    "chao_buy": 7.7169,
-    "chao_sell": 8.0288,
-    "time": "2026-11-12 22:59:02"
+   "THB": {
+    "hui_buy": 0.1964,
+    "hui_sell": 0.198,
+    "chao_buy": 0.1903,
+    "chao_sell": 0.198,
+    "time": "2026-11-13 14:57:32"
+   },
+   "SGD": {
+    "hui_buy": 5.1664,
+    "hui_sell": 5.2078,
+    "chao_buy": 5.003,
+    "chao_sell": 5.2052,
+    "time": "2026-11-13 14:57:32"
+   },
+   "SEK": {
+    "hui_buy": 0.6635,
+    "hui_sell": 0.6688,
+    "chao_buy": 0.6425,
+    "chao_sell": 0.6685,
+    "time": "2026-11-13 14:57:32"
+   },
+   "NZD": {
+    "hui_buy": 3.6847,
+    "hui_sell": 3.7142,
+    "chao_buy": 3.5682,
+    "chao_sell": 3.7124,
+    "time": "2026-11-13 14:57:32"
    }
   },
   "citic": {
    "HKD": {
-    "hui_buy": 0.84867,
+    "hui_buy": 0.8489,
     "chao_buy": null,
-    "hui_sell": 0.8526,
+    "hui_sell": 0.85235,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "MOP": {
-    "hui_buy": 0.8223,
+    "hui_buy": 0.8225,
     "chao_buy": null,
-    "hui_sell": 0.8286,
+    "hui_sell": 0.8281,
     "chao_sell": null,
-    "time": "2026-11-13 00:44"
+    "time": "2026-11-13 14:56"
    },
    "USD": {
-    "hui_buy": 6.6595,
+    "hui_buy": 6.6612,
     "chao_buy": null,
-    "hui_sell": 6.6926,
+    "hui_sell": 6.6901,
     "chao_sell": null,
-    "time": "2026-11-13 00:17"
+    "time": "2026-11-13 14:56"
    },
    "EUR": {
-    "hui_buy": 7.3509,
+    "hui_buy": 7.3601,
     "chao_buy": null,
-    "hui_sell": 7.4047,
+    "hui_sell": 7.4098,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "SGD": {
-    "hui_buy": 5.1671,
+    "hui_buy": 5.169,
     "chao_buy": null,
-    "hui_sell": 5.2027,
+    "hui_sell": 5.2017,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "JPY": {
-    "hui_buy": 0.041566,
+    "hui_buy": 0.041545,
     "chao_buy": null,
-    "hui_sell": 0.042018,
+    "hui_sell": 0.04197,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "THB": {
-    "hui_buy": 0.1948,
+    "hui_buy": 0.1953,
     "chao_buy": null,
-    "hui_sell": 0.1988,
+    "hui_sell": 0.1992,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "KRW": {
-    "hui_buy": 0.004959,
+    "hui_buy": 0.004957,
     "chao_buy": null,
-    "hui_sell": 0.005045,
+    "hui_sell": 0.005039,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "GBP": {
-    "hui_buy": 8.7984,
+    "hui_buy": 8.7973,
     "chao_buy": null,
-    "hui_sell": 8.8709,
+    "hui_sell": 8.8642,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "CAD": {
-    "hui_buy": 4.6587,
+    "hui_buy": 4.6599,
     "chao_buy": null,
-    "hui_sell": 4.7031,
+    "hui_sell": 4.7013,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "AUD": {
-    "hui_buy": 4.5237,
+    "hui_buy": 4.5133,
     "chao_buy": null,
-    "hui_sell": 4.5658,
+    "hui_sell": 4.5533,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "CHF": {
-    "hui_buy": 7.9624,
+    "hui_buy": 7.9645,
     "chao_buy": null,
-    "hui_sell": 8.0208,
+    "hui_sell": 8.0204,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "SEK": {
-    "hui_buy": 0.6624,
+    "hui_buy": 0.6628,
     "chao_buy": null,
     "hui_sell": 0.6687,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "DKK": {
-    "hui_buy": 0.9828,
+    "hui_buy": 0.984,
     "chao_buy": null,
-    "hui_sell": 0.9908,
+    "hui_sell": 0.9914,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "NOK": {
-    "hui_buy": 0.6933,
+    "hui_buy": 0.6953,
     "chao_buy": null,
-    "hui_sell": 0.7002,
+    "hui_sell": 0.7018,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "NZD": {
-    "hui_buy": 3.6806,
+    "hui_buy": 3.679,
     "chao_buy": null,
-    "hui_sell": 3.7204,
+    "hui_sell": 3.7156,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    },
    "IDR": {
-    "hui_buy": 0.000361,
+    "hui_buy": 0.000362,
     "chao_buy": null,
     "hui_sell": 0.00037,
     "chao_sell": null,
-    "time": "2026-11-13 00:17"
+    "time": "2026-11-13 14:56"
    },
    "ZAR": {
-    "hui_buy": 0.3956,
+    "hui_buy": 0.3959,
     "chao_buy": null,
     "hui_sell": 0.3994,
     "chao_sell": null,
-    "time": "2026-11-13 00:46"
+    "time": "2026-11-13 14:56"
    }
   },
   "cgb": {
    "HKD": {
-    "hui_buy": 0.8491,
-    "chao_buy": 0.8491,
-    "hui_sell": 0.8521,
-    "chao_sell": 0.8521,
-    "time": "11-13"
+    "hui_buy": 0.849,
+    "chao_buy": 0.849,
+    "hui_sell": 0.852,
+    "chao_sell": 0.852,
+    "time": "2026-11-13 14:56"
    },
    "MOP": {
     "hui_buy": 0.8243,
     "chao_buy": 0.8243,
-    "hui_sell": 0.8273,
-    "chao_sell": 0.8273,
-    "time": "11-13"
+    "hui_sell": 0.8272,
+    "chao_sell": 0.8272,
+    "time": "2026-11-13 14:56"
    },
    "USD": {
-    "hui_buy": 6.6611,
-    "chao_buy": 6.6611,
-    "hui_sell": 6.6851,
-    "chao_sell": 6.6851,
-    "time": "11-13"
+    "hui_buy": 6.6602,
+    "chao_buy": 6.6602,
+    "hui_sell": 6.6842,
+    "chao_sell": 6.6842,
+    "time": "2026-11-13 14:56"
    },
    "EUR": {
-    "hui_buy": 7.3541,
-    "chao_buy": 7.3541,
-    "hui_sell": 7.4014,
-    "chao_sell": 7.4014,
-    "time": "11-13"
+    "hui_buy": 7.3592,
+    "chao_buy": 7.3592,
+    "hui_sell": 7.4064,
+    "chao_sell": 7.4064,
+    "time": "2026-11-13 14:56"
    },
    "SGD": {
-    "hui_buy": 5.1692,
-    "chao_buy": 5.1692,
-    "hui_sell": 5.2024,
-    "chao_sell": 5.2024,
-    "time": "11-13"
+    "hui_buy": 5.1685,
+    "chao_buy": 5.1685,
+    "hui_sell": 5.2017,
+    "chao_sell": 5.2017,
+    "time": "2026-11-13 14:56"
    },
    "JPY": {
-    "hui_buy": 0.04168,
-    "chao_buy": 0.04168,
-    "hui_sell": 0.041947,
-    "chao_sell": 0.041947,
-    "time": "11-13"
+    "hui_buy": 0.04162,
+    "chao_buy": 0.04162,
+    "hui_sell": 0.041887,
+    "chao_sell": 0.041887,
+    "time": "2026-11-13 14:56"
    },
    "GBP": {
-    "hui_buy": 8.8062,
-    "chao_buy": 8.8062,
-    "hui_sell": 8.8628,
-    "chao_sell": 8.8628,
-    "time": "11-13"
+    "hui_buy": 8.8005,
+    "chao_buy": 8.8005,
+    "hui_sell": 8.857,
+    "chao_sell": 8.857,
+    "time": "2026-11-13 14:56"
    },
    "CAD": {
-    "hui_buy": 4.6649,
-    "chao_buy": 4.6649,
+    "hui_buy": 4.665,
+    "chao_buy": 4.665,
     "hui_sell": 4.6949,
     "chao_sell": 4.6949,
-    "time": "11-13"
+    "time": "2026-11-13 14:56"
    },
    "AUD": {
-    "hui_buy": 4.5285,
-    "chao_buy": 4.5285,
-    "hui_sell": 4.5576,
-    "chao_sell": 4.5576,
-    "time": "11-13"
+    "hui_buy": 4.5173,
+    "chao_buy": 4.5173,
+    "hui_sell": 4.5463,
+    "chao_sell": 4.5463,
+    "time": "2026-11-13 14:56"
    },
    "CHF": {
-    "hui_buy": 7.968,
-    "chao_buy": 7.968,
-    "hui_sell": 8.0192,
-    "chao_sell": 8.0192,
-    "time": "11-13"
+    "hui_buy": 7.9651,
+    "chao_buy": 7.9651,
+    "hui_sell": 8.0163,
+    "chao_sell": 8.0163,
+    "time": "2026-11-13 14:56"
    },
    "SEK": {
-    "hui_buy": 0.6635,
-    "chao_buy": 0.6635,
-    "hui_sell": 0.6677,
-    "chao_sell": 0.6677,
-    "time": "11-13"
+    "hui_buy": 0.6636,
+    "chao_buy": 0.6636,
+    "hui_sell": 0.6678,
+    "chao_sell": 0.6678,
+    "time": "2026-11-13 14:56"
    },
    "DKK": {
-    "hui_buy": 0.9838,
-    "chao_buy": 0.9838,
-    "hui_sell": 0.9901,
-    "chao_sell": 0.9901,
-    "time": "11-13"
+    "hui_buy": 0.9845,
+    "chao_buy": 0.9845,
+    "hui_sell": 0.9908,
+    "chao_sell": 0.9908,
+    "time": "2026-11-13 14:56"
    },
    "NOK": {
-    "hui_buy": 0.6943,
-    "chao_buy": 0.6943,
-    "hui_sell": 0.6988,
-    "chao_sell": 0.6988,
-    "time": "11-13"
+    "hui_buy": 0.6959,
+    "chao_buy": 0.6959,
+    "hui_sell": 0.7003,
+    "chao_sell": 0.7003,
+    "time": "2026-11-13 14:56"
    },
    "NZD": {
-    "hui_buy": 3.689,
-    "chao_buy": 3.689,
-    "hui_sell": 3.7127,
-    "chao_sell": 3.7127,
-    "time": "11-13"
+    "hui_buy": 3.6859,
+    "chao_buy": 3.6859,
+    "hui_sell": 3.7096,
+    "chao_sell": 3.7096,
+    "time": "2026-11-13 14:56"
    }
   },
   "pab": {
    "HKD": {
-    "hui_buy": 0.848603,
-    "chao_buy": 0.841826,
-    "hui_sell": 0.852701,
-    "chao_sell": 0.852701,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 0.848802,
+    "chao_buy": 0.842023,
+    "hui_sell": 0.85237,
+    "chao_sell": 0.85237,
+    "time": "2026-11-13 14:55"
    },
    "USD": {
-    "hui_buy": 6.658356,
-    "chao_buy": 6.605181,
-    "hui_sell": 6.690184,
-    "chao_sell": 6.690184,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 6.659773,
+    "chao_buy": 6.606586,
+    "hui_sell": 6.687529,
+    "chao_sell": 6.687529,
+    "time": "2026-11-13 14:55"
    },
    "EUR": {
-    "hui_buy": 7.352245,
-    "chao_buy": 7.109105,
-    "hui_sell": 7.402897,
-    "chao_sell": 7.402897,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 7.358454,
+    "chao_buy": 7.115108,
+    "hui_sell": 7.404612,
+    "chao_sell": 7.404612,
+    "time": "2026-11-13 14:55"
    },
    "TWD": {
-    "hui_buy": 0.2017,
-    "chao_buy": 0.1951,
-    "hui_sell": 0.2034,
-    "chao_sell": 0.2034,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 0.2022,
+    "chao_buy": 0.1955,
+    "hui_sell": 0.2037,
+    "chao_sell": 0.2037,
+    "time": "2026-11-13 14:55"
    },
    "SGD": {
-    "hui_buy": 5.165934,
-    "chao_buy": 4.995096,
-    "hui_sell": 5.201809,
-    "chao_sell": 5.201809,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 5.166532,
+    "chao_buy": 4.995674,
+    "hui_sell": 5.201481,
+    "chao_sell": 5.201481,
+    "time": "2026-11-13 14:55"
    },
    "JPY": {
-    "hui_buy": 0.041556,
-    "chao_buy": 0.040182,
-    "hui_sell": 0.041842,
-    "chao_sell": 0.041842,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 0.041617,
+    "chao_buy": 0.040241,
+    "hui_sell": 0.041879,
+    "chao_sell": 0.041879,
+    "time": "2026-11-13 14:55"
    },
    "THB": {
-    "hui_buy": 0.196097,
-    "chao_buy": 0.189612,
-    "hui_sell": 0.197491,
-    "chao_sell": 0.197491,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 0.196486,
+    "chao_buy": 0.189988,
+    "hui_sell": 0.197938,
+    "chao_sell": 0.197938,
+    "time": "2026-11-13 14:55"
    },
    "KRW": {
     "hui_buy": 0.004875,
     "chao_buy": 0.004713,
-    "hui_sell": 0.005059,
-    "chao_sell": 0.005059,
-    "time": "2026-11-13 00:43"
+    "hui_sell": 0.005057,
+    "chao_sell": 0.005057,
+    "time": "2026-11-13 14:55"
    },
    "GBP": {
-    "hui_buy": 8.802825,
-    "chao_buy": 8.511714,
-    "hui_sell": 8.863335,
-    "chao_sell": 8.863335,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 8.801997,
+    "chao_buy": 8.510914,
+    "hui_sell": 8.85716,
+    "chao_sell": 8.85716,
+    "time": "2026-11-13 14:55"
    },
    "CAD": {
-    "hui_buy": 4.663103,
-    "chao_buy": 4.508894,
-    "hui_sell": 4.695209,
-    "chao_sell": 4.695209,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 4.664756,
+    "chao_buy": 4.510492,
+    "hui_sell": 4.694049,
+    "chao_sell": 4.694049,
+    "time": "2026-11-13 14:55"
    },
    "AUD": {
-    "hui_buy": 4.527614,
-    "chao_buy": 4.377885,
-    "hui_sell": 4.558332,
-    "chao_sell": 4.558332,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 4.517953,
+    "chao_buy": 4.368544,
+    "hui_sell": 4.546489,
+    "chao_sell": 4.546489,
+    "time": "2026-11-13 14:55"
    },
    "CHF": {
-    "hui_buy": 7.964372,
-    "chao_buy": 7.700989,
-    "hui_sell": 8.019549,
-    "chao_sell": 8.019549,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 7.961358,
+    "chao_buy": 7.698075,
+    "hui_sell": 8.010572,
+    "chao_sell": 8.010572,
+    "time": "2026-11-13 14:55"
    },
    "NZD": {
-    "hui_buy": 3.685033,
-    "chao_buy": 3.563168,
-    "hui_sell": 3.712974,
-    "chao_sell": 3.712974,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 3.683941,
+    "chao_buy": 3.562113,
+    "hui_sell": 3.708802,
+    "chao_sell": 3.708802,
+    "time": "2026-11-13 14:55"
    },
    "RUB": {
-    "hui_buy": 0.0803,
-    "chao_buy": 0.0776,
-    "hui_sell": 0.0811,
-    "chao_sell": 0.0811,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 0.0805,
+    "chao_buy": 0.0778,
+    "hui_sell": 0.0814,
+    "chao_sell": 0.0814,
+    "time": "2026-11-13 14:55"
    },
    "MYR": {
-    "hui_buy": 1.6298,
-    "chao_buy": 1.5759,
-    "hui_sell": 1.6427,
-    "chao_sell": 1.6427,
-    "time": "2026-11-13 00:43"
+    "hui_buy": 1.627,
+    "chao_buy": 1.5732,
+    "hui_sell": 1.6389,
+    "chao_sell": 1.6389,
+    "time": "2026-11-13 14:55"
    }
   },
   "nbcb": {
    "HKD": {
-    "hui_buy": 0.84849,
-    "chao_buy": 0.84849,
-    "hui_sell": 0.85274,
-    "chao_sell": 0.85274,
+    "hui_buy": 0.84864,
+    "chao_buy": 0.84864,
+    "hui_sell": 0.8523,
+    "chao_sell": 0.8523,
     "time": "11-13"
    },
    "USD": {
-    "hui_buy": 6.6594,
-    "chao_buy": 6.6594,
-    "hui_sell": 6.6951,
-    "chao_sell": 6.6951,
+    "hui_buy": 6.6607,
+    "chao_buy": 6.6607,
+    "hui_sell": 6.6913,
+    "chao_sell": 6.6913,
     "time": "11-13"
    },
    "EUR": {
-    "hui_buy": 7.3469,
-    "chao_buy": 7.3469,
-    "hui_sell": 7.4116,
-    "chao_sell": 7.4116,
+    "hui_buy": 7.3545,
+    "chao_buy": 7.3545,
+    "hui_sell": 7.4136,
+    "chao_sell": 7.4136,
     "time": "11-13"
    },
    "SGD": {
-    "hui_buy": 5.1626,
-    "chao_buy": 5.1626,
-    "hui_sell": 5.2058,
-    "chao_sell": 5.2058,
+    "hui_buy": 5.1648,
+    "chao_buy": 5.1648,
+    "hui_sell": 5.2039,
+    "chao_sell": 5.2039,
     "time": "11-13"
    },
    "JPY": {
-    "hui_buy": 0.041453,
-    "chao_buy": 0.041453,
-    "hui_sell": 0.041955,
-    "chao_sell": 0.041955,
+    "hui_buy": 0.041514,
+    "chao_buy": 0.041514,
+    "hui_sell": 0.041983,
+    "chao_sell": 0.041983,
     "time": "11-13"
    },
    "THB": {
-    "hui_buy": 0.196157,
-    "chao_buy": 0.196157,
-    "hui_sell": 0.197467,
-    "chao_sell": 0.197467,
+    "hui_buy": 0.196823,
+    "chao_buy": 0.196823,
+    "hui_sell": 0.197722,
+    "chao_sell": 0.197722,
     "time": "11-13"
    },
    "GBP": {
-    "hui_buy": 8.7948,
-    "chao_buy": 8.7948,
-    "hui_sell": 8.8702,
-    "chao_sell": 8.8702,
+    "hui_buy": 8.7971,
+    "chao_buy": 8.7971,
+    "hui_sell": 8.8658,
+    "chao_sell": 8.8658,
     "time": "11-13"
    },
    "CAD": {
-    "hui_buy": 4.6579,
-    "chao_buy": 4.6579,
-    "hui_sell": 4.7009,
-    "chao_sell": 4.7009,
+    "hui_buy": 4.6605,
+    "chao_buy": 4.6605,
+    "hui_sell": 4.6998,
+    "chao_sell": 4.6998,
     "time": "11-13"
    },
    "AUD": {
-    "hui_buy": 4.5231,
-    "chao_buy": 4.5231,
-    "hui_sell": 4.5644,
-    "chao_sell": 4.5644,
+    "hui_buy": 4.5145,
+    "chao_buy": 4.5145,
+    "hui_sell": 4.5521,
+    "chao_sell": 4.5521,
     "time": "11-13"
    },
    "CHF": {
-    "hui_buy": 7.9621,
-    "chao_buy": 7.9621,
-    "hui_sell": 8.0213,
-    "chao_sell": 8.0213,
+    "hui_buy": 7.9639,
+    "chao_buy": 7.9639,
+    "hui_sell": 8.017,
+    "chao_sell": 8.017,
     "time": "11-13"
    },
    "NZD": {
-    "hui_buy": 3.6802,
-    "chao_buy": 3.6802,
-    "hui_sell": 3.7208,
-    "chao_sell": 3.7208,
+    "hui_buy": 3.6791,
+    "chao_buy": 3.6791,
+    "hui_sell": 3.7167,
+    "chao_sell": 3.7167,
     "time": "11-13"
    },
    "IDR": {
-    "hui_buy": 0.000361,
-    "chao_buy": 0.000361,
-    "hui_sell": 0.000369,
-    "chao_sell": 0.000369,
+    "hui_buy": 0.000363,
+    "chao_buy": 0.000363,
+    "hui_sell": 0.000368,
+    "chao_sell": 0.000368,
     "time": "11-13"
    }
   },
   "shengjing": {
    "USD": {
-    "hui_buy": 6.6555,
-    "chao_buy": 6.601,
-    "hui_sell": 6.68,
-    "chao_sell": 6.68,
-    "time": "2026-11-12 16:28:57"
+    "hui_buy": 6.6574,
+    "chao_buy": 6.6029,
+    "hui_sell": 6.6819,
+    "chao_sell": 6.6819,
+    "time": "2026-11-13 14:57:58"
    },
    "HKD": {
-    "hui_buy": 0.84843,
-    "chao_buy": 0.84133,
-    "hui_sell": 0.85133,
-    "chao_sell": 0.85133,
-    "time": "2026-11-12 16:28:57"
+    "hui_buy": 0.84868,
+    "chao_buy": 0.84158,
+    "hui_sell": 0.85158,
+    "chao_sell": 0.85158,
+    "time": "2026-11-13 14:57:54"
    },
    "JPY": {
-    "hui_buy": 0.041744,
-    "chao_buy": 0.04172,
-    "hui_sell": 0.041747,
-    "chao_sell": 0.041747,
-    "time": "2026-11-12 16:28:58"
+    "hui_buy": 0.041745,
+    "chao_buy": 0.041721,
+    "hui_sell": 0.041748,
+    "chao_sell": 0.041748,
+    "time": "2026-11-13 14:57:58"
    },
    "EUR": {
-    "hui_buy": 7.3591,
-    "chao_buy": 7.0836,
-    "hui_sell": 7.4136,
-    "chao_sell": 7.4136,
-    "time": "2026-11-12 16:28:58"
+    "hui_buy": 7.3484,
+    "chao_buy": 7.0729,
+    "hui_sell": 7.4029,
+    "chao_sell": 7.4029,
+    "time": "2026-11-13 14:57:58"
    },
    "GBP": {
-    "hui_buy": 8.8068,
+    "hui_buy": 8.7878,
     "chao_buy": null,
-    "hui_sell": 8.8799,
-    "chao_sell": 8.8799,
-    "time": "2026-11-12 16:28:58"
+    "hui_sell": 8.8609,
+    "chao_sell": 8.8609,
+    "time": "2026-11-13 14:57:58"
    },
    "CAD": {
-    "hui_buy": 4.6517,
+    "hui_buy": 4.6538,
     "chao_buy": null,
-    "hui_sell": 4.6937,
-    "chao_sell": 4.6937,
-    "time": "2026-11-12 16:28:58"
+    "hui_sell": 4.6958,
+    "chao_sell": 4.6958,
+    "time": "2026-11-13 14:57:58"
    },
    "AUD": {
-    "hui_buy": 4.528,
+    "hui_buy": 4.5116,
     "chao_buy": null,
-    "hui_sell": 4.568,
-    "chao_sell": 4.568,
-    "time": "2026-11-12 16:28:58"
+    "hui_sell": 4.5516,
+    "chao_sell": 4.5516,
+    "time": "2026-11-13 14:57:58"
    },
    "SGD": {
-    "hui_buy": 5.1675,
+    "hui_buy": 5.1623,
     "chao_buy": null,
-    "hui_sell": 5.2137,
-    "chao_sell": 5.2137,
-    "time": "2026-11-12 16:28:57"
+    "hui_sell": 5.2085,
+    "chao_sell": 5.2085,
+    "time": "2026-11-13 14:57:58"
    },
    "CHF": {
-    "hui_buy": 7.9956,
+    "hui_buy": 7.9721,
     "chao_buy": null,
-    "hui_sell": 8.0352,
-    "chao_sell": 8.0352,
-    "time": "2026-11-12 16:28:58"
+    "hui_sell": 8.0117,
+    "chao_sell": 8.0117,
+    "time": "2026-11-13 14:57:58"
    }
   },
   "cbhb": {
    "HKD": {
-    "hui_buy": 0.8485,
-    "chao_buy": 0.8417,
-    "hui_sell": 0.8519,
-    "chao_sell": 0.8519,
-    "time": "11-13"
+    "hui_buy": 0.8488,
+    "chao_buy": 0.842,
+    "hui_sell": 0.8522,
+    "chao_sell": 0.8522,
+    "time": "2026-11-13 14:47"
    },
    "USD": {
-    "hui_buy": 6.6562,
-    "chao_buy": 6.6029,
-    "hui_sell": 6.6829,
-    "chao_sell": 6.6829,
-    "time": "11-13"
+    "hui_buy": 6.6584,
+    "chao_buy": 6.605,
+    "hui_sell": 6.6851,
+    "chao_sell": 6.6851,
+    "time": "2026-11-13 14:56"
    },
    "EUR": {
-    "hui_buy": 7.3703,
-    "chao_buy": 7.1335,
-    "hui_sell": 7.4295,
-    "chao_sell": 7.4295,
-    "time": "11-13"
+    "hui_buy": 7.3488,
+    "chao_buy": 7.1127,
+    "hui_sell": 7.4078,
+    "chao_sell": 7.4078,
+    "time": "2026-11-13 14:56"
    },
    "SGD": {
-    "hui_buy": 5.1702,
-    "chao_buy": 5.004,
-    "hui_sell": 5.2117,
-    "chao_sell": 5.2117,
-    "time": "11-13"
+    "hui_buy": 5.1624,
+    "chao_buy": 4.9966,
+    "hui_sell": 5.2039,
+    "chao_sell": 5.2039,
+    "time": "2026-11-13 14:56"
    },
    "JPY": {
-    "hui_buy": 0.041597,
-    "chao_buy": 0.040261,
-    "hui_sell": 0.041931,
-    "chao_sell": 0.041931,
-    "time": "11-13"
+    "hui_buy": 0.041575,
+    "chao_buy": 0.040239,
+    "hui_sell": 0.041908,
+    "chao_sell": 0.041908,
+    "time": "2026-11-13 14:56"
    },
    "GBP": {
-    "hui_buy": 8.8187,
-    "chao_buy": 8.5354,
-    "hui_sell": 8.8896,
-    "chao_sell": 8.8896,
-    "time": "11-13"
+    "hui_buy": 8.7898,
+    "chao_buy": 8.5074,
+    "hui_sell": 8.8604,
+    "chao_sell": 8.8604,
+    "time": "2026-11-13 14:56"
    },
    "CAD": {
-    "hui_buy": 4.6613,
-    "chao_buy": 4.5116,
-    "hui_sell": 4.6988,
-    "chao_sell": 4.6988,
-    "time": "11-13"
+    "hui_buy": 4.6594,
+    "chao_buy": 4.5097,
+    "hui_sell": 4.6969,
+    "chao_sell": 4.6969,
+    "time": "2026-11-13 14:56"
    },
    "AUD": {
-    "hui_buy": 4.5348,
-    "chao_buy": 4.3891,
-    "hui_sell": 4.5712,
-    "chao_sell": 4.5712,
-    "time": "11-13"
+    "hui_buy": 4.5107,
+    "chao_buy": 4.3657,
+    "hui_sell": 4.5469,
+    "chao_sell": 4.5469,
+    "time": "2026-11-13 14:56"
    },
    "CHF": {
-    "hui_buy": 7.9842,
-    "chao_buy": 7.7277,
-    "hui_sell": 8.0484,
-    "chao_sell": 8.0484,
-    "time": "11-13"
+    "hui_buy": 7.9529,
+    "chao_buy": 7.6974,
+    "hui_sell": 8.0168,
+    "chao_sell": 8.0168,
+    "time": "2026-11-13 14:56"
    }
   },
   "cmb": {
    "HKD": {
-    "hui_buy": 0.84905,
-    "chao_buy": 0.84905,
-    "hui_sell": 0.85245,
-    "chao_sell": 0.85245,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 0.8489,
+    "chao_buy": 0.8489,
+    "hui_sell": 0.8523,
+    "chao_sell": 0.8523,
+    "time": "2026-11-13 14:56"
    },
    "USD": {
-    "hui_buy": 6.6615,
-    "chao_buy": 6.6615,
-    "hui_sell": 6.69053,
-    "chao_sell": 6.69053,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 6.66026,
+    "chao_buy": 6.66026,
+    "hui_sell": 6.68928,
+    "chao_sell": 6.68928,
+    "time": "2026-11-13 14:56"
    },
    "EUR": {
-    "hui_buy": 7.34976,
-    "chao_buy": 7.34976,
-    "hui_sell": 7.4088,
-    "chao_sell": 7.4088,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 7.35436,
+    "chao_buy": 7.35436,
+    "hui_sell": 7.41344,
+    "chao_sell": 7.41344,
+    "time": "2026-11-13 14:56"
    },
    "SGD": {
-    "hui_buy": 5.16525,
-    "chao_buy": 5.16525,
-    "hui_sell": 5.20673,
-    "chao_sell": 5.20673,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 5.16428,
+    "chao_buy": 5.16428,
+    "hui_sell": 5.20576,
+    "chao_sell": 5.20576,
+    "time": "2026-11-13 14:56"
    },
    "JPY": {
-    "hui_buy": 0.041657,
-    "chao_buy": 0.041657,
-    "hui_sell": 0.041991,
-    "chao_sell": 0.041991,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 0.041589,
+    "chao_buy": 0.041589,
+    "hui_sell": 0.041923,
+    "chao_sell": 0.041923,
+    "time": "2026-11-13 14:56"
    },
    "GBP": {
-    "hui_buy": 8.80084,
-    "chao_buy": 8.80084,
-    "hui_sell": 8.87152,
-    "chao_sell": 8.87152,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 8.7952,
+    "chao_buy": 8.7952,
+    "hui_sell": 8.86584,
+    "chao_sell": 8.86584,
+    "time": "2026-11-13 14:56"
    },
    "CAD": {
-    "hui_buy": 4.66173,
-    "chao_buy": 4.66173,
-    "hui_sell": 4.69917,
-    "chao_sell": 4.69917,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 4.66151,
+    "chao_buy": 4.66151,
+    "hui_sell": 4.69895,
+    "chao_sell": 4.69895,
+    "time": "2026-11-13 14:56"
    },
    "AUD": {
-    "hui_buy": 4.52539,
-    "chao_buy": 4.52539,
-    "hui_sell": 4.56173,
-    "chao_sell": 4.56173,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 4.51457,
+    "chao_buy": 4.51457,
+    "hui_sell": 4.55083,
+    "chao_sell": 4.55083,
+    "time": "2026-11-13 14:56"
    },
    "CHF": {
-    "hui_buy": 7.96353,
-    "chao_buy": 7.96353,
-    "hui_sell": 8.02749,
-    "chao_sell": 8.02749,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 7.96108,
+    "chao_buy": 7.96108,
+    "hui_sell": 8.02502,
+    "chao_sell": 8.02502,
+    "time": "2026-11-13 14:56"
    },
    "NZD": {
-    "hui_buy": 3.68651,
-    "chao_buy": 3.68651,
-    "hui_sell": 3.71613,
-    "chao_sell": 3.71613,
-    "time": "2026-11-13 00:46"
+    "hui_buy": 3.6825,
+    "chao_buy": 3.6825,
+    "hui_sell": 3.71208,
+    "chao_sell": 3.71208,
+    "time": "2026-11-13 14:56"
    }
   }
  },
@@ -2577,99 +2577,99 @@
     "tt_sell": 1.18281,
     "note_buy": 1.164,
     "note_sell": 1.193,
-    "time": "2026-11-13 00:52:58"
+    "time": "2026-11-13 14:57:58"
    },
    "USD": {
     "tt_buy": 7.8205,
     "tt_sell": 7.8707,
     "note_buy": 7.81,
     "note_sell": 7.89,
-    "time": "2026-11-13 00:52:58"
+    "time": "2026-11-13 14:57:58"
    },
    "GBP": {
-    "tt_buy": 10.31207,
-    "tt_sell": 10.46069,
-    "note_buy": 10.29,
-    "note_sell": 10.54,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 10.30974,
+    "tt_sell": 10.45832,
+    "note_buy": 10.25,
+    "note_sell": 10.5,
+    "time": "2026-11-13 14:57:58"
    },
    "JPY": {
-    "tt_buy": 0.04881,
-    "tt_sell": 0.04947,
-    "note_buy": 0.04857,
-    "note_sell": 0.04997,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 0.04876,
+    "tt_sell": 0.04943,
+    "note_buy": 0.04848,
+    "note_sell": 0.04988,
+    "time": "2026-11-13 14:57:58"
    },
    "AUD": {
-    "tt_buy": 5.30924,
-    "tt_sell": 5.38469,
-    "note_buy": 5.3,
-    "note_sell": 5.44,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 5.29676,
+    "tt_sell": 5.37207,
+    "note_buy": 5.27,
+    "note_sell": 5.41,
+    "time": "2026-11-13 14:57:58"
    },
    "NZD": {
-    "tt_buy": 4.31684,
-    "tt_sell": 4.38891,
-    "note_buy": 4.32,
-    "note_sell": 4.44,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 4.31372,
+    "tt_sell": 4.38576,
+    "note_buy": 4.3,
+    "note_sell": 4.42,
+    "time": "2026-11-13 14:57:58"
    },
    "CAD": {
-    "tt_buy": 5.46315,
-    "tt_sell": 5.54618,
-    "note_buy": 5.44,
-    "note_sell": 5.59,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 5.4643,
+    "tt_sell": 5.54735,
+    "note_buy": 5.43,
+    "note_sell": 5.58,
+    "time": "2026-11-13 14:57:58"
    },
    "EUR": {
-    "tt_buy": 8.61565,
-    "tt_sell": 8.73682,
-    "note_buy": 8.63,
-    "note_sell": 8.78,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 8.62344,
+    "tt_sell": 8.74471,
+    "note_buy": 8.6,
+    "note_sell": 8.75,
+    "time": "2026-11-13 14:57:58"
    },
    "CHF": {
-    "tt_buy": 9.34337,
-    "tt_sell": 9.45986,
-    "note_buy": 9.36,
-    "note_sell": 9.49,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 9.34226,
+    "tt_sell": 9.45872,
+    "note_buy": 9.31,
+    "note_sell": 9.44,
+    "time": "2026-11-13 14:57:58"
    },
    "SGD": {
-    "tt_buy": 6.07608,
-    "tt_sell": 6.12214,
-    "note_buy": 6.03,
-    "note_sell": 6.17,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 6.07655,
+    "tt_sell": 6.12262,
+    "note_buy": 6.02,
+    "note_sell": 6.16,
+    "time": "2026-11-13 14:57:58"
    },
    "THB": {
-    "tt_buy": 0.22795,
-    "tt_sell": 0.23634,
-    "note_buy": 0.223,
-    "note_sell": 0.244,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 0.22835,
+    "tt_sell": 0.23676,
+    "note_buy": 0.222,
+    "note_sell": 0.243,
+    "time": "2026-11-13 14:57:58"
    },
    "ZAR": {
-    "tt_buy": 0.45932,
-    "tt_sell": 0.4759,
-    "note_buy": 0.451,
-    "note_sell": 0.502,
-    "time": "2026-11-13 00:52:58"
+    "tt_buy": 0.45943,
+    "tt_sell": 0.47601,
+    "note_buy": 0.447,
+    "note_sell": 0.498,
+    "time": "2026-11-13 14:57:58"
    },
    "IDR": {
     "note_buy": 0.00036,
     "note_sell": 0.00051,
-    "time": "2026-11-13 00:52:58"
+    "time": "2026-11-13 14:57:58"
    },
    "MOP": {
     "note_buy": 0.94,
     "note_sell": 1.0,
-    "time": "2026-11-13 00:52:58"
+    "time": "2026-11-13 14:57:58"
    },
    "TWD": {
-    "note_buy": 0.227,
-    "note_sell": 0.255,
-    "time": "2026-11-13 00:52:58"
+    "note_buy": 0.226,
+    "note_sell": 0.254,
+    "time": "2026-11-13 14:57:58"
    }
   },
   "icbcasia": {
@@ -2783,120 +2783,120 @@
   },
   "cmbwlb": {
    "AUD": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 5.327,
-    "tt_sell": 5.36,
-    "note_buy": 5.327,
-    "note_sell": 5.407
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 5.312,
+    "tt_sell": 5.345,
+    "note_buy": 5.303,
+    "note_sell": 5.383
    },
    "CNY": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "tt_buy": 1.17,
     "tt_sell": 1.181,
-    "note_buy": 1.169,
-    "note_sell": 1.182
+    "note_buy": 1.168,
+    "note_sell": 1.181
    },
    "CAD": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "tt_buy": 5.488,
     "tt_sell": 5.518,
-    "note_buy": 5.473,
-    "note_sell": 5.553
+    "note_buy": 5.475,
+    "note_sell": 5.555
    },
    "DKK": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "tt_buy": 1.154,
     "tt_sell": 1.174,
-    "note_buy": 1.114,
-    "note_sell": 1.184
+    "note_buy": 1.112,
+    "note_sell": 1.182
    },
    "EUR": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 8.647,
-    "tt_sell": 8.704,
-    "note_buy": 8.66,
-    "note_sell": 8.74
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 8.654,
+    "tt_sell": 8.711,
+    "note_buy": 8.65,
+    "note_sell": 8.73
    },
    "JPY": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 0.04894,
-    "tt_sell": 0.04932,
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 0.0489,
+    "tt_sell": 0.04928,
     "note_buy": 0.0487,
     "note_sell": 0.0496
    },
    "NZD": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 4.333,
-    "tt_sell": 4.37,
-    "note_buy": 4.323,
-    "note_sell": 4.423
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 4.329,
+    "tt_sell": 4.366,
+    "note_buy": 4.312,
+    "note_sell": 4.412
    },
    "GBP": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 10.353,
-    "tt_sell": 10.42,
-    "note_buy": 10.35,
-    "note_sell": 10.5
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 10.349,
+    "tt_sell": 10.416,
+    "note_buy": 10.33,
+    "note_sell": 10.48
    },
    "SGD": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 6.078,
-    "tt_sell": 6.116,
-    "note_buy": 6.077,
-    "note_sell": 6.137
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 6.076,
+    "tt_sell": 6.114,
+    "note_buy": 6.067,
+    "note_sell": 6.127
    },
    "SEK": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 0.7754,
-    "tt_sell": 0.7954,
-    "note_buy": 0.737,
-    "note_sell": 0.807
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 0.7759,
+    "tt_sell": 0.7959,
+    "note_buy": 0.734,
+    "note_sell": 0.804
    },
    "CHF": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 9.37,
-    "tt_sell": 9.427,
-    "note_buy": 9.363,
-    "note_sell": 9.453
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 9.371,
+    "tt_sell": 9.428,
+    "note_buy": 9.352,
+    "note_sell": 9.442
    },
    "THB": {
-    "time": "2026-11-13 00:58:39",
-    "tt_buy": 0.2295,
-    "tt_sell": 0.2355,
+    "time": "2026-11-13 15:02:20",
+    "tt_buy": 0.23,
+    "tt_sell": 0.236,
     "note_buy": 0.225,
     "note_sell": 0.245
    },
    "USD": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "tt_buy": 7.83,
     "tt_sell": 7.86,
     "note_buy": 7.817,
     "note_sell": 7.872
    },
    "IDR": {
-    "time": "2026-11-13 00:58:39",
-    "note_buy": 0.00026,
-    "note_sell": 0.00056
+    "time": "2026-11-13 15:02:20",
+    "note_buy": 0.000261,
+    "note_sell": 0.000561
    },
    "NOK": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "note_buy": 0.772,
     "note_sell": 0.842
    },
    "PHP": {
-    "time": "2026-11-13 00:58:39",
+    "time": "2026-11-13 15:02:20",
     "note_buy": 0.11,
     "note_sell": 0.133
    },
    "ZAR": {
-    "time": "2026-11-13 00:58:39",
-    "note_buy": 0.372,
-    "note_sell": 0.522
+    "time": "2026-11-13 15:02:20",
+    "note_buy": 0.368,
+    "note_sell": 0.518
    },
    "TWD": {
-    "time": "2026-11-13 00:58:39",
-    "note_buy": 0.225,
-    "note_sell": 0.25
+    "time": "2026-11-13 15:02:20",
+    "note_buy": 0.226,
+    "note_sell": 0.251
    }
   }
  }
