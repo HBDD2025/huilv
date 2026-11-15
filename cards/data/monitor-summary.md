@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-11-14T03:21:31+00:00
+2026-11-15T02:44:51+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -10,9 +10,9 @@
 - IHG · 2026 改版及老客户过渡公告: unchanged
 - Chase · CSP 当前权益: unchanged
 - Chase · 2026 CSP 改版与生效规则: unchanged
-- Chase · World of Hyatt 完整条款: changed
+- Chase · World of Hyatt 完整条款: unchanged
 - Chase · Ritz 积分及报销条款: unchanged
-- Chase · Ritz 休息室及保障条款: changed
+- Chase · Ritz 休息室及保障条款: unchanged
 - Capital One · Savor 官方权益: unchanged
 - Capital One · Venture X 当前产品页: unchanged
 - Capital One · Venture X 权益指南: unchanged
