@@ -1,12 +1,12 @@
 # 官方来源巡检
 
-2026-11-16T02:47:57+00:00
+2026-11-17T05:06:21+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
 - Amex · Aspire 官方权益: failed
 - Hilton · 参加报销的度假村名单: unchanged
-- Chase · IHG Premier 当前产品条款: unchanged
+- Chase · IHG Premier 当前产品条款: changed
 - IHG · 2026 改版及老客户过渡公告: unchanged
 - Chase · CSP 当前权益: unchanged
 - Chase · 2026 CSP 改版与生效规则: unchanged
@@ -14,7 +14,7 @@
 - Chase · Ritz 积分及报销条款: unchanged
 - Chase · Ritz 休息室及保障条款: unchanged
 - Capital One · Savor 官方权益: unchanged
-- Capital One · Venture X 当前产品页: unchanged
+- Capital One · Venture X 当前产品页: changed
 - Capital One · Venture X 权益指南: unchanged
 - Capital One · 休息室当前准入规则: unchanged
 - Citi · Strata Premier 完整权益: unchanged
@@ -36,11 +36,11 @@
 - 信银国际 · Motion 万事达卡: unchanged
 - 信银国际 · 扣账卡（卡种待确认）: unchanged
 - 中银香港 · 扣账卡（卡种待确认）: unchanged
-- 恒生 · 扣账卡（卡种待确认）: unchanged
+- 恒生 · 扣账卡（卡种待确认）: changed
 - 东亚 · 扣账卡（卡种待确认）: unchanged
 - 东亚 · 银联双币钻石卡: unchanged
 - 东亚 · 显卓理财 World Mastercard: unchanged
-- 渣打 · Priority 理财扣账卡（卡种待确认）: unchanged
+- 渣打 · Priority 理财扣账卡（卡种待确认）: changed
 - 招商永隆 · 银联钻石卡（产品待确认）: failed
 - 招商永隆 · World Mastercard: unchanged
 
