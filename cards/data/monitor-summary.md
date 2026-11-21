@@ -1,6 +1,6 @@
 # 官方来源巡检
 
-2026-11-20T04:01:24+00:00
+2026-11-21T04:00:06+00:00
 
 - Amex · Brilliant 官方权益: failed
 - Amex · 每月餐饮报销条款: failed
@@ -16,7 +16,7 @@
 - Capital One · Savor 官方权益: unchanged
 - Capital One · Venture X 当前产品页: unchanged
 - Capital One · Venture X 权益指南: unchanged
-- Capital One · 休息室当前准入规则: unchanged
+- Capital One · 休息室当前准入规则: changed
 - Citi · Strata Premier 完整权益: unchanged
 - BofA · Atmos Summit 当前权益: failed
 - Alaska · Summit 权益和会籍积分: unchanged
@@ -27,7 +27,7 @@
 - 汇丰 · Visa Signature 卡: unchanged
 - 汇丰 · 扣账卡（卡种待确认）: unchanged
 - 工银亚洲 · 星座银联钻石卡: failed
-- 工银亚洲 · 大湾区银联钻石卡: baseline
+- 工银亚洲 · 大湾区银联钻石卡: failed
 - 工银亚洲 · Mastercard 世界卡（系列待确认）: failed
 - 建银亚洲 · eye+ 卡（级别待确认）: unchanged
 - 建银亚洲 · 银联双币信用卡（级别待确认）: unchanged
